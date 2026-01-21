@@ -17,12 +17,13 @@ header {
   top: 0;
   width: 100%;
   background: #000;
-  padding: 20px 0;
 }
 
 nav {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 20px 20px;
   display: flex;
-  justify-content: center;
   gap: 32px;
 }
 
