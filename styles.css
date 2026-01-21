@@ -1,0 +1,13 @@
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:#eaeaea;font-family:Menlo,Monaco,Consolas,monospace;line-height:1.6;}
+.container{max-width:720px;padding:60px 24px;}
+nav{margin-bottom:80px;}
+nav a{color:#eaeaea;text-decoration:none;margin-right:24px;opacity:.7;}
+nav a:hover{opacity:1;}
+h1{font-size:28px;margin-bottom:24px;}
+p{margin-bottom:20px;opacity:.9;}
+.post-item{display:flex;gap:24px;margin-bottom:16px;}
+.post-item span{opacity:.5;min-width:110px;}
+.footer{margin-top:80px;opacity:.6;}
+.footer a{margin-right:16px;}
