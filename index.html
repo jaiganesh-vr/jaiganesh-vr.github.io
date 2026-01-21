@@ -1,40 +1,42 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Home</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
-<nav>
-<a href="index.html">home</a>
-<a href="blog.html">blog</a>
-</nav>
 
-<h1>hey, I'm Haroon 👋</h1>
+<header>
+  <nav>
+    <a href="index.html">home</a>
+    <a href="blog.html" class="active">blog</a>
+  </nav>
+</header>
 
-<p>I lead the team at Autoblocks AI, where we're working towards AI product alignment. Here's a summary of my career so far:</p>
+<main>
+  <h1>blog</h1>
 
-<div class="section">
-<p><strong>Work:</strong> I've worked in ML / data science roles at Mark Cuban Companies, Deloitte, and Komodo Health, and led growth marketing at startups like Hex and Highlight.</p>
-<p><strong>School:</strong> I'm a UC Berkeley masters grad in data science, with a focus on ML. I'm also a proud first‑gen college grad.</p>
-<p><strong>Other:</strong> I founded AI For Anyone, one of the nation's most impactful AI education nonprofits, and Not A Bot, an AI newsletter with 50k+ subscribers.</p>
-</div>
+  <p class="muted">Thoughts on AI, products, and building useful things.</p>
 
-<div class="post-list">
-<div class="post"><span>May 31, 2024</span><a href="posts/niche-marketing.html">On Niche Marketing</a></div>
-<div class="post"><span>May 10, 2024</span><a href="#">AI Product Development vs Alignment</a></div>
-<div class="post"><span>May 9, 2024</span><a href="#">Double Loop AI Product Dev</a></div>
-</div>
+  <section class="posts">
+    <div class="post">
+      <span class="date">May 31, 2024</span>
+      <a href="#">On Niche Marketing</a>
+    </div>
 
-<div class="footer">
-<a href="#">↗ x</a>
-<a href="#">↗ linkedin</a>
-<a href="#">↗ building with ai</a>
-</div>
+    <div class="post">
+      <span class="date">May 10, 2024</span>
+      <a href="#">AI Product Development vs Alignment</a>
+    </div>
 
-</div>
+    <div class="post">
+      <span class="date">May 9, 2024</span>
+      <a href="#">Double Loop AI Product Dev</a>
+    </div>
+  </section>
+</main>
+
 </body>
 </html>
