@@ -69,6 +69,11 @@ p {
   font-size: 14px;
 }
 
+menu {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
 .muted {
   color: #999;
   margin-top: 10px;
@@ -143,7 +148,34 @@ p {
   border-radius: 12px;
 
 }
+/* Menu hightlight */
+.menu-highlight {
+  margin-top: 25px;
+  display: flex;
+  gap: 28px;
+  font-size: 14px;
+  color: #888;
+}
 
+.menu-highlight a {
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.menu-highlight a:hover {
+  color: #fff;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.25),
+    0 0 12px rgba(255, 255, 255, 0.12);
+}
+
+.menu-highlight a[aria-current="page"] {
+  color: #fff;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.35),
+    0 0 14px rgba(255, 255, 255, 0.18);
+}
 
 /* ===== Minimal Footer ===== */
 .site-footer {
