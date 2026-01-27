@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Retrieval‑Augmented Generation</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="../index.html">Blog</a>
+    <a href="../learn.html">Learn</a>
+  </nav>
+</header>
+
+<main>
+
+  <h1>Retrieval‑Augmented Generation (RAG)</h1>
+
+  <p class="muted">
+    <span class="pill">AI</span>
+    <span class="pill">Systems</span>
+    · Sep 07, 2025
+  </p>
+
+  <p>
+    Large Language Models are great at sounding confident.
+    Unfortunately, confidence and correctness are not the same thing.
+    RAG exists to teach models a crucial skill most humans learn early:
+    knowing when to say <em>“I don’t know — let me check.”</em>
+  </p>
+
+  <h2>Why This Matters</h2>
+
+  <p>
+    LLMs generate responses based on patterns learned during training.
+    That training data is frozen in time, incomplete, and occasionally wrong.
+    When asked about missing or outdated information, models don’t pause —
+    they improvise. That improvisation is what we call hallucination.
+  </p>
+
+  <p class="muted">
+    In low‑stakes settings, hallucinations are annoying.
+    In production systems, they are expensive.
+  </p>
+
+  <h2>The Core Idea</h2>
+
+  <p>
+    Retrieval‑Augmented Generation changes the workflow.
+    Instead of forcing the model to rely only on its internal memory,
+    it allows the model to retrieve relevant information from an external source
+    before generating an answer.
+  </p>
+
+  <p>
+    The model stops guessing and starts grounding its responses in data
+    that actually exists — documentation, databases, papers, or live APIs.
+  </p>
+
+
+  <img
+    src="../img/img_rag1.jpg"
+    alt="Healthy frozen waffles billboard"
+    class="post-hero"
+  />
+
+  <h2>How RAG Works</h2>
+
+  <h2>1. Tokenization and Embeddings</h2>
+
+  <p>
+    Documents and user queries are first tokenized and converted into embeddings —
+    numerical representations that capture semantic meaning.
+    These vectors allow the system to compare ideas, not just keywords.
+  </p>
+
+  <h2>2. Vector Storage</h2>
+
+  <p>
+    Embeddings are stored in a vector database designed for similarity search.
+    This database may contain internal docs, research papers, product manuals,
+    or any other trusted source of truth.
+  </p>
+
+  <h2>3. Retrieval</h2>
+
+  <p>
+    When a user asks a question, the query is embedded using the same method.
+    The system then searches the vector database for the most relevant chunks
+    of information using similarity metrics such as cosine distance.
+  </p>
+
+  <h2>4. Augmented Generation</h2>
+
+  <p>
+    The retrieved context is injected into the model’s prompt.
+    The LLM now generates a response with grounded references instead of guesswork.
+    The output becomes narrower, calmer, and far more reliable.
+  </p>
+
+  <h2>What This Changes in Practice</h2>
+
+  <p>
+    RAG systems reduce hallucinations, keep answers up‑to‑date,
+    and allow models to work with private or proprietary knowledge.
+    More importantly, they separate <em>knowledge storage</em>
+    from <em>language generation</em>.
+  </p>
+
+  <p class="muted">
+    Models stay fluent. Data stays correct. Everyone wins.
+  </p>
+
+  <h2>Closing Thought</h2>
+
+  <p>
+    RAG doesn’t make language models smarter.
+    It makes them more honest.
+    And in real systems, honesty scales better than confidence.
+  </p>
+
+  <div class="divider"></div>
+
+  <p class="muted">
+    Thanks for reading. If this was useful, you’ll probably like the other posts too.
+  </p>
+
+</main>
+</body>
+</html>
