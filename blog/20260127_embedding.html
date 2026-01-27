@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Embeddings</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="../index.html">Blog</a>
+    <a href="../learn.html">Learn</a>
+  </nav>
+</header>
+
+<main>
+
+  <h1>Embeddings</h1>
+
+  <p class="muted">
+    <span class="pill">AI</span>
+    <span class="pill">Representation Learning</span>
+    · Jul 27, 2025
+  </p>
+
+  <p>
+    Modern language models don’t understand words the way humans do.
+    They don’t see letters, definitions, or grammar rules.
+    What they see instead are numbers — vectors that encode meaning.
+  </p>
+
+  <p>
+    Embeddings are the mechanism that makes this possible.
+    They transform language into a mathematical space where similarity,
+    relevance, and context can be measured.
+  </p>
+
+  <h2>Why This Matters</h2>
+
+  <p>
+    Before a model can reason about language, it must first convert text
+    into something it can operate on. Tokenization breaks text into pieces,
+    but embeddings give those pieces meaning.
+  </p>
+
+  <p class="muted">
+    Without embeddings, words are just symbols.
+    With embeddings, they become geometry.
+  </p>
+
+  <h2>Encoding Meaning as Vectors</h2>
+
+  <p>
+    Each word or phrase is represented as a vector — a list of numbers —
+    that captures its semantic features. Words that share meaning end up
+    close together in this space.
+  </p>
+
+  <p>
+    A word like <em>notebook</em> may encode ideas related to writing or pages,
+    while <em>lecture</em> may encode concepts like discussion or notes.
+    Because these ideas overlap, their vectors sit near each other.
+  </p>
+
+  <p>
+    In contrast, words with little semantic overlap occupy distant regions.
+    This distance is not symbolic — it is measurable using simple math.
+  </p>
+
+  <h2>Similarity Through Geometry</h2>
+
+  <p>
+    Once language is embedded, comparing meaning becomes a matter of
+    computing distance or angle between vectors. Operations like cosine
+    similarity allow systems to determine how closely related two pieces
+    of text are.
+  </p>
+
+  <p>
+    This same mechanism powers semantic search, question answering,
+    recommendations, and retrieval systems. Queries are no longer matched
+    by keywords, but by intent.
+  </p>
+
+  <h2>A High-Dimensional Map of Language</h2>
+
+  <p>
+    Embedding spaces are high-dimensional, meaning each word exists in a
+    space with hundreds or thousands of axes. In this space, related words
+    cluster naturally.
+  </p>
+
+  <p>
+    Terms like <em>dog</em>, <em>puppy</em>, and <em>canine</em> appear near one another,
+    while unrelated concepts remain far apart. Meaning emerges from
+    relative position, not explicit rules.
+  </p>
+
+  <h2>Common Embedding Frameworks</h2>
+
+  <ul class="post-list">
+    <li>
+      <strong>Word2Vec</strong> — Learns embeddings by predicting surrounding words.
+      Includes CBOW and Skip-gram architectures.
+    </li>
+    <li>
+      <strong>GloVe</strong> — Builds embeddings by factorizing global word
+      co-occurrence statistics.
+    </li>
+    <li>
+      <strong>FastText</strong> — Represents words as character n-grams,
+      improving performance on rare or unseen terms.
+    </li>
+    <li>
+      <strong>BERT</strong> — Generates contextual embeddings using
+      bidirectional transformers.
+    </li>
+    <li>
+      <strong>GPT Embeddings</strong> — Produce dense representations of
+      words or sentences optimized for downstream tasks.
+    </li>
+  </ul>
+
+  <h2>Closing Thought</h2>
+
+  <p>
+    Embeddings don’t store facts or definitions.
+    They store relationships.
+    That shift — from symbols to geometry —
+    is what enables modern language models to reason about meaning.
+  </p>
+  
+  <div class="divider"></div>
+
+  <p class="muted">
+    Notes like these help bridge theory and implementation — understanding
+    representation before building systems on top of it.
+  </p>
+
+</main>
+</body>
+</html>
