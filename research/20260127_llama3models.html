@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Llama 3 Herd of Models</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="../index.html">Blog</a>
+    <a href="../learn.html">Learn</a>
+  </nav>
+</header>
+
+<main>
+
+  <h1>The Llama 3 Herd of Models</h1>
+
+  <p class="muted">
+    <span class="pill">AI</span>
+    <span class="pill">Foundation Models</span>
+    · Nov 17, 2025 
+    </a>
+  </p>
+
+  <p>
+    Llama 3 is Meta’s next-generation large language model, building on the foundations
+    laid by Llama 2 while significantly expanding scale, capability, and scope.
+    It is designed as a family of models rather than a single system, optimized for
+    performance across language, code, reasoning, and multimodal tasks.
+  </p>
+
+  <p>
+    Rather than introducing a radically new architecture, Llama 3 refines the standard
+    dense transformer design, following the architecture introduced by Vaswani et al. (2017).
+    This choice prioritizes efficiency, scalability, and predictable performance at scale.
+  </p>
+
+  <h2>What Changed from Llama 2</h2>
+
+  <p>
+    Llama 3 increases both model capacity and training depth.
+    It supports longer context windows, larger datasets, and significantly more compute.
+    A major evolution is its support for multimodal training, enabling the model to align
+    text with images and speech through modality-specific encoders.
+  </p>
+
+  <p class="muted">
+    The goal is not architectural novelty, but controlled scaling.
+  </p>
+
+  <h2>Training at Scale</h2>
+
+  <p>
+    Llama 3 was trained on approximately 15 trillion multilingual tokens.
+    Training required an estimated 3.8 × 10<sup>25</sup> floating-point operations,
+    executed across thousands of GPUs.
+  </p>
+
+  <p>
+    Three constraints guided development:
+  </p>
+
+  <ul class="post-list">
+    <li><strong>Data</strong> — Large-scale, high-quality multilingual corpora.</li>
+    <li><strong>Scale</strong> — Massive parallel training on modern GPU clusters.</li>
+    <li><strong>Complexity Management</strong> — Simplifying training recipes while preserving performance.</li>
+  </ul>
+
+  <h2>Pre-training</h2>
+
+  <p>
+    Pre-training is the most resource-intensive stage.
+    Llama 3’s largest variant contains roughly 405 billion parameters and supports
+    context windows of up to 8,000 tokens, enabling long-form reasoning and document-level understanding.
+  </p>
+
+  <p>
+    Training data undergoes extensive filtering before ingestion:
+  </p>
+
+  <ul class="post-list">
+    <li>Removal of personally identifiable information and unsafe content</li>
+    <li>Text extraction and de-duplication</li>
+    <li>Heuristic and model-based quality filtering</li>
+  </ul>
+
+  <p class="muted">
+    The final dataset balances general knowledge, mathematics, code, and multilingual content.
+  </p>
+
+  <h2>Architecture</h2>
+
+  <p>
+    Llama 3 introduces several architectural refinements over Llama 2.
+    Grouped Query Attention reduces memory and compute overhead by sharing key-value heads.
+    This improves efficiency when attending over long sequences.
+  </p>
+
+  <p>
+    The vocabulary expands to 128,000 tokens, including strong coverage for non-English languages.
+    Model sizes are selected using scaling laws that balance parameter count, dataset size,
+    and available compute.
+  </p>
+
+  <p>
+    Training was performed on large GPU clusters using high-bandwidth interconnects
+    and distributed storage systems capable of handling hundreds of petabytes of data.
+  </p>
+
+  <h2>Post-training and Alignment</h2>
+
+  <p>
+    After pre-training, Llama 3 undergoes multiple alignment stages to improve usefulness
+    and safety.
+  </p>
+
+  <ul class="post-list">
+    <li><strong>Supervised Fine-Tuning</strong> — Human-labeled data refines behavior.</li>
+    <li><strong>Direct Preference Optimization</strong> — Responses are ranked to match user intent.</li>
+    <li><strong>Reward Modeling</strong> — Reinforcement signals encourage preferred outputs.</li>
+  </ul>
+
+  <p class="muted">
+    Final passes remove low-quality or redundant samples through semantic de-duplication
+    and topic-based pruning.
+  </p>
+
+  <h2>Capabilities</h2>
+
+  <p>
+    Llama 3 is optimized for a broad set of tasks.
+    Strong performance in code generation comes from synthetic training and execution feedback.
+    Multilingual capability is driven by diverse, human-annotated datasets.
+  </p>
+
+  <p>
+    The model shows improved mathematical reasoning through step-wise training and filtering
+    of incorrect reasoning traces.
+    Longer context windows and tool-use training further extend its practical range.
+  </p>
+
+  <h2>Closing Thought</h2>
+
+  <p>
+    Llama 3 represents a shift toward disciplined scaling rather than architectural experimentation.
+    By combining massive pre-training, careful alignment, and multimodal extensions,
+    it sets a new baseline for open foundation models.
+  </p>
+
+  <p class="repo">
+    Click the link for: 
+    <a href="https://github.com/jaiganesh-vr/references/blob/87389c2aa8a116f893ef4402dd1d0e68952cdb56/453304228_1160109801904614_7143520450792086005.pdf" target="_blank">
+      The Llama 3 herd of models
+    </a>
+    research paper
+  </p>
+
+   
+ <div class="divider"></div>
+
+  <p class="muted">
+    Notes like these document how scale, data, and restraint matter
+    as much as new ideas in modern AI systems.
+  </p>
+
+</main>
+</body>
+</html>
