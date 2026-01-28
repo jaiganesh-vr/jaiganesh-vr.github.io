@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Informed Model Selection</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="../index.html">Blog</a>
+    <a href="../learn.html">Learn</a>
+  </nav>
+</header>
+
+<main>
+
+<h1>An Informed Approach to Machine Learning Model Selection</h1>
+
+<p class="muted">
+  <span class="pill">Machine Learning</span>
+  <span class="pill">Model Selection</span>
+  <span class="pill">Research</span>
+</p>
+<p class="muted">
+  May 27, 2020
+</p>
+
+<p>
+As a master’s graduate, the goal of this project was to gain hands-on experience
+in applied machine learning by working through the full lifecycle of model
+development. This included collecting and working with datasets in multiple
+formats, preparing data for training and testing, experimenting with both
+classification and regression algorithms, tuning hyperparameters, evaluating
+performance, creating visualizations, exploring interpretability methods, and
+communicating results clearly.
+</p>
+
+<p>
+Developing these skills required integrating knowledge from lectures, labs,
+research paper reading, and continuous practice. Feedback from fellow
+researchers played a critical role in refining the methodology and
+interpretation of results.
+</p>
+
+<h2>Overview of the Project</h2>
+
+<p>
+This project focuses on the comprehensive training, evaluation, and comparison
+of machine learning models for both classification and regression tasks. The
+performance of eight classification models was evaluated across ten datasets,
+while seven regression models were assessed on another set of ten datasets.
+</p>
+
+<p class="muted">
+Most datasets were sourced from the UCI Machine Learning Repository and represent
+a wide range of domains. Each dataset required careful preprocessing and feature
+selection prior to model training.
+</p>
+
+<p>
+Hyperparameter tuning was conducted for each model, and results were evaluated
+using standard metrics appropriate for classification and regression. This
+workflow mirrors real-world machine learning problems where no single algorithm
+performs optimally across all tasks.
+</p>
+
+<h2>Project Goals</h2>
+
+<p>
+The primary goals of this project were to:
+<p> • Train & evaluate 8 classification models on 10 classification datasets </p>
+<p> • Train & evaluate 7 regression models on 10 regression datasets </p>
+<p> • Perform hyperparameter tuning for each model </p>
+<p> • Analyze performance using appropriate metrics and visualizations </p>
+<p> • Compare the relative effectiveness of models across tasks </p>
+
+<p>
+Although the datasets were partially preprocessed, significant effort was still
+required to understand their structure and prepare them correctly. </p> 
+<p class="muted"> This served as valuable practice for real-world machine learning projects.
+</p>
+
+<h2>I. Classification Task</h2>
+
+<p>
+The first phase of the project involved training and evaluating eight
+classification models across ten datasets covering domains such as medical
+diagnosis, credit scoring, biological classification, and industrial fault
+detection.
+</p>
+
+<p>
+The classification models evaluated included: <br>
+<br>
+1. K-nearest neighbors <br>
+2. Support vector classification <br> 
+3. Decision tree classifiers <br>
+4. Random forests <br>
+5. AdaBoost <br>
+6. Logistic regression <br>
+7. Gaussian Naive Bayes <br>
+8. Neural network classifiers <br>
+</p>
+
+<p>
+The classification datasets included: <br>
+<br>
+1. Diabetic Retinopathy <br>
+2. Default of Credit Card Clients <br>
+3. Breast Cancer Wisconsin <br> 
+4. Statlog Australian Credit Approval <br> 
+5. Statlog German Credit Data <br>
+6. Steel Plates Faults <br>
+7. Adult dataset <br>
+8. the Yeast dataset <br>
+9. Thoracic Surgery Data <br>
+10. Seismic-Bumps <br>
+</p>
+
+<h2>Data Preparation for Classification</h2>
+
+<p>
+Each dataset required identifying feature columns and class labels, handling
+missing values through imputation, and applying standardization or normalization.
+</p>
+
+<a href="../img/img_project_ml01.jpg">
+<img
+    src="../img/img_project_ml01.jpg"
+    alt="Informed ML selection"
+    class="post-hero"
+/>
+</a>
+
+<p>
+Feature scaling was particularly important for models such as support vector
+machines and neural networks, where unscaled inputs can significantly degrade
+performance.
+</p>
+
+<h2>Hyperparameter Tuning for Classification</h2>
+
+<p>
+For each classification model, one to three key hyperparameters were tuned based
+on their expected impact on performance. 
+</p>
+<p>
+For example, support vector machines required tuning of the regularization parameter C and 
+kernel coefficient gamma. Random forests required tuning of the number of trees and maximum 
+tree depth. Neural networks required tuning of hidden layers, learning rate, and iteration count.
+</p>
+
+<p class="muted">
+Both grid search and random search were used to balance thorough exploration of
+the parameter space with computational efficiency.
+</p>
+
+<h2>Model Evaluation for Classification</h2>
+
+<p>
+Classification models were evaluated using metrics including: <br>
+<br>
+1. Accuracy <br>
+2. Precision <br>
+3. Recall <br>
+4. F1-score <br>
+5. Confusion matrices <br>
+6. ROC-AUC scores <br>
+</p>
+
+<p>
+Cross-validation was used throughout to ensure reliable evaluation on unseen
+data and to reduce overfitting.
+</p>
+
+<h2>II. Regression Task</h2>
+
+<p>
+The second phase of the project focused on regression tasks. Seven regression
+models were trained and evaluated across ten datasets covering topics such as
+wine quality, student performance, chemical toxicity, and GPU kernel
+performance.
+</p>
+
+<p>
+The regression models evaluated included: <br> 
+<br>
+1. Support vector regression <br> 
+2. Decision tree regression <br>
+3. Random forest regression <br>
+4. AdaBoost regression <br>
+5. Gaussian process regression <br>
+6. Linear regression <br>
+7. Neural network regression <br>
+</p>
+
+<p>
+The regression datasets included: <br> 
+<br>
+1. Wine Quality <br>
+2. Communities and Crime <br> 
+3. QSAR Aquatic Toxicity <br>
+4. Parkinson Speech <br>
+5. Facebook Metrics <br>
+6. Bike Sharing hourly data <br>
+7. Student Performance <br>
+8. Concrete Compressive Strength <br>
+9. SGEMM GPU Kernel Performance <br>
+10. Merck Molecular Activity Challenge <br>
+</p>
+
+<h2>Data Preparation for Regression</h2>
+
+<p>
+Data preparation for regression focused on identifying predictors and target
+variables, handling missing values and outliers, and applying feature scaling
+where necessary.
+</p>
+
+<a href="../img/img_project_ml02.jpg">
+<img
+    src="../img/img_project_ml02.jpg"
+    alt="Informed ML selection"
+    class="post-hero"
+/>
+</a>
+
+<p>
+Scaling was especially important for support vector regression and neural
+networks due to their sensitivity to feature magnitude.
+</p>
+
+<h2>Hyperparameter Tuning for Regression</h2>
+
+<p>
+Key hyperparameters were tuned for regression models in a similar manner to
+classification models. 
+</p>
+<p>- Support vector regression required tuning of C and gamma </p>
+<p>- Random forest regression required tuning of the number of estimators and maximum depth </p>
+<p>- Neural networks required tuning of hidden layer sizes, learning rates, and iteration limits </p>
+</p>
+
+<h2>Model Evaluation for Regression</h2>
+
+<p>
+Regression models were evaluated using: <br>
+
+<br>
+1. Mean squared error <br>
+2. Mean absolute error <br>
+3. R-squared scores <br> 
+
+<p>Cross-validation ensured reliable performance estimates on
+unseen data.
+</p>
+
+<h2>Implementation Details</h2>
+
+<a href="../img/img_project_ml03.jpg">
+<img
+    src="../img/img_project_ml03.jpg"
+    alt="Informed ML selection"
+    class="post-hero"
+/>
+</a>
+
+<p>
+All experiments were executed using a unified pipeline that handled dataset
+loading, preprocessing, model training, hyperparameter tuning, and evaluation.
+Datasets were loaded using pandas, with missing values replaced by NaN.
+</p>
+
+<p>
+StandardScaler was applied after K-fold splitting to prevent data leakage.
+Categorical features were handled using one-hot encoding, and label encoding was
+applied where required. Non-predictive attributes were removed, and for certain
+regression datasets with multiple outputs, target values were averaged.
+</p>
+
+<p>
+<strong>Hyperparameter</strong> tuning was performed in three phases using random search, with
+parameter ranges refined after each phase. Parallel execution was used to manage
+computational cost.
+</p>
+
+<a href="../img/img_project_ml04.jpg">
+<img
+    src="../img/img_project_ml04.jpg"
+    alt="Informed ML selection"
+    class="post-hero"
+/>
+</a>
+
+<a href="../img/img_project_ml05.jpg">
+<img
+    src="../img/img_project_ml05.jpg"
+    alt="Informed ML selection"
+    class="post-hero"
+/>
+</a>
+
+<h2>Observations</h2>
+
+<p>
+For classification tasks, random forests, support vector classifiers, and
+AdaBoost produced strong results. However, on unseen datasets, support vector
+classifiers and neural networks generalized better than random forests and
+AdaBoost.
+</p>
+<a href="../img/img_project_ml07.jpg">
+<img
+    src="../img/img_project_ml07.jpg"
+    alt="Informed ML selection"
+    class="post-hero"
+/>
+</a>
+<p>
+Support vector classifiers delivered strong performance but exhibited long
+training times, making them less efficient in practice.
+</p>
+
+<p>
+For regression tasks, neural networks, random forests, and AdaBoost achieved the
+best performance overall, though often at the cost of longer training times.
+</p>
+
+<a href="../img/img_project_ml09.jpg">
+<img
+    src="../img/img_project_ml09.jpg"
+    alt="Informed ML selection"
+    class="post-hero"
+/>
+</a>
+
+<h2>Findings and Inferences</h2>
+
+<p>
+- No single model consistently outperformed all others across every dataset. Model
+performance was highly dependent on dataset characteristics.
+</p>
+
+<p>
+- Hyperparameter tuning significantly improved performance, demonstrating the
+importance of systematic optimization.
+</p>
+
+<p>
+- Clear trade-off between interpretability and predictive performance.
+Simpler models were easier to explain but often underperformed compared to more
+complex approaches.
+</p>
+
+<p>
+- Dataset complexity strongly influenced model suitability. Some datasets required
+advanced models, while simpler datasets were well-handled by less complex ones.
+</p>
+
+<h2>Conclusion</h2>
+
+<p>
+This project provided extensive hands-on experience in training, tuning, and
+evaluating machine learning models across diverse datasets. It reinforced the
+importance of data preprocessing, hyperparameter optimization, and careful
+evaluation.
+</p>
+
+<p>
+The experience closely mirrors real-world machine learning practice, where model
+selection must be informed by data characteristics, performance metrics, and
+practical constraints rather than reliance on a single algorithm.
+</p>
+
+<p class="repo">
+Click the link for: 
+<a href="https://github.com/jaiganesh-vr/the-pacman-project" target="_blank">
+    Informed ML Model selection
+</a>
+code repository
+</p>
+
+<div class="divider"></div>
+
+<p class="muted">
+Thanks for reading. If this was useful, you’ll probably like the other posts too.
+</p>
+
+</main>
+</body>
+</html>
