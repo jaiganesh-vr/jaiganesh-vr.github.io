@@ -128,7 +128,7 @@ menu {
 
 .post-list li {
   font-size: 0.9rem;
-  line-height: 1.6;
+  line-height: 1.4;
   margin-bottom: 24px;
 }
 
@@ -151,6 +151,7 @@ menu {
   max-width: 600px;
   width: 75%;
   border-radius: 12px;
+  cursor: zoom-in;
 
 }
 
@@ -209,7 +210,7 @@ menu {
 
 
 .repo {
-  font-size: 14px;
+  font-size: 13.5px;
   color: #bcbcbc;
 }
 
