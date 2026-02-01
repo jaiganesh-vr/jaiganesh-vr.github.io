@@ -1,170 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quantizing Large Language Models</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
 
-<header>
-  <nav>
-    <a href="../index.html">Blog</a>
-    <a href="../learn.html">Learn</a>
-  </nav>
-</header>
+  <header>
+    <nav>
+      <a href="../index.html">Blog</a>
+      <a href="../learn.html">Learn</a>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 114.5 4.5A4.5 4.5 0 017.5 12zM2.25 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM12 18.75a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zM18.75 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5h-2.25a.75.75 0 010 1.5h-2.25a.75.75 0 01-.75-.75zM5.636 5.636a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06L5.637 6.697a.75.75 0 010-1.061zM15.713 15.713a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 010-1.06zM5.636 18.364a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06L6.697 18.363a.75.75 0 01-1.06 0zM15.713 8.288a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06l-1.59 1.591a.75.75 0 01-1.061 0z" />
+        </svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+          <path
+            d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" />
+        </svg>
+      </button>
+    </nav>
+  </header>
 
-<main>
+  <main>
 
-  <h1>Quantizing Large Language Models</h1>
+    <h1>Quantizing Large Language Models</h1>
 
-  <p class="muted">
-    <span class="pill">AI</span>
-    <span class="pill">Inference Systems</span>
-  </p>
+    <p class="muted">
+      <span class="pill">AI</span>
+      <span class="pill">Inference Systems</span>
+    </p>
 
-  <p class="muted">
-    Jan 30, 2026
-  </p>
+    <p class="muted">
+      Jan 30, 2026
+    </p>
 
-  <p>
-    Running large language models at scale is less about intelligence and
-    more about logistics. Memory bandwidth, latency, and GPU cost tend to
-    dominate long before model quality does.
-  </p>
+    <p>
+      Running large language models at scale is less about intelligence and
+      more about logistics. Memory bandwidth, latency, and GPU cost tend to
+      dominate long before model quality does.
+    </p>
 
-  <p>
-    Quantization exists to close that gap. It reduces numerical precision
-    inside a model to make inference faster and cheaper, while attempting
-    to preserve as much capability as possible.
-  </p>
+    <p>
+      Quantization exists to close that gap. It reduces numerical precision
+      inside a model to make inference faster and cheaper, while attempting
+      to preserve as much capability as possible.
+    </p>
 
-  <h2>Quantization Without the Buzzwords</h2>
+    <h2>Quantization Without the Buzzwords</h2>
 
-  <p>
-    Quantization changes how numbers are represented inside a model.
-    Instead of high-precision formats like BF16, the model operates using
-    smaller representations such as FP8, INT8, or INT4.
-  </p>
+    <p>
+      Quantization changes how numbers are represented inside a model.
+      Instead of high-precision formats like BF16, the model operates using
+      smaller representations such as FP8, INT8, or INT4.
+    </p>
 
-  <p>
-    A useful mental model is lossy compression. Some numerical detail is
-    discarded, but the overall structure remains intact. The trade-off is
-    intentional: lower precision reduces memory usage and speeds up
-    computation.
-  </p>
+    <p>
+      A useful mental model is lossy compression. Some numerical detail is
+      discarded, but the overall structure remains intact. The trade-off is
+      intentional: lower precision reduces memory usage and speeds up
+      computation.
+    </p>
 
-  <p class="muted">
-    The open question has always been whether reasoning survives the loss.
-  </p>
+    <p class="muted">
+      The open question has always been whether reasoning survives the loss.
+    </p>
 
-  <h2>Benchmark Setup</h2>
+    <h2>Benchmark Setup</h2>
 
-  <p>
-    The benchmark evaluated a 32-billion-parameter Qwen model running on
-    NVIDIA H100 GPUs. Thousands of inference runs were executed, alongside
-    more than 12,000 questions from the MMLU-Pro benchmark.
-  </p>
+    <p>
+      The benchmark evaluated a 32-billion-parameter Qwen model running on
+      NVIDIA H100 GPUs. Thousands of inference runs were executed, alongside
+      more than 12,000 questions from the MMLU-Pro benchmark.
+    </p>
 
-  <p>
-    Multiple numerical formats were tested side by side, using BF16 as a
-    baseline and comparing it against FP8, INT8, and INT4 variants.
-  </p>
+    <p>
+      Multiple numerical formats were tested side by side, using BF16 as a
+      baseline and comparing it against FP8, INT8, and INT4 variants.
+    </p>
 
-  <h2>Where the Speed Gains Come From</h2>
+    <h2>Where the Speed Gains Come From</h2>
 
-  <p>
-    Lower-precision models consistently achieved higher throughput.
-    The most significant improvements appeared with INT4.
-  </p>
+    <p>
+      Lower-precision models consistently achieved higher throughput.
+      The most significant improvements appeared with INT4.
+    </p>
 
-  <p>
-    This is not primarily because the math is cheaper. In modern LLM
-    inference, memory movement is often the bottleneck. Smaller numerical
-    formats reduce how much data needs to be transferred across the GPU,
-    which directly accelerates generation.
-  </p>
+    <p>
+      This is not primarily because the math is cheaper. In modern LLM
+      inference, memory movement is often the bottleneck. Smaller numerical
+      formats reduce how much data needs to be transferred across the GPU,
+      which directly accelerates generation.
+    </p>
 
-  <p class="muted">
-    Quantization improves performance by making memory behave.
-  </p>
+    <p class="muted">
+      Quantization improves performance by making memory behave.
+    </p>
 
-  <h2>Memory Is the Real Constraint</h2>
+    <h2>Memory Is the Real Constraint</h2>
 
-  <p>
-    Model weights are only part of the memory story. During inference,
-    language models rely heavily on the key-value cache, which stores
-    intermediate representations for each token in the context.
-  </p>
+    <p>
+      Model weights are only part of the memory story. During inference,
+      language models rely heavily on the key-value cache, which stores
+      intermediate representations for each token in the context.
+    </p>
 
-  <p>
-    When model weights consume less memory, more space becomes available
-    for the KV cache. This enables longer context windows, higher
-    concurrency, or both.
-  </p>
+    <p>
+      When model weights consume less memory, more space becomes available
+      for the KV cache. This enables longer context windows, higher
+      concurrency, or both.
+    </p>
 
-  <p>
-    In practice, a 4-bit model can support several times the effective
-    context capacity of a BF16 model under the same hardware constraints.
-  </p>
+    <p>
+      In practice, a 4-bit model can support several times the effective
+      context capacity of a BF16 model under the same hardware constraints.
+    </p>
 
-  <h2>Accuracy Retention</h2>
+    <h2>Accuracy Retention</h2>
 
-  <p>
-    Even aggressive quantization retained strong performance. INT4 models
-    showed only minor degradation on reasoning-focused benchmarks compared
-    to full-precision variants.
-  </p>
+    <p>
+      Even aggressive quantization retained strong performance. INT4 models
+      showed only minor degradation on reasoning-focused benchmarks compared
+      to full-precision variants.
+    </p>
 
-  <p>
-    The gap between numerical precision and task performance is smaller
-    than intuition suggests. Large language models appear to contain
-    significant numerical redundancy.
-  </p>
+    <p>
+      The gap between numerical precision and task performance is smaller
+      than intuition suggests. Large language models appear to contain
+      significant numerical redundancy.
+    </p>
 
-  <h2>Cost as a First-Class Metric</h2>
+    <h2>Cost as a First-Class Metric</h2>
 
-  <p>
-    Reduced memory usage and higher throughput combine into a substantial
-    drop in inference cost. In some configurations, INT4 inference reduced
-    cost per million tokens by more than half.
-  </p>
+    <p>
+      Reduced memory usage and higher throughput combine into a substantial
+      drop in inference cost. In some configurations, INT4 inference reduced
+      cost per million tokens by more than half.
+    </p>
 
-  <p>
-    For production systems, this often outweighs marginal accuracy
-    differences. A slightly less precise model that is dramatically
-    cheaper to run tends to win in real deployments.
-  </p>
+    <p>
+      For production systems, this often outweighs marginal accuracy
+      differences. A slightly less precise model that is dramatically
+      cheaper to run tends to win in real deployments.
+    </p>
 
-  <h2>Closing Thought</h2>
+    <h2>Closing Thought</h2>
 
-  <p>
-    Quantization is no longer a niche optimization. It is a practical
-    systems-level lever for making large models usable at scale.
-  </p>
+    <p>
+      Quantization is no longer a niche optimization. It is a practical
+      systems-level lever for making large models usable at scale.
+    </p>
 
-  <p>
-    Progress in AI does not come only from larger models. Sometimes it
-    comes from realizing how much slack already exists in the ones we
-    have.
-  </p>
+    <p>
+      Progress in AI does not come only from larger models. Sometimes it
+      comes from realizing how much slack already exists in the ones we
+      have.
+    </p>
 
-  <p class="repo">
-  Click the link for: 
-    <a href=https://research.aimultiple.com/llm-quantization/#llm-quantization-benchmark-results" target="_blank">
-      LLM Quantization: BF16 vs FP8 vs INT4 in 2026
-    </a>
-  article
-  </p>
+    <p class="repo">
+      Click the link for:
+      <a href=https://research.aimultiple.com/llm-quantization/#llm-quantization-benchmark-results" target="_blank">
+        LLM Quantization: BF16 vs FP8 vs INT4 in 2026
+      </a>
+      article
+    </p>
 
-  <div class="divider"></div>
+    <div class="divider"></div>
 
-  <p class="muted">
-    Notes like these focus less on model novelty and more on the systems
-    choices that determine whether models are usable in practice.
-  </p>
+    <p class="muted">
+      Notes like these focus less on model novelty and more on the systems
+      choices that determine whether models are usable in practice.
+    </p>
 
-</main>
+  </main>
+  <script src="../js/theme.js"></script>
 </body>
+
 </html>
