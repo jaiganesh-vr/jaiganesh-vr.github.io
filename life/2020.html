@@ -1,52 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
-    
-<header>
-  <nav>
-    <a href="index.html">Blog</a>
-    <a href="learn.html" >Learn</a>
-    <a href="../life.html" class="active">Life</a>
-  </nav>
-</header>
 
-<main>
-  
-  <h1>Thoughts on building AI things </h1>
-  <p class="muted"> Notes that sparked ideas, books that taught me new technologies, projects that turned theory into practice,
-  and research that added depth - all in one place, documenting how I learn, experiment, and apply ideas in real systems.
-  </p>
+  <header>
+    <nav>
+      <a href="index.html">Blog</a>
+      <a href="learn.html">Learn</a>
+      <a href="../life.html" class="active">Life</a>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 114.5 4.5A4.5 4.5 0 017.5 12zM2.25 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM12 18.75a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zM18.75 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5h-2.25a.75.75 0 010 1.5h-2.25a.75.75 0 01-.75-.75zM5.636 5.636a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06L5.637 6.697a.75.75 0 010-1.061zM15.713 15.713a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 010-1.06zM5.636 18.364a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06L6.697 18.363a.75.75 0 01-1.06 0zM15.713 8.288a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06l-1.59 1.591a.75.75 0 01-1.061 0z" />
+        </svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+          <path
+            d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" />
+        </svg>
+      </button>
+    </nav>
+  </header>
 
-  <p class="muted">Thoughts on AI, products, and building useful things.</p>
+  <main>
+
+    <h1>Thoughts on building AI things </h1>
+    <p class="muted"> Notes that sparked ideas, books that taught me new technologies, projects that turned theory into
+      practice,
+      and research that added depth - all in one place, documenting how I learn, experiment, and apply ideas in real
+      systems.
+    </p>
+
+    <p class="muted">Thoughts on AI, products, and building useful things.</p>
 
 
-<menu class="menu-highlight">
-    <a href="life.html" aria-current="page">Stories</a>
-    <a href="books.html">Books</a>
-    <a href="projects.html">Projects</a>
-    <a href="research.html">Research Papers</a>
-</menu>
+    <menu class="menu-highlight">
+      <a href="life.html" aria-current="page">Stories</a>
+      <a href="books.html">Books</a>
+      <a href="projects.html">Projects</a>
+      <a href="research.html">Research Papers</a>
+    </menu>
 
-  <div class="divider"></div>
+    <div class="divider"></div>
 
 
-  <div class="divider"></div>
+    <div class="divider"></div>
 
-  <footer class="menu-highlight">
+    <footer class="menu-highlight">
       <a href="../life.html"> 2025 </a>
       <a href="2024.html"> 2024 </a>
       <a href="2023.html"> 2023 </a>
       <a href="2022.html"> 2022 </a>
       <a href="2021.html"> 2021</a>
       <a href="2020.html" aria-current="page"> 2020</a>
-  </footer>
-    
-</main>
+    </footer>
+
+  </main>
+  <script src="../js/theme.js"></script>
 </body>
+
 </html>
