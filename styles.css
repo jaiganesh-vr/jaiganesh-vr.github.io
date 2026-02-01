@@ -1,3 +1,45 @@
+:root {
+  --bg-color: #000;
+  --text-primary: #eaeaea;
+  --text-secondary: #aaa;
+  --text-muted: #999;
+  --text-date: #777;
+  --link-hover: #fff;
+  --border-color: #333;
+  --divider-bg: #333;
+  --pill-bg: #111;
+  --pill-border: #333;
+  --pill-invert-bg: #eaeaea;
+  --pill-invert-text: #111;
+  
+  /* Shadows */
+  --shadow-glow-primary: rgba(255, 255, 255, 0.35);
+  --shadow-glow-secondary: rgba(255, 255, 255, 0.15);
+  
+  --highlight-color: #fff;
+}
+
+[data-theme="light"] {
+  --bg-color: #ffffff;
+  --text-primary: #000000;
+  --text-secondary: #444;
+  --text-muted: #666;
+  --text-date: #555;
+  --link-hover: #000;
+  --border-color: #eee;
+  --divider-bg: #eee;
+  --pill-bg: #f5f5f5;
+  --pill-border: #e0e0e0;
+  --pill-invert-bg: #111;
+  --pill-invert-text: #fff;
+
+  /* Shadows inverted for light mode */
+  --shadow-glow-primary: rgba(0, 0, 0, 0.25);
+  --shadow-glow-secondary: rgba(0, 0, 0, 0.1);
+  
+  --highlight-color: #000;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,11 +47,12 @@
 }
 
 body {
-  background: #000;
-  color: #eaeaea;
+  background: var(--bg-color);
+  color: var(--text-primary);
   font-family: Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   line-height: 1.7;
   font-size: 20px;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ===== Fixed Header ===== */
@@ -17,8 +60,9 @@ header {
   position: fixed;
   top: 0;
   width: 100%;
-  background: #000;
+  background: var(--bg-color);
   z-index: 100;
+  transition: background 0.3s ease;
 }
 
 nav {
@@ -27,10 +71,11 @@ nav {
   padding: 20px 20px;
   display: flex;
   gap: 32px;
+  align-items: center; /* Vertical align for toggle button */
 }
 
 nav a {
-  color: #aaa;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 15px;
   transition: color 0.2s ease, text-shadow 0.2s ease;
@@ -38,10 +83,34 @@ nav a {
 
 nav a:hover,
 nav a.active {
-  color: #fff;
+  color: var(--link-hover);
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.35),
-    0 0 12px rgba(255, 255, 255, 0.15);
+    0 0 6px var(--shadow-glow-primary),
+    0 0 12px var(--shadow-glow-secondary);
+}
+
+/* ===== Theme Toggle Button ===== */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: auto; /* Push to right */
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  color: var(--link-hover);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
 }
 
 /* ===== Main Layout ===== */
@@ -55,6 +124,7 @@ h1 {
   font-size: 24px;
   font-weight: 500;
   margin-bottom: 25px;
+  color: var(--text-primary);
 }
 
 h2 {
@@ -62,6 +132,7 @@ h2 {
   font-weight: 500;
   margin-bottom: 10px;
   margin-top: 32px;
+  color: var(--text-primary);
 }
 
 p {
@@ -75,7 +146,7 @@ menu {
 }
 
 .muted {
-  color: #999;
+  color: var(--text-muted);
   margin-top: 10px;
 }
 
@@ -83,29 +154,31 @@ menu {
   margin: 10px 0;
   margin-bottom: 20px;
   height: 1px;
-  background: #333;
+  background: var(--divider-bg);
   box-shadow:
-    0 0 6px rgba(255, 255, 255, 0.15),
-    0 0 12px rgba(255, 255, 255, 0.08);
+    0 0 6px var(--shadow-glow-secondary),
+    0 0 12px rgba(255, 255, 255, 0.08); /* Keep subtle light glow in dark mode, strictly speaking. Can optimize later */
 }
+
 /* ===== Highlight Pill ===== */
 .pill {
-  background: #111;
-  border: 1px solid #333;
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
   padding: 3px 8px;
   border-radius: 6px;
   font-size: 13px;
+  color: var(--text-primary);
 }
 
 .pill-invert {
-  background: #eaeaea;
-  color: #111;
-  border-color: #eaeaea;
+  background: var(--pill-invert-bg);
+  color: var(--pill-invert-text);
+  border-color: var(--pill-invert-bg); /* Match bg */
   font-size: 13px;
 }
 
 .highlight {
-  color: var(--text-primary);
+  color: var(--highlight-color);
   font-weight: 600;
 }
 
@@ -122,7 +195,7 @@ menu {
 }
 
 .date {
-  color: #777;
+  color: var(--text-date);
   min-width: 110px;
 }
 
@@ -133,16 +206,16 @@ menu {
 }
 
 .post a {
-  color: #eaeaea;
+  color: var(--text-primary);
   text-decoration: none;
   transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 .post a:hover {
-  color: #fff;
+  color: var(--link-hover);
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.25),
-    0 0 14px rgba(255, 255, 255, 0.12);
+    0 0 6px var(--shadow-glow-primary),
+    0 0 14px var(--shadow-glow-secondary);
 }
 
 .post-hero {
@@ -152,7 +225,6 @@ menu {
   width: 75%;
   border-radius: 12px;
   cursor: zoom-in;
-
 }
 
 .menu-highlight {
@@ -160,27 +232,27 @@ menu {
   display: flex;
   gap: 28px;
   font-size: 14px;
-  color: #888;
+  color: #888; /* keep hardcoded or make var if used often? Assuming var */
 }
 
 .menu-highlight a {
-  color: #aaa;
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 .menu-highlight a:hover {
-  color: #fff;
+  color: var(--link-hover);
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.25),
-    0 0 12px rgba(255, 255, 255, 0.12);
+    0 0 6px var(--shadow-glow-primary),
+    0 0 12px var(--shadow-glow-secondary);
 }
 
 .menu-highlight a[aria-current="page"] {
-  color: #fff;
+  color: var(--link-hover);
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.35),
-    0 0 14px rgba(255, 255, 255, 0.18);
+    0 0 6px var(--shadow-glow-primary),
+    0 0 14px var(--shadow-glow-secondary);
 }
 
 .site-footer {
@@ -192,26 +264,26 @@ menu {
 }
 
 .site-footer a {
-  color: #aaa;
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 .site-footer a:hover {
-  color: #fff;
+  color: var(--link-hover);
   text-shadow:
-    0 0 6px rgba(255, 255, 255, 0.25),
-    0 0 12px rgba(255, 255, 255, 0.12);
+    0 0 6px var(--shadow-glow-primary),
+    0 0 12px var(--shadow-glow-secondary);
 }
 
 .site-footer span {
-  color: #777;
+  color: var(--text-date);
 }
 
 
 .repo {
   font-size: 13.5px;
-  color: #bcbcbc;
+  color: #bcbcbc; /* Maybe var? */
 }
 
 .repo a {
@@ -233,7 +305,7 @@ menu {
 
 .text-highlight {
   position: relative;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .text-highlight::before {
@@ -250,7 +322,7 @@ menu {
 
 .text-underline {
   position: relative;
-  color: #fff;
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -275,7 +347,7 @@ menu {
 
 .text-strike {
   position: relative;
-  color: #aaa;
+  color: var(--text-secondary);
 }
 
 .text-strike::after {
@@ -285,13 +357,13 @@ menu {
   top: 50%;
   width: 100%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
+  background: var(--shadow-glow-primary);
+  box-shadow: 0 0 4px var(--shadow-glow-secondary);
 }
 
 .text-circle {
   position: relative;
-  color: #fff;
+  color: var(--text-primary);
   padding: 0 4px;
 }
 
