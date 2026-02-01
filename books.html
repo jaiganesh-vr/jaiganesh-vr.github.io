@@ -1,113 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    
-<header>
-  <nav>
-    <a href="index.html">Blog</a>
-    <a href="learn.html" class="active">Learn</a>
-  </nav>
-</header>
 
-<main>
-  <h1>Thoughts on building AI things </h1>
-  <p class="muted"> Notes that sparked ideas, books that taught me new technologies, projects that turned theory into practice,
-  and research that added depth - all in one place, documenting how I learn, experiment, and apply ideas in real systems.
-  </p>
+  <header>
+    <nav>
+      <a href="index.html">Blog</a>
+      <a href="learn.html" class="active">Learn</a>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 114.5 4.5A4.5 4.5 0 017.5 12zM2.25 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM12 18.75a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zM18.75 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5h-2.25a.75.75 0 01-.75-.75zM5.636 5.636a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06L5.637 6.697a.75.75 0 010-1.061zM15.713 15.713a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 010-1.06zM5.636 18.364a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06L6.697 18.363a.75.75 0 01-1.06 0zM15.713 8.288a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06l-1.59 1.591a.75.75 0 01-1.061 0z" />
+        </svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+          <path
+            d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" />
+        </svg>
+      </button>
+    </nav>
+  </header>
 
-<menu class="menu-highlight">
-  <a href="learn.html">Notes</a>
-  <a href="books.html" aria-current="page">Books</a>
-  <a href="projects.html">Projects</a>
-  <a href="research.html">Research</a>
-</menu>
+  <main>
+    <h1>Thoughts on building AI things </h1>
+    <p class="muted"> Notes that sparked ideas, books that taught me new technologies, projects that turned theory into
+      practice,
+      and research that added depth - all in one place, documenting how I learn, experiment, and apply ideas in real
+      systems.
+    </p>
 
-  <div class="divider"></div>
+    <menu class="menu-highlight">
+      <a href="learn.html">Notes</a>
+      <a href="books.html" aria-current="page">Books</a>
+      <a href="projects.html">Projects</a>
+      <a href="research.html">Research</a>
+    </menu>
 
-  <p>“A picture may be worth a thousand words, but only words can describe darkness” underscoring why reading is indispensable</p>
+    <div class="divider"></div>
 
-  <div class="divider"></div>
+    <p>“A picture may be worth a thousand words, but only words can describe darkness” underscoring why reading is
+      indispensable</p>
 
-  <h2>Agentic AI: Theories & Practices</h2>
-  <p class="muted">by Matthew R. Versaggi and Yang Wang</p>
+    <div class="divider"></div>
 
-  <p class="muted"> AI is moving beyond scale toward systems that act. This book explores the rise of AI agents and multi-agent systems, 
-  their architectures, coordination mechanisms, and the safety challenges that emerge as autonomy increases.
-  </p>
+    <h2>Agentic AI: Theories & Practices</h2>
+    <p class="muted">by Matthew R. Versaggi and Yang Wang</p>
 
-  <p class="repo">
-    <a href="books/20260127_agenticai.html">
-      Read more
-    </a>
-  </p>
+    <p class="muted"> AI is moving beyond scale toward systems that act. This book explores the rise of AI agents and
+      multi-agent systems,
+      their architectures, coordination mechanisms, and the safety challenges that emerge as autonomy increases.
+    </p>
 
-  <h2>Data Science</h2>
-  <p class="muted">by Johan D. Kelleher and Bredan Tierney</p>
+    <p class="repo">
+      <a href="books/20260127_agenticai.html">
+        Read more
+      </a>
+    </p>
 
-  <p class="muted"> Powered by Retrieval-Augmented Generation (RAG) technology, Curibot delivers personalized, 
-  real-time responses by seamlessly accessing relevant information and leveraging advanced language models (LLMs).
-  </p>
+    <h2>Data Science</h2>
+    <p class="muted">by Johan D. Kelleher and Bredan Tierney</p>
 
-  <p class="repo">
-    <a href="https://github.com/jaiganesh-vr" target="_blank">
-      Read more
-    </a>
-  </p>
+    <p class="muted"> Powered by Retrieval-Augmented Generation (RAG) technology, Curibot delivers personalized,
+      real-time responses by seamlessly accessing relevant information and leveraging advanced language models (LLMs).
+    </p>
 
-  <h2>Machine Learning: A probabilistic Perspective</h2>
-  <p class="muted">by Kevin P. Murphy</p>
+    <p class="repo">
+      <a href="https://github.com/jaiganesh-vr" target="_blank">
+        Read more
+      </a>
+    </p>
 
-  <p class="muted"> Conducted an in-depth performance analysis of classifier and regressor models across diverse 
-    datasets through meticulous hyperparameter fine-tuning and a range of evaluation methods, to improve the 
-    overall model accuracy
-  </p>
+    <h2>Machine Learning: A probabilistic Perspective</h2>
+    <p class="muted">by Kevin P. Murphy</p>
 
-  <p class="repo">
-    <a href="https://github.com/jaiganesh-vr" target="_blank">
-      Read more
-    </a>
-  </p>
+    <p class="muted"> Conducted an in-depth performance analysis of classifier and regressor models across diverse
+      datasets through meticulous hyperparameter fine-tuning and a range of evaluation methods, to improve the
+      overall model accuracy
+    </p>
 
-  <h2>Introduction to Machine Learning with Python</h2>
-  <p class="muted">by Andreas C. Müller & Sarah Guido</p>
+    <p class="repo">
+      <a href="https://github.com/jaiganesh-vr" target="_blank">
+        Read more
+      </a>
+    </p>
 
-  <p class="muted"> Powered by Retrieval-Augmented Generation (RAG) technology, Curibot delivers personalized, 
-  real-time responses by seamlessly accessing relevant information and leveraging advanced language models (LLMs).
-  </p>
+    <h2>Introduction to Machine Learning with Python</h2>
+    <p class="muted">by Andreas C. Müller & Sarah Guido</p>
 
-  <p class="repo">
-    <a href="https://github.com/jaiganesh-vr" target="_blank">
-      Read more
-    </a>
-  </p>
+    <p class="muted"> Powered by Retrieval-Augmented Generation (RAG) technology, Curibot delivers personalized,
+      real-time responses by seamlessly accessing relevant information and leveraging advanced language models (LLMs).
+    </p>
 
-  <h2>Genius makers</h2>
-  <p class="muted">by Cade Metz </p>
+    <p class="repo">
+      <a href="https://github.com/jaiganesh-vr" target="_blank">
+        Read more
+      </a>
+    </p>
 
-  <p class="muted"> Powered by Retrieval-Augmented Generation (RAG) technology, Curibot delivers personalized, 
-  real-time responses by seamlessly accessing relevant information and leveraging advanced language models (LLMs).
-  </p>
+    <h2>Genius makers</h2>
+    <p class="muted">by Cade Metz </p>
 
-  <p class="repo">
-    <a href="https://github.com/jaiganesh-vr" target="_blank">
-      Read more
-    </a>
-  </p>
+    <p class="muted"> Powered by Retrieval-Augmented Generation (RAG) technology, Curibot delivers personalized,
+      real-time responses by seamlessly accessing relevant information and leveraging advanced language models (LLMs).
+    </p>
 
-  <div class="divider"></div>
+    <p class="repo">
+      <a href="https://github.com/jaiganesh-vr" target="_blank">
+        Read more
+      </a>
+    </p>
 
-  <footer class="site-footer">
+    <div class="divider"></div>
+
+    <footer class="site-footer">
       <a href="https://github.com/jaiganesh-vr" target="_blank">↗ Github</a>
       <a href="https://www.upwork.com/" target="_blank">↗ Upwork</a>
       <a href="https://www.linkedin.com/in/jaiganesh-vr/" target="_blank">↗ LinkedIn</a>
-  </footer>
-    
-</main>
+    </footer>
+
+  </main>
+  <script src="js/theme.js"></script>
 </body>
+
 </html>
