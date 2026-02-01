@@ -1,146 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Embeddings models</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
 
-<header>
-  <nav>
-    <a href="../index.html">Blog</a>
-    <a href="../learn.html">Learn</a>
-  </nav>
-</header>
+  <header>
+    <nav>
+      <a href="../index.html">Blog</a>
+      <a href="../learn.html">Learn</a>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 114.5 4.5A4.5 4.5 0 017.5 12zM2.25 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM12 18.75a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zM18.75 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5h-2.25a.75.75 0 010 1.5h-2.25a.75.75 0 01-.75-.75zM5.636 5.636a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06L5.637 6.697a.75.75 0 010-1.061zM15.713 15.713a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 010-1.06zM5.636 18.364a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06L6.697 18.363a.75.75 0 01-1.06 0zM15.713 8.288a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06l-1.59 1.591a.75.75 0 01-1.061 0z" />
+        </svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+          <path
+            d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" />
+        </svg>
+      </button>
+    </nav>
+  </header>
 
-<main>
+  <main>
 
-  <h1>Embeddings models</h1>
+    <h1>Embeddings models</h1>
 
-  <p class="muted">
-    <span class="pill">AI</span>
-    <span class="pill">Representation Learning</span>
-  </p>
-  <p class="muted">
-    Jul 27, 2025
-  </p>
+    <p class="muted">
+      <span class="pill">AI</span>
+      <span class="pill">Representation Learning</span>
+    </p>
+    <p class="muted">
+      Jul 27, 2025
+    </p>
 
-  <p>
-    Modern language models don’t understand words the way humans do.
-    They don’t see letters, definitions, or grammar rules.
-    What they see instead are numbers — vectors that encode meaning.
-  </p>
+    <p>
+      Modern language models don’t understand words the way humans do.
+      They don’t see letters, definitions, or grammar rules.
+      What they see instead are numbers — vectors that encode meaning.
+    </p>
 
-  <p>
-    Embeddings are the mechanism that makes this possible.
-    They transform language into a mathematical space where similarity,
-    relevance, and context can be measured.
-  </p>
+    <p>
+      Embeddings are the mechanism that makes this possible.
+      They transform language into a mathematical space where similarity,
+      relevance, and context can be measured.
+    </p>
 
-  <h2>Why This Matters</h2>
+    <h2>Why This Matters</h2>
 
-  <p>
-    Before a model can reason about language, it must first convert text
-    into something it can operate on. Tokenization breaks text into pieces,
-    but embeddings give those pieces meaning.
-  </p>
+    <p>
+      Before a model can reason about language, it must first convert text
+      into something it can operate on. Tokenization breaks text into pieces,
+      but embeddings give those pieces meaning.
+    </p>
 
-  <p class="muted">
-    Without embeddings, words are just symbols.
-    With embeddings, they become geometry.
-  </p>
+    <p class="muted">
+      Without embeddings, words are just symbols.
+      With embeddings, they become geometry.
+    </p>
 
-  <h2>Encoding Meaning as Vectors</h2>
+    <h2>Encoding Meaning as Vectors</h2>
 
-  <p>
-    Each word or phrase is represented as a vector — a list of numbers —
-    that captures its semantic features. Words that share meaning end up
-    close together in this space.
-  </p>
+    <p>
+      Each word or phrase is represented as a vector — a list of numbers —
+      that captures its semantic features. Words that share meaning end up
+      close together in this space.
+    </p>
 
-  <p>
-    A word like <em>notebook</em> may encode ideas related to writing or pages,
-    while <em>lecture</em> may encode concepts like discussion or notes.
-    Because these ideas overlap, their vectors sit near each other.
-  </p>
+    <p>
+      A word like <em>notebook</em> may encode ideas related to writing or pages,
+      while <em>lecture</em> may encode concepts like discussion or notes.
+      Because these ideas overlap, their vectors sit near each other.
+    </p>
 
-  <p>
-    In contrast, words with little semantic overlap occupy distant regions.
-    This distance is not symbolic — it is measurable using simple math.
-  </p>
+    <p>
+      In contrast, words with little semantic overlap occupy distant regions.
+      This distance is not symbolic — it is measurable using simple math.
+    </p>
 
-  <h2>Similarity Through Geometry</h2>
+    <h2>Similarity Through Geometry</h2>
 
-  <p>
-    Once language is embedded, comparing meaning becomes a matter of
-    computing distance or angle between vectors. Operations like cosine
-    similarity allow systems to determine how closely related two pieces
-    of text are.
-  </p>
+    <p>
+      Once language is embedded, comparing meaning becomes a matter of
+      computing distance or angle between vectors. Operations like cosine
+      similarity allow systems to determine how closely related two pieces
+      of text are.
+    </p>
 
-  <p>
-    This same mechanism powers semantic search, question answering,
-    recommendations, and retrieval systems. Queries are no longer matched
-    by keywords, but by intent.
-  </p>
+    <p>
+      This same mechanism powers semantic search, question answering,
+      recommendations, and retrieval systems. Queries are no longer matched
+      by keywords, but by intent.
+    </p>
 
-  <h2>A High-Dimensional Map of Language</h2>
+    <h2>A High-Dimensional Map of Language</h2>
 
-  <p>
-    Embedding spaces are high-dimensional, meaning each word exists in a
-    space with hundreds or thousands of axes. In this space, related words
-    cluster naturally.
-  </p>
+    <p>
+      Embedding spaces are high-dimensional, meaning each word exists in a
+      space with hundreds or thousands of axes. In this space, related words
+      cluster naturally.
+    </p>
 
-  <p>
-    Terms like <em>dog</em>, <em>puppy</em>, and <em>canine</em> appear near one another,
-    while unrelated concepts remain far apart. Meaning emerges from
-    relative position, not explicit rules.
-  </p>
+    <p>
+      Terms like <em>dog</em>, <em>puppy</em>, and <em>canine</em> appear near one another,
+      while unrelated concepts remain far apart. Meaning emerges from
+      relative position, not explicit rules.
+    </p>
 
-  <h2>Common Embedding Frameworks</h2>
+    <h2>Common Embedding Frameworks</h2>
 
-  <ul class="post-list">
-    <li>
-      <strong>Word2Vec</strong> — Learns embeddings by predicting surrounding words.
-      Includes CBOW and Skip-gram architectures.
-    </li>
-    <li>
-      <strong>GloVe</strong> — Builds embeddings by factorizing global word
-      co-occurrence statistics.
-    </li>
-    <li>
-      <strong>FastText</strong> — Represents words as character n-grams,
-      improving performance on rare or unseen terms.
-    </li>
-    <li>
-      <strong>BERT</strong> — Generates contextual embeddings using
-      bidirectional transformers.
-    </li>
-    <li>
-      <strong>GPT Embeddings</strong> — Produce dense representations of
-      words or sentences optimized for downstream tasks.
-    </li>
-  </ul>
+    <ul class="post-list">
+      <li>
+        <strong>Word2Vec</strong> — Learns embeddings by predicting surrounding words.
+        Includes CBOW and Skip-gram architectures.
+      </li>
+      <li>
+        <strong>GloVe</strong> — Builds embeddings by factorizing global word
+        co-occurrence statistics.
+      </li>
+      <li>
+        <strong>FastText</strong> — Represents words as character n-grams,
+        improving performance on rare or unseen terms.
+      </li>
+      <li>
+        <strong>BERT</strong> — Generates contextual embeddings using
+        bidirectional transformers.
+      </li>
+      <li>
+        <strong>GPT Embeddings</strong> — Produce dense representations of
+        words or sentences optimized for downstream tasks.
+      </li>
+    </ul>
 
-  <h2>Closing Thought</h2>
+    <h2>Closing Thought</h2>
 
-  <p>
-    Embeddings don’t store facts or definitions.
-    They store relationships.
-    That shift — from symbols to geometry —
-    is what enables modern language models to reason about meaning.
-  </p>
-  
-  <div class="divider"></div>
+    <p>
+      Embeddings don’t store facts or definitions.
+      They store relationships.
+      That shift — from symbols to geometry —
+      is what enables modern language models to reason about meaning.
+    </p>
 
-  <p class="muted">
-    Notes like these help bridge theory and implementation — understanding
-    representation before building systems on top of it.
-  </p>
+    <div class="divider"></div>
 
-</main>
+    <p class="muted">
+      Notes like these help bridge theory and implementation — understanding
+      representation before building systems on top of it.
+    </p>
+
+  </main>
+  <script src="../js/theme.js"></script>
 </body>
+
 </html>
