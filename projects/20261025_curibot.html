@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curibot: Conversational AI Agent</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <a href="../index.html">Blog</a>
+      <a href="../learn.html">Learn</a>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 114.5 4.5A4.5 4.5 0 017.5 12zM2.25 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM12 18.75a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zM18.75 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5h-2.25a.75.75 0 010 1.5h-2.25a.75.75 0 01-.75-.75zM5.636 5.636a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06L5.637 6.697a.75.75 0 010-1.061zM15.713 15.713a.75.75 0 011.06 0l1.591 1.591a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 010-1.06zM5.636 18.364a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06L6.697 18.363a.75.75 0 01-1.06 0zM15.713 8.288a.75.75 0 010-1.06l1.591-1.591a.75.75 0 011.06 1.06l-1.59 1.591a.75.75 0 01-1.061 0z" />
+        </svg>
+        <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+          <path
+            d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" />
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <h1>Curibot: A Stateful Conversational AI Agent</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">LangGraph</span>
+      <span class="pill">Full Stack</span>
+    </p>
+    <p class="muted">
+      Oct 25, 2026
+    </p>
+
+    <p>
+      Curibot is a chat agent that remembers your conversations and the facts you
+      share about yourself, searches the web when a question needs live information,
+      and streams its answers token by token with cited sources.
+    </p>
+
+    <p>
+      The goal of this project was to go beyond a simple prompt-and-reply chatbot and
+      build an agent the way it would be built for production: a model that decides
+      for itself when to use tools, state that survives across sessions, streaming
+      that feels smooth, and logs that help debugging without exposing what users say.
+    </p>
+
+    <p class="muted">
+      It is built with FastAPI, LangGraph, and React, and backed by PostgreSQL.
+    </p>
+
+    <h2>Highlights</h2>
+
+    <ul class="post-list">
+      <li>
+        <strong>Agent loop with LangGraph</strong> — The model decides when to call a
+        tool. Tool results flow back into the graph, with a round limit that forces an
+        answer even from models that ignore <em>tool_choice</em>.
+      </li>
+      <li>
+        <strong>Live web search with Tavily</strong> — Time-sensitive questions are
+        answered from current results with source links. Search output is treated as
+        untrusted content to guard against prompt injection.
+      </li>
+      <li>
+        <strong>Long-term memory</strong> — Curibot saves lasting facts and preferences
+        (name, role, how you like answers) and uses them in every conversation. You can
+        review and forget them in a Memory panel.
+      </li>
+      <li>
+        <strong>Smooth streaming</strong> — Replies arrive over Server-Sent Events and
+        are revealed at a steady, adaptive pace as Markdown. A status line shows
+        "Searching the web…" or "Remembering…" while tools run.
+      </li>
+      <li>
+        <strong>Stateful by design</strong> — Messages persist in PostgreSQL and graph
+        state in a LangGraph checkpointer. Long histories are trimmed to a token budget,
+        while the full transcript is always kept.
+      </li>
+      <li>
+        <strong>Observable and privacy-safe</strong> — Structured JSON logs with request
+        IDs and a per-turn summary of tools, latency, and tokens, with no message content.
+      </li>
+      <li>
+        <strong>Accessible UI</strong> — Dark mode, a mobile drawer, keyboard focus
+        management, native dialog modals, and WCAG AA contrast.
+      </li>
+    </ul>
+
+    <h2>Architecture</h2>
+
+    <p>
+      The system has three parts. A React 19 frontend talks to a FastAPI backend
+      using JWT-authenticated JSON requests and receives replies as a Server-Sent
+      Events stream. Inside the backend, a LangGraph agent alternates between two
+      nodes: <em>call_model</em>, which sends the prompt to a Groq-hosted LLM
+      (<em>gpt-oss-120b</em>), and <em>tools</em>, which runs web search and memory
+      operations. PostgreSQL 17 stores users, conversations, messages, and memories,
+      alongside the LangGraph checkpoints.
+    </p>
+
+    <p>
+      One chat turn works like this: <br>
+      <br>
+      1. The browser posts the message and opens a Server-Sent Events stream. <br>
+      2. The backend locks the conversation, loads its history, and reuses the
+      LangGraph checkpoint when it matches the saved transcript. <br>
+      3. <em>call_model</em> receives a fresh system prompt (identity, today's date,
+      tool guidance, the user's memories) plus history trimmed to a token budget. <br>
+      4. The model answers or calls tools (<em>web_search</em>, <em>save_memory</em>,
+      <em>delete_memory</em>). Results go back to the model, up to a round limit. <br>
+      5. Tokens stream to the browser as <em>token</em> events and tool use as
+      <em>tool</em> events. The final answer is saved and sent as <em>done</em>. <br>
+    </p>
+
+    <h2>Tech Stack</h2>
+
+    <p> • <strong>Frontend</strong> — React 19, TypeScript, Vite, plain CSS with light/dark design tokens, react-markdown </p>
+    <p> • <strong>Backend</strong> — Python 3.13, FastAPI, SQLAlchemy 2, Alembic, Pydantic settings </p>
+    <p> • <strong>AI</strong> — LangGraph, LangChain, Groq (gpt-oss-120b), Tavily search </p>
+    <p> • <strong>Data</strong> — PostgreSQL 17 with the LangGraph Postgres checkpointer </p>
+    <p> • <strong>Auth</strong> — JWT bearer tokens, Argon2 password hashing </p>
+    <p> • <strong>Observability</strong> — Structured JSON logging, request IDs, LangSmith (optional) </p>
+    <p> • <strong>Tooling</strong> — uv, Ruff, mypy (strict), pytest, ESLint, Vitest, Docker Compose </p>
+
+    <h2>Getting Started</h2>
+
+    <p>
+      You need Docker with Docker Compose, a Groq API key, and optionally a Tavily key
+      for web search. Clone the repository, copy <em>.env.example</em> to <em>.env</em>,
+      and set <em>POSTGRES_PASSWORD</em>, a random <em>JWT_SECRET_KEY</em> (32 or more
+      characters), and <em>GROQ_API_KEY</em>. Then start everything:
+    </p>
+
+    <p>docker compose up --build</p>
+
+    <p>
+      The app runs at <em>localhost:5173</em> and the API at <em>localhost:8000</em>,
+      with interactive docs at <em>/docs</em>. Database migrations run automatically
+      when the backend starts, so you can register an account and start chatting.
+    </p>
+
+    <h2>Design Decisions</h2>
+
+    <ul class="post-list">
+      <li>
+        <strong>The system prompt is never stored</strong> — It is added to the model
+        input on every turn, never written to the checkpoint or database, so editing it
+        applies to every conversation, including old ones.
+      </li>
+      <li>
+        <strong>Trim what the model sees, never what is saved</strong> — History is cut
+        to a token budget at a user-turn boundary, without separating a tool call from
+        its result. The database and the UI keep everything.
+      </li>
+      <li>
+        <strong>A small Tavily tool instead of an SDK</strong> — About 60 lines of httpx
+        with no extra dependencies. Outages return a message to the model, so the turn
+        still completes.
+      </li>
+      <li>
+        <strong>Force answers without tools</strong> — At the round limit the model is
+        called with no tools bound, and this turn's results move into the prompt. Some
+        models still emit a tool call under <em>tool_choice="none"</em>, which the
+        provider then rejects.
+      </li>
+      <li>
+        <strong>Memory writes share the turn's transaction</strong> — If a turn fails,
+        nothing it saved persists. Database access from parallel tool threads is
+        serialized with a lock.
+      </li>
+      <li>
+        <strong>Logs carry identifiers, not content</strong> — Request, user, and
+        conversation IDs, timings, and token counts only. HTTP and LLM client loggers
+        are pinned to WARNING, so debug logging cannot leak request bodies.
+      </li>
+    </ul>
+
+    <h2>Testing</h2>
+
+    <p>
+      The project has 171 backend tests and 86 frontend tests, all of which run without
+      network access. Language models, the search API, and HTTP are replaced with
+      scripted fakes. Separate PostgreSQL integration tests cover row locking and
+      checkpoint recovery.
+    </p>
+
+    <p class="muted">
+      Coverage includes the agent loop and round limit, streaming events, checkpoint
+      consistency, memory isolation between users, the SSE parser, accessibility
+      behaviour, and a test that logs never contain message content.
+    </p>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      Building Curibot showed that most of the work in an AI agent lies outside the
+      model call: managing state, deciding what the model should see, handling tools
+      that fail or misbehave, and making the whole system observable without
+      compromising privacy.
+    </p>
+
+    <p class="repo">
+      Click the link for:
+      <a href="https://github.com/jaiganesh-vr/stateful-conversation-agent" target="_blank">
+        Curibot
+      </a>
+      code repository
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you’ll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/theme.js"></script>
+</body>
+
+</html>
