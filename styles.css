@@ -432,3 +432,65 @@ menu {
 .posts-toggle:hover {
   color: var(--link-hover);
 }
+
+/* ===== Previous / Next Post Links (js/post.js) ===== */
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 32px 0 24px;
+  font-size: 14px;
+}
+
+.post-nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.post-nav a:hover {
+  color: var(--link-hover);
+}
+
+.post-nav .next {
+  margin-left: auto;
+  text-align: right;
+}
+
+/* ===== Phones ===== */
+@media (max-width: 560px) {
+  nav {
+    gap: 24px;
+  }
+
+  /* Stack the date above the title so titles get the full width */
+  .post {
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 16px;
+  }
+
+  .date {
+    min-width: 0;
+    font-size: 12px;
+  }
+
+  .menu-highlight {
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+
+  .post-hero {
+    width: 100%;
+  }
+
+  .post-nav {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .post-nav .next {
+    margin-left: 0;
+    text-align: left;
+  }
+}
