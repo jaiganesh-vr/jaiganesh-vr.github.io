@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BM25 and Hybrid Search</title>
+  <meta name="description" content="Embedding search is not the whole story. How the classic BM25 algorithm works, where it beats vectors, and how hybrid search combines both." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="BM25 and Hybrid Search" />
+  <meta property="og:description" content="Embedding search is not the whole story. How the classic BM25 algorithm works, where it beats vectors, and how hybrid search combines both." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260609_bm25_hybrid_search.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>BM25 and Hybrid Search</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Retrieval</span>
+    </p>
+
+    <p class="muted">
+      Jun 09, 2026
+    </p>
+
+    <p>
+      Embedding search made retrieval feel new, but a decades-old keyword
+      algorithm still outperforms it on a surprising share of queries. Most
+      strong retrieval systems today use both.
+    </p>
+
+    <h2>How BM25 Scores Documents</h2>
+
+    <p>
+      BM25 ranks documents by how well their words match the query's words.
+      For each query term, it combines three ideas:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Term frequency:</strong> a document that mentions the term more is more relevant, but with diminishing returns. The tenth mention adds much less than the second.</li>
+      <li><strong>Inverse document frequency:</strong> rare terms matter more than common ones. Matching "kubernetes" says more than matching "system".</li>
+      <li><strong>Length normalisation:</strong> long documents naturally contain more words, so their scores are adjusted down.</li>
+    </ul>
+
+    <p>
+      Two parameters control this: k₁, usually between 1.2 and 2, sets how
+      quickly term frequency saturates; b, usually 0.75, sets how strongly
+      length is normalised.
+    </p>
+
+    <h2>Where Keywords Win</h2>
+
+    <p>
+      Embeddings capture meaning, which is their strength and their weakness.
+      They can blur exactly the details that matter for some queries:
+    </p>
+
+    <ul class="post-list">
+      <li>Product codes, error messages and IDs like ERR_4031.</li>
+      <li>Names of people, libraries and functions.</li>
+      <li>Rare technical terms the embedding model saw little of.</li>
+    </ul>
+
+    <p>
+      BM25 matches these exactly. Embeddings match paraphrases and concepts,
+      like a query about "cancelling a subscription" finding a document titled
+      "ending your membership".
+    </p>
+
+    <p class="muted">
+      Keywords find what you said. Embeddings find what you meant.
+    </p>
+
+    <h2>Hybrid Search</h2>
+
+    <p>
+      Hybrid search runs both retrievers and merges their results. The
+      simplest robust method is reciprocal rank fusion:
+    </p>
+
+    <p class="muted">
+      score(d) = Σ 1 / (k + rankᵢ(d))
+    </p>
+
+    <p>
+      Each retriever contributes based on the rank it gave the document, with
+      k typically 60. Using ranks rather than raw scores avoids the problem
+      that BM25 scores and cosine similarities are on incomparable scales.
+    </p>
+
+    <h2>Adding a Reranker</h2>
+
+    <p>
+      Hybrid retrieval gathers a strong candidate set. A cross-encoder
+      reranker can then read each query-document pair together and reorder the
+      top results more precisely. Retrieve broadly, then rank carefully.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Retrieval quality usually limits a RAG system more than the language
+      model does. Pairing an old, reliable algorithm with modern embeddings is
+      one of the cheapest improvements available.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

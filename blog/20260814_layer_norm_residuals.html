@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layer Normalization and Residual Connections</title>
+  <meta name="description" content="The two unglamorous components that make deep transformers trainable: residual connections and normalization, explained with the math." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Layer Normalization and Residual Connections" />
+  <meta property="og:description" content="The two unglamorous components that make deep transformers trainable: residual connections and normalization, explained with the math." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260814_layer_norm_residuals.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Layer Normalization and Residual Connections</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Transformers</span>
+    </p>
+
+    <p class="muted">
+      Aug 14, 2026
+    </p>
+
+    <p>
+      Attention gets the credit, but a transformer with only attention and
+      feed-forward layers would barely train once it got deep. Two simple
+      components make depth work: residual connections and layer
+      normalization.
+    </p>
+
+    <h2>Residual Connections</h2>
+
+    <p>
+      Instead of passing a vector through a layer and using only the output, a
+      residual connection adds the layer's output back to its input:
+    </p>
+
+    <p class="muted">
+      x ← x + Layer(x)
+    </p>
+
+    <p>
+      This changes what each layer has to learn. It no longer has to reproduce
+      the whole representation, only a correction to it.
+    </p>
+
+    <p>
+      It also fixes gradient flow. During backpropagation, the gradient has a
+      direct path through the addition, skipping the layer entirely. Even in a
+      model with a hundred layers, early layers receive a usable signal.
+    </p>
+
+    <p class="muted">
+      Think of the residual stream as a shared workspace that every layer
+      reads from and writes to.
+    </p>
+
+    <h2>Layer Normalization</h2>
+
+    <p>
+      As vectors pass through many layers, their scale can drift: some
+      dimensions grow large, others shrink, and training becomes unstable.
+      Layer normalization rescales each token's vector independently:
+    </p>
+
+    <ul class="post-list">
+      <li>Compute the mean and variance across the vector's dimensions.</li>
+      <li>Subtract the mean and divide by the standard deviation.</li>
+      <li>Multiply by a learned scale and add a learned shift.</li>
+    </ul>
+
+    <p>
+      After normalization, every token vector entering a layer has a
+      predictable scale, which keeps activations and gradients well-behaved.
+    </p>
+
+    <h2>RMSNorm</h2>
+
+    <p>
+      Many modern models use RMSNorm, a simpler variant that skips mean
+      subtraction and divides by the root mean square of the vector. It
+      performs about as well, with less computation.
+    </p>
+
+    <h2>Pre-Norm vs Post-Norm</h2>
+
+    <p>
+      The original transformer normalized after the residual addition. Most
+      modern models normalize before each sub-layer instead:
+    </p>
+
+    <p class="muted">
+      x ← x + Layer(Norm(x))
+    </p>
+
+    <p>
+      This pre-norm arrangement leaves the residual stream itself untouched,
+      which makes very deep models far more stable to train and reduces the
+      need for careful learning rate warm-up.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Residuals and normalization rarely appear in diagrams with the same
+      prominence as attention, but they are what allow a stack of layers to
+      behave like one deep, trainable model.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

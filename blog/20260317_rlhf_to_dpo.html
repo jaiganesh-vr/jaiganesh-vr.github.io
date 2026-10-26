@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From RLHF to DPO: Teaching Models Preferences</title>
+  <meta name="description" content="Pre-training teaches a model to predict text, not to be helpful. How preference tuning closes that gap, from RLHF to Direct Preference Optimization." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="From RLHF to DPO: Teaching Models Preferences" />
+  <meta property="og:description" content="Pre-training teaches a model to predict text, not to be helpful. How preference tuning closes that gap, from RLHF to Direct Preference Optimization." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260317_rlhf_to_dpo.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>From RLHF to DPO: Teaching Models Preferences</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Alignment</span>
+    </p>
+
+    <p class="muted">
+      Mar 17, 2026
+    </p>
+
+    <p>
+      A pre-trained language model is an excellent autocomplete engine. Ask it
+      a question and it may answer, or it may continue with three more
+      questions, because that is also plausible text. Turning it into a useful
+      assistant requires teaching it which outputs people actually prefer.
+    </p>
+
+    <h2>Supervised Fine-Tuning First</h2>
+
+    <p>
+      The first step is usually supervised fine-tuning on examples of good
+      behavior: prompts paired with high-quality responses. This teaches the
+      format of being an assistant.
+    </p>
+
+    <p>
+      But demonstrations only show one good answer per prompt. They do not
+      teach the model to distinguish a good answer from a slightly worse one,
+      and that is where preference data comes in.
+    </p>
+
+    <h2>RLHF</h2>
+
+    <p>
+      Reinforcement learning from human feedback works in three stages:
+    </p>
+
+    <ul class="post-list">
+      <li>Collect comparisons: for each prompt, people choose the better of two model responses.</li>
+      <li>Train a reward model to predict which response people prefer.</li>
+      <li>Optimise the language model with reinforcement learning, typically PPO, to maximise that reward.</li>
+    </ul>
+
+    <p>
+      A penalty on the KL divergence from the original model keeps it from
+      drifting too far and exploiting quirks in the reward model.
+    </p>
+
+    <p class="muted">
+      Reward models are proxies. Optimise any proxy hard enough and it stops
+      measuring what you meant.
+    </p>
+
+    <p>
+      RLHF works, but it is complex: several models in memory at once,
+      sensitive hyperparameters and unstable training runs.
+    </p>
+
+    <h2>Direct Preference Optimization</h2>
+
+    <p>
+      DPO observed that the reward model and RL stage can be folded into a
+      single supervised loss. Given a preferred response and a rejected one,
+      DPO directly increases the likelihood of the preferred response relative
+      to the rejected one, measured against a frozen reference model.
+    </p>
+
+    <ul class="post-list">
+      <li>No separate reward model to train.</li>
+      <li>No sampling during training.</li>
+      <li>Behavior similar to KL-regularised RLHF, with much simpler code.</li>
+    </ul>
+
+    <p>
+      That simplicity made preference tuning accessible well beyond large
+      labs, and many variants have followed.
+    </p>
+
+    <h2>Feedback From Models</h2>
+
+    <p>
+      Human comparisons are expensive, so many pipelines use models to judge
+      responses against written principles, with humans auditing samples. And
+      for tasks with checkable answers, like maths or code, rewards can come
+      from verification rather than preference at all.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Preference tuning is where a model's raw capability gets shaped into
+      behavior. Much of what people experience as a model's personality and
+      helpfulness is decided at this stage, not in pre-training.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speculative Decoding</title>
+  <meta name="description" content="Using a small draft model to make a large model generate faster, without changing its output distribution at all." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Speculative Decoding" />
+  <meta property="og:description" content="Using a small draft model to make a large model generate faster, without changing its output distribution at all." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260516_speculative_decoding.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Speculative Decoding</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Inference Systems</span>
+    </p>
+
+    <p class="muted">
+      May 16, 2026
+    </p>
+
+    <p>
+      Generating text with a large model is slow mostly because each token
+      needs a full forward pass, and those passes happen one after another.
+      Speculative decoding breaks part of that sequence by letting a cheap
+      model guess ahead and the expensive model check the guesses in bulk.
+    </p>
+
+    <h2>The Observation</h2>
+
+    <p>
+      During decoding, a large model is usually limited by memory bandwidth,
+      not arithmetic. Loading the weights for one token costs almost the same
+      as loading them to process several tokens at once. Verifying five
+      proposed tokens in parallel takes about as long as generating one.
+    </p>
+
+    <p>
+      Many tokens are also easy to predict. After "the United", a small model
+      guesses "States" just as well as a large one.
+    </p>
+
+    <h2>The Algorithm</h2>
+
+    <ul class="post-list">
+      <li>A small, fast draft model generates the next k tokens, for example four.</li>
+      <li>The large target model processes all k proposed tokens in one forward pass, getting its own probabilities at each position.</li>
+      <li>Proposed tokens are accepted left to right as long as they pass a check against the target's probabilities.</li>
+      <li>At the first rejection, a replacement token is sampled from an adjusted distribution, and the rest of the draft is discarded.</li>
+    </ul>
+
+    <p>
+      Even when every proposal is rejected, the target's single pass still
+      yields one new token, so progress is never slower than ordinary decoding
+      apart from the draft overhead.
+    </p>
+
+    <h2>Why the Output Is Unchanged</h2>
+
+    <p>
+      The acceptance rule is a form of rejection sampling. Each draft token is
+      accepted with probability min(1, p_target / p_draft), and rejections
+      resample from the leftover probability mass. The result is provably
+      distributed exactly as if the target model had generated every token
+      itself.
+    </p>
+
+    <p class="muted">
+      Speculative decoding is a speed-up, not an approximation.
+    </p>
+
+    <h2>What Determines the Speed-up</h2>
+
+    <p>
+      The gain depends on the acceptance rate, which depends on how well the
+      draft model agrees with the target. Code and structured text, which are
+      highly predictable, often see larger speed-ups than creative writing.
+      Two to three times faster decoding is commonly reported.
+    </p>
+
+    <h2>Variants</h2>
+
+    <p>
+      Some approaches skip the separate draft model: extra prediction heads on
+      the target model propose several future tokens, or drafts come from
+      matching n-grams already present in the prompt, which works well when
+      output copies from input, as in code editing.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Speculative decoding is a good reminder that inference speed is a
+      systems problem. The model stays the same; only the way we schedule its
+      work changes.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

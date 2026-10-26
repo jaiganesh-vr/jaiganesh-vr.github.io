@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retries, Backoff and Rate Limits for LLM APIs</title>
+  <meta name="description" content="Model APIs fail, slow down and rate-limit. The retry algorithms that keep applications reliable without making overload worse." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Retries, Backoff and Rate Limits for LLM APIs" />
+  <meta property="og:description" content="Model APIs fail, slow down and rate-limit. The retry algorithms that keep applications reliable without making overload worse." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20261006_retries_backoff.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Retries, Backoff and Rate Limits for LLM APIs</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Engineering</span>
+    </p>
+
+    <p class="muted">
+      Oct 06, 2026
+    </p>
+
+    <p>
+      Any application that calls a model API will see failures: rate limits,
+      temporary overloads, timeouts and dropped connections. How the client
+      retries determines whether those failures stay invisible to users or
+      cascade into an outage.
+    </p>
+
+    <h2>Which Errors to Retry</h2>
+
+    <ul class="post-list">
+      <li><strong>Retry:</strong> rate limit responses (429), server errors (5xx), timeouts and connection resets. These are usually temporary.</li>
+      <li><strong>Don't retry:</strong> bad requests, authentication errors, content too long. Sending the same request again will fail the same way.</li>
+    </ul>
+
+    <p class="muted">
+      Retrying a permanent error just turns one failure into several.
+    </p>
+
+    <h2>Exponential Backoff</h2>
+
+    <p>
+      Retrying immediately makes overload worse: if a service is struggling, a
+      flood of instant retries keeps it struggling. Exponential backoff waits
+      longer after each failure:
+    </p>
+
+    <p class="muted">
+      delay = base × 2^attempt
+    </p>
+
+    <p>
+      With a base of one second, the waits are 1, 2, 4, 8 seconds, up to a
+      maximum delay and a maximum number of attempts.
+    </p>
+
+    <h2>Add Jitter</h2>
+
+    <p>
+      If many clients fail at the same moment, plain exponential backoff makes
+      them all retry at the same moments too, producing synchronised waves of
+      load. Jitter randomises each delay, for example choosing uniformly
+      between zero and the computed backoff. This spreads retries out and
+      recovers the service faster.
+    </p>
+
+    <h2>Respect the Server</h2>
+
+    <p>
+      Rate limit responses often include a Retry-After header or similar
+      information about when capacity resets. When present, use it instead of
+      guessing. Clients that track their own token and request usage can also
+      throttle themselves before hitting limits, using a token bucket that
+      refills at the allowed rate.
+    </p>
+
+    <h2>LLM-Specific Concerns</h2>
+
+    <ul class="post-list">
+      <li><strong>Long requests:</strong> generations can take minutes, so timeouts must be generous, and streaming helps detect stalled connections early.</li>
+      <li><strong>Idempotency:</strong> a request that timed out may have completed and been billed. Retrying agent actions with side effects needs care.</li>
+      <li><strong>Fallbacks:</strong> after repeated failures, switching to another model or region can keep a product working.</li>
+      <li><strong>Circuit breakers:</strong> if failures persist, stop sending requests for a while instead of retrying endlessly.</li>
+    </ul>
+
+    <p>
+      Most official SDKs implement sensible retries by default. It is worth
+      knowing what they do before adding another retry loop on top, which
+      multiplies attempts.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Retry logic is unglamorous, but it decides how an application behaves on
+      its worst day. A few lines of backoff and jitter are the difference
+      between a brief slowdown and a cascading failure.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

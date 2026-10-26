@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why Language Models Hallucinate</title>
+  <meta name="description" content="Hallucinations are not random glitches. How training objectives and evaluation habits push models to guess confidently, and what actually reduces it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Why Language Models Hallucinate" />
+  <meta property="og:description" content="Hallucinations are not random glitches. How training objectives and evaluation habits push models to guess confidently, and what actually reduces it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260528_why_models_hallucinate.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Why Language Models Hallucinate</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Reliability</span>
+    </p>
+
+    <p class="muted">
+      May 28, 2026
+    </p>
+
+    <p>
+      A hallucination is a fluent, confident statement that is false: a paper
+      that was never written, a function that does not exist, a date that is
+      off by a decade. It is tempting to treat these as random glitches, but
+      they follow predictably from how models are built and graded.
+    </p>
+
+    <h2>The Training Objective</h2>
+
+    <p>
+      Pre-training rewards producing plausible continuations of text. It does
+      not reward saying "I don't know", because the training data rarely
+      contains that phrase in place of an answer.
+    </p>
+
+    <p>
+      For facts that appear often in training data, plausible and true
+      coincide. For rare facts, like a minor person's birthday, the model has
+      learned the shape of the answer without the content, and it fills the
+      shape with something plausible.
+    </p>
+
+    <p class="muted">
+      The model is not lying. It is completing a pattern where its knowledge
+      runs out.
+    </p>
+
+    <h2>The Grading Problem</h2>
+
+    <p>
+      Most benchmarks score answers as right or wrong. A model that guesses
+      when uncertain will sometimes be right; a model that abstains gets zero.
+      Across many questions, guessing scores better.
+    </p>
+
+    <p>
+      When models are tuned and selected using such benchmarks, confident
+      guessing is reinforced. Evaluations that give credit for appropriate
+      uncertainty, or penalise confident errors more than abstentions, push in
+      the other direction.
+    </p>
+
+    <h2>Common Triggers</h2>
+
+    <ul class="post-list">
+      <li><strong>Rare or long-tail facts:</strong> names, numbers, citations and niche details.</li>
+      <li><strong>False premises:</strong> questions that assume something untrue, which the model goes along with.</li>
+      <li><strong>Pressure to be complete:</strong> prompts that demand an answer in a fixed format, with no room for "unknown".</li>
+      <li><strong>Long generations:</strong> small errors early on that later text builds upon.</li>
+    </ul>
+
+    <h2>What Actually Helps</h2>
+
+    <ul class="post-list">
+      <li><strong>Grounding:</strong> retrieve sources and instruct the model to answer only from them.</li>
+      <li><strong>Permission to abstain:</strong> explicitly allow and reward "I don't know" in prompts and evaluations.</li>
+      <li><strong>Citations:</strong> require claims to point to a passage, then verify that the passage supports them.</li>
+      <li><strong>Verification:</strong> check outputs with tools, such as running code or looking up references.</li>
+    </ul>
+
+    <p>
+      Newer models hallucinate noticeably less than earlier ones, partly
+      because training now rewards calibrated uncertainty. The problem shrinks
+      but does not disappear.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Hallucination is best treated as a property to design around, not a bug
+      to wait out. Systems that assume the model will sometimes be confidently
+      wrong are the ones that stay trustworthy.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

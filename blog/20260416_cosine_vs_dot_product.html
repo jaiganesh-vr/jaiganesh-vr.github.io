@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cosine Similarity vs Dot Product</title>
+  <meta name="description" content="Two ways to measure how similar embeddings are. The geometry behind each, when they agree, and when the choice matters." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Cosine Similarity vs Dot Product" />
+  <meta property="og:description" content="Two ways to measure how similar embeddings are. The geometry behind each, when they agree, and when the choice matters." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260416_cosine_vs_dot_product.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Cosine Similarity vs Dot Product</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Embeddings</span>
+    </p>
+
+    <p class="muted">
+      Apr 16, 2026
+    </p>
+
+    <p>
+      Embedding search ranks documents by how similar their vectors are to a
+      query vector. The two most common measures, dot product and cosine
+      similarity, are closely related, and confusing them is a common source
+      of quiet retrieval bugs.
+    </p>
+
+    <h2>The Dot Product</h2>
+
+    <p>
+      For vectors a and b, the dot product multiplies matching components and
+      sums them:
+    </p>
+
+    <p class="muted">
+      a · b = Σ aᵢ bᵢ = |a| |b| cos θ
+    </p>
+
+    <p>
+      The second form shows what it measures: the lengths of both vectors
+      multiplied by the cosine of the angle between them. It grows when
+      vectors point in the same direction and when they are long.
+    </p>
+
+    <h2>Cosine Similarity</h2>
+
+    <p>
+      Cosine similarity divides out the lengths:
+    </p>
+
+    <p class="muted">
+      cos θ = (a · b) / (|a| |b|)
+    </p>
+
+    <p>
+      The result depends only on direction and ranges from −1 to 1. Two
+      vectors pointing the same way score 1 regardless of their magnitudes.
+    </p>
+
+    <h2>When They Agree</h2>
+
+    <p>
+      If all vectors are normalised to unit length, |a| = |b| = 1, and the dot
+      product equals cosine similarity exactly. Ranking by either gives the
+      same order, and Euclidean distance gives that same order too, since for
+      unit vectors squared distance equals 2 − 2 cos θ.
+    </p>
+
+    <p>
+      This is why many embedding models output normalised vectors and why
+      vector databases often recommend dot product for them: it is the
+      cheapest computation that gives the cosine result.
+    </p>
+
+    <h2>When It Matters</h2>
+
+    <p>
+      If vectors are not normalised, magnitude enters the score. That can be a
+      feature or a bug:
+    </p>
+
+    <ul class="post-list">
+      <li>Some models are trained so that magnitude carries meaning, such as confidence or document quality, and dot product uses that signal.</li>
+      <li>Other models produce magnitudes that correlate with text length, so dot product quietly favours long documents.</li>
+    </ul>
+
+    <p class="muted">
+      Use the similarity measure the embedding model was trained with.
+    </p>
+
+    <p>
+      Model documentation usually states it. Mixing them, such as indexing
+      with one metric and assuming the other, does not cause errors, only
+      worse results that are hard to trace.
+    </p>
+
+    <h2>A Note on High Dimensions</h2>
+
+    <p>
+      In high-dimensional spaces, random vectors are almost always close to
+      orthogonal, so cosine scores between unrelated texts cluster near some
+      baseline rather than at zero. Absolute scores are therefore hard to
+      interpret; rankings and relative gaps are more reliable.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Similarity metrics are one line of code, but they encode an assumption
+      about what an embedding's length means. Getting that assumption right is
+      a cheap win for retrieval quality.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

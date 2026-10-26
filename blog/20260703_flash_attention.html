@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlashAttention: Same Math, Less Memory Traffic</title>
+  <meta name="description" content="FlashAttention computes exact attention much faster by never writing the full attention matrix to memory. How tiling and online softmax make that possible." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="FlashAttention: Same Math, Less Memory Traffic" />
+  <meta property="og:description" content="FlashAttention computes exact attention much faster by never writing the full attention matrix to memory. How tiling and online softmax make that possible." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260703_flash_attention.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>FlashAttention: Same Math, Less Memory Traffic</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">GPU Systems</span>
+    </p>
+
+    <p class="muted">
+      Jul 03, 2026
+    </p>
+
+    <p>
+      Attention's cost is usually described as quadratic in sequence length,
+      and that is true for arithmetic. But on GPUs, the bigger problem was
+      memory: standard implementations wrote the entire n × n attention matrix
+      out to GPU memory and read it back several times.
+    </p>
+
+    <p>
+      FlashAttention computes exactly the same result without ever storing
+      that matrix.
+    </p>
+
+    <h2>The Memory Hierarchy</h2>
+
+    <p>
+      A GPU has a small amount of very fast on-chip memory, called SRAM, and a
+      large amount of much slower high-bandwidth memory. Moving data between
+      them is often more expensive than the arithmetic performed on it.
+    </p>
+
+    <p>
+      A naive attention kernel computes scores, writes them to slow memory,
+      reads them to apply softmax, writes the result, then reads it again to
+      multiply by the values. For long sequences, that traffic dominates.
+    </p>
+
+    <p class="muted">
+      The bottleneck was not computing attention. It was moving it around.
+    </p>
+
+    <h2>Tiling</h2>
+
+    <p>
+      FlashAttention splits queries, keys and values into blocks small enough
+      to fit in fast on-chip memory. For each block of queries, it loops over
+      blocks of keys and values, computing partial results entirely on-chip,
+      and writes only the final output back.
+    </p>
+
+    <p>
+      The n × n matrix is never materialised. Memory use becomes linear in
+      sequence length instead of quadratic.
+    </p>
+
+    <h2>The Softmax Problem</h2>
+
+    <p>
+      Tiling seems impossible at first, because softmax needs the maximum and
+      sum over an entire row of scores, and with tiling you only see one block
+      at a time.
+    </p>
+
+    <p>
+      The solution is online softmax. As each new block arrives, the kernel
+      keeps a running maximum and running sum, and rescales previously
+      accumulated results whenever the maximum changes. After the last block,
+      the result is mathematically identical to a full softmax.
+    </p>
+
+    <h2>What It Changed</h2>
+
+    <ul class="post-list">
+      <li>Attention became several times faster in practice, with no approximation.</li>
+      <li>Memory savings made much longer context lengths practical to train.</li>
+      <li>The backward pass recomputes attention blocks instead of storing them, trading cheap arithmetic for expensive memory.</li>
+    </ul>
+
+    <p>
+      Later versions improved parallelism across GPU threads and took
+      advantage of newer hardware features, and the approach is now standard
+      in training and inference frameworks.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      FlashAttention did not change the model at all. It changed the order of
+      operations to respect how hardware actually works, which is a recurring
+      theme in making AI systems fast.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

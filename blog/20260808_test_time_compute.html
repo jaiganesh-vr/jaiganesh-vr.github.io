@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reasoning Models and Test-Time Compute</title>
+  <meta name="description" content="Models can now get better by thinking longer instead of being bigger. How test-time compute works, how reasoning models are trained, and its trade-offs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Reasoning Models and Test-Time Compute" />
+  <meta property="og:description" content="Models can now get better by thinking longer instead of being bigger. How test-time compute works, how reasoning models are trained, and its trade-offs." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260808_test_time_compute.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Reasoning Models and Test-Time Compute</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Reasoning</span>
+    </p>
+
+    <p class="muted">
+      Aug 08, 2026
+    </p>
+
+    <p>
+      For years, the main way to make a model smarter was to make it larger
+      and train it on more data. A newer lever has become just as important:
+      letting a model spend more computation on each question at the time it
+      is asked.
+    </p>
+
+    <h2>The Idea</h2>
+
+    <p>
+      Humans do not answer every question with the same effort. A greeting
+      gets an instant reply; a proof gets an hour of scratch work. Test-time
+      compute gives models a similar ability to think longer when a problem is
+      hard.
+    </p>
+
+    <p class="muted">
+      Some capability can be bought at inference time instead of training
+      time.
+    </p>
+
+    <h2>Early Forms</h2>
+
+    <ul class="post-list">
+      <li><strong>Chain-of-thought prompting:</strong> asking a model to reason step by step before answering improves accuracy on multi-step problems.</li>
+      <li><strong>Self-consistency:</strong> sampling many reasoning paths and taking the majority answer is more reliable than any single path.</li>
+      <li><strong>Best-of-n with a verifier:</strong> generating many candidates and choosing the one a checker scores highest.</li>
+    </ul>
+
+    <p>
+      These showed that extra inference effort reliably converts into
+      accuracy.
+    </p>
+
+    <h2>Reasoning Models</h2>
+
+    <p>
+      Reasoning models build this into training. They are trained, largely
+      with reinforcement learning, to produce long internal reasoning before a
+      final answer. Rewards often come from verifiable outcomes, such as a
+      maths answer matching the reference or code passing tests.
+    </p>
+
+    <p>
+      Through that training, models learn behaviors that were never explicitly
+      programmed: checking their work, backtracking from dead ends and trying
+      alternative approaches.
+    </p>
+
+    <p>
+      Performance on hard maths, science and coding problems improves steadily
+      as models are allowed to reason longer.
+    </p>
+
+    <h2>The Trade-offs</h2>
+
+    <ul class="post-list">
+      <li><strong>Cost and latency:</strong> thinking tokens are generated and billed like any other output, and they take time.</li>
+      <li><strong>Diminishing returns:</strong> easy questions gain nothing from long reasoning, and some tasks see little benefit at all.</li>
+      <li><strong>Overthinking:</strong> models can talk themselves out of correct answers or pad simple tasks.</li>
+    </ul>
+
+    <p>
+      Many systems now let users or developers set a reasoning budget, or let
+      the model decide how much to think based on difficulty.
+    </p>
+
+    <h2>Why It Matters</h2>
+
+    <p>
+      Test-time compute changes scaling from a single axis to two. Instead of
+      only asking how big a model is, you can ask how much effort it should
+      spend on this particular request.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The shift to reasoning models is less about new architecture and more
+      about giving models time. Many problems that looked out of reach turned
+      out to need a model that was allowed to think before it spoke.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

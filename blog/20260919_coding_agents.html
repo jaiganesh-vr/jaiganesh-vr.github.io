@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coding Agents and the Shape of Software Work</title>
+  <meta name="description" content="AI has moved from autocomplete to agents that read repositories, run tests and open pull requests. What makes coding a good fit, and what changes for engineers." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Coding Agents and the Shape of Software Work" />
+  <meta property="og:description" content="AI has moved from autocomplete to agents that read repositories, run tests and open pull requests. What makes coding a good fit, and what changes for engineers." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260919_coding_agents.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Coding Agents and the Shape of Software Work</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Software Engineering</span>
+    </p>
+
+    <p class="muted">
+      Sep 19, 2026
+    </p>
+
+    <p>
+      AI assistance for programming started as autocomplete: suggest the next
+      line, accept or ignore. It has since moved to agents that read an entire
+      repository, make changes across many files, run the tests, and iterate
+      until they pass.
+    </p>
+
+    <p>
+      That shift changes not just how fast code is written, but what the work
+      of an engineer looks like.
+    </p>
+
+    <h2>Why Coding Suits Agents</h2>
+
+    <p>
+      Software engineering has properties that make it unusually good ground
+      for agents:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Rich tools:</strong> compilers, linters, test suites and version control provide precise feedback.</li>
+      <li><strong>Verifiable results:</strong> code either passes tests or it doesn't, which gives the agent a signal to correct itself.</li>
+      <li><strong>Text everywhere:</strong> code, docs, errors and logs are all text a model can read.</li>
+      <li><strong>Easy undo:</strong> version control makes most changes reversible.</li>
+    </ul>
+
+    <p class="muted">
+      Feedback loops are what make an agent reliable, and software has the
+      best feedback loops of any domain.
+    </p>
+
+    <h2>How Coding Agents Work</h2>
+
+    <p>
+      Most coding agents follow the same loop: explore the codebase to find
+      relevant files, form a plan, edit, run the build and tests, read the
+      errors, and repeat. The quality of results depends heavily on how well
+      the agent can search the code and how good the project's tests are.
+    </p>
+
+    <h2>What Changes for Engineers</h2>
+
+    <ul class="post-list">
+      <li><strong>More reviewing, less typing:</strong> a larger share of time goes into specifying tasks clearly and reviewing changes carefully.</li>
+      <li><strong>Context becomes an asset:</strong> projects with clear docs, consistent conventions and instructions for agents get noticeably better results.</li>
+      <li><strong>Tests matter more:</strong> a strong test suite is now also the agent's guidance system.</li>
+      <li><strong>Parallel work:</strong> engineers can delegate several well-scoped tasks at once and review them as they complete.</li>
+    </ul>
+
+    <h2>The Risks</h2>
+
+    <p>
+      Agents can produce code that passes tests but is subtly wrong, insecure
+      or hard to maintain. They can also make changes faster than people can
+      review them, which shifts the bottleneck to review. Treating agent
+      output like a pull request from a new teammate, read and questioned
+      rather than rubber-stamped, keeps quality up.
+    </p>
+
+    <p>
+      Running agents in sandboxes with limited permissions protects against
+      destructive commands.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Coding agents do not remove the need for engineering judgment. They move
+      it: less into writing each line, more into deciding what should be
+      built, how it should be checked, and whether the result is actually
+      right.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

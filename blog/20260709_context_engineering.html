@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Context Engineering</title>
+  <meta name="description" content="Prompt engineering focused on wording. Context engineering is about everything a model sees at each step, and it decides how well agents perform." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Context Engineering" />
+  <meta property="og:description" content="Prompt engineering focused on wording. Context engineering is about everything a model sees at each step, and it decides how well agents perform." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260709_context_engineering.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Context Engineering</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">LLMs</span>
+    </p>
+
+    <p class="muted">
+      Jul 09, 2026
+    </p>
+
+    <p>
+      Prompt engineering was about finding the right words for an instruction.
+      As applications grew into agents that run for many steps, the question
+      changed. What matters now is everything in the context window at each
+      step: instructions, history, retrieved documents, tool definitions and
+      tool results.
+    </p>
+
+    <p>
+      Deciding what goes in, and what stays out, is context engineering.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      A model can only use what it can see. Most agent failures that look like
+      reasoning problems are context problems: the relevant fact was never
+      retrieved, was buried under irrelevant output, or was summarised away
+      three steps earlier.
+    </p>
+
+    <p class="muted">
+      The model's answer is only as good as the context you assembled for it.
+    </p>
+
+    <h2>Context Is a Budget</h2>
+
+    <p>
+      Long context windows make it tempting to include everything. But models
+      attend less reliably to information in the middle of very long contexts,
+      every extra token costs money and latency, and irrelevant material
+      actively distracts.
+    </p>
+
+    <p>
+      Treat the window as a budget to spend, not a container to fill.
+    </p>
+
+    <h2>What Goes Into Context</h2>
+
+    <ul class="post-list">
+      <li><strong>System instructions:</strong> clear, specific and organised, with the why behind important rules.</li>
+      <li><strong>Tool definitions:</strong> a focused set, with descriptions that explain when to use each.</li>
+      <li><strong>Retrieved knowledge:</strong> the few most relevant passages, not every match.</li>
+      <li><strong>History:</strong> recent turns in full, older turns summarised.</li>
+      <li><strong>Tool results:</strong> trimmed to the fields that matter.</li>
+    </ul>
+
+    <h2>Techniques That Help</h2>
+
+    <ul class="post-list">
+      <li><strong>Just-in-time retrieval:</strong> give the agent tools to look things up when needed, instead of loading everything upfront.</li>
+      <li><strong>Compaction:</strong> when the context nears its limit, summarise progress and restart with the summary.</li>
+      <li><strong>External notes:</strong> let the agent maintain a progress file or task list it can re-read.</li>
+      <li><strong>Sub-agents:</strong> delegate exploratory work so only the conclusions return to the main context.</li>
+    </ul>
+
+    <h2>Structure Helps Too</h2>
+
+    <p>
+      Clear structure, such as labelled sections or XML-style tags separating
+      instructions, documents and examples, helps the model distinguish what
+      each part of the context is for. Putting long documents before the
+      question, rather than after, often improves results.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      As models improve, the limiting factor shifts from what they can reason
+      about to what they are given to reason with. Context engineering is
+      where much of an agent's quality is now decided.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

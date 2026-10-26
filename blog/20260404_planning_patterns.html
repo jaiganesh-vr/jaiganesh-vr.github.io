@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planning Patterns for Agents: ReAct, Plan-and-Execute, Reflection</title>
+  <meta name="description" content="Three common ways to structure how an agent thinks before it acts, what each is good at, and where each breaks down." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Planning Patterns for Agents: ReAct, Plan-and-Execute, Reflection" />
+  <meta property="og:description" content="Three common ways to structure how an agent thinks before it acts, what each is good at, and where each breaks down." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260404_planning_patterns.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Planning Patterns for Agents: ReAct, Plan-and-Execute, Reflection</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Patterns</span>
+    </p>
+
+    <p class="muted">
+      Apr 04, 2026
+    </p>
+
+    <p>
+      Giving a model tools is only half of building an agent. The other half
+      is deciding how it reasons about which tool to use, in what order, and
+      when to stop. A few patterns have emerged as reliable starting points.
+    </p>
+
+    <h2>ReAct: Reason, Then Act</h2>
+
+    <p>
+      ReAct interleaves short reasoning steps with actions. The model writes a
+      thought about what it knows and needs, calls a tool, reads the
+      observation, and writes the next thought.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Strength:</strong> adapts immediately to what each tool returns.</li>
+      <li><strong>Weakness:</strong> no overall plan, so long tasks can wander or loop.</li>
+    </ul>
+
+    <p>
+      ReAct is the default shape of most tool-using agents today, and for
+      tasks of a handful of steps it is hard to beat.
+    </p>
+
+    <h2>Plan-and-Execute</h2>
+
+    <p>
+      Plan-and-execute separates the two jobs. A planning step produces an
+      explicit list of sub-tasks. An executor works through them one by one,
+      and the planner revises the list when results change the picture.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Strength:</strong> keeps long tasks on track, and the plan can be shown to a person before work starts.</li>
+      <li><strong>Weakness:</strong> plans made early are based on little information and can be confidently wrong.</li>
+    </ul>
+
+    <p class="muted">
+      A plan is a hypothesis about the task. Good agents treat it that way.
+    </p>
+
+    <h2>Reflection</h2>
+
+    <p>
+      Reflection adds a review step. After producing an answer or finishing an
+      attempt, the agent critiques its own output against the goal and tries
+      again with that critique in context.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Strength:</strong> catches errors that are obvious on a second read, especially in code and writing.</li>
+      <li><strong>Weakness:</strong> a model reviewing its own work shares its own blind spots, and extra rounds add cost.</li>
+    </ul>
+
+    <p>
+      Reflection works best when the critique is grounded in something
+      external: test results, a validator, a checklist or a separate reviewer.
+    </p>
+
+    <h2>Combining Them</h2>
+
+    <p>
+      These patterns compose. A common shape is a plan, executed step by step
+      with ReAct, with a reflection pass at checkpoints. Reasoning models,
+      which think at length before answering, have also absorbed some of this
+      structure into the model itself.
+    </p>
+
+    <h2>Choosing a Pattern</h2>
+
+    <ul class="post-list">
+      <li>Short, exploratory tasks: ReAct.</li>
+      <li>Long tasks with clear sub-goals: plan-and-execute.</li>
+      <li>Tasks with verifiable output: add reflection driven by real checks.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The pattern matters less than the feedback it gives the agent. Every
+      reliable design gives the model a way to notice it is wrong before the
+      user does.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

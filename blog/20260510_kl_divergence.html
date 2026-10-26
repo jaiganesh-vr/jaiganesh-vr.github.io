@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KL Divergence Without the Fear</title>
+  <meta name="description" content="KL divergence shows up in distillation, RLHF and VAEs. What it measures, why it isn't symmetric, and why that asymmetry matters." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="KL Divergence Without the Fear" />
+  <meta property="og:description" content="KL divergence shows up in distillation, RLHF and VAEs. What it measures, why it isn't symmetric, and why that asymmetry matters." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260510_kl_divergence.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>KL Divergence Without the Fear</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Information Theory</span>
+    </p>
+
+    <p class="muted">
+      May 10, 2026
+    </p>
+
+    <p>
+      KL divergence appears all over machine learning: in knowledge
+      distillation, in the penalty that keeps RLHF from drifting, in
+      variational autoencoders and in policy optimisation. It looks
+      intimidating, but the idea is approachable.
+    </p>
+
+    <h2>The Definition</h2>
+
+    <p>
+      For two probability distributions P and Q over the same outcomes:
+    </p>
+
+    <p class="muted">
+      KL(P ‖ Q) = Σ P(x) · log( P(x) / Q(x) )
+    </p>
+
+    <p>
+      It measures the extra surprise you experience, on average, when outcomes
+      actually come from P but you expected them according to Q.
+    </p>
+
+    <ul class="post-list">
+      <li>It is always zero or positive.</li>
+      <li>It is zero only when P and Q are identical.</li>
+      <li>It is not a distance, because it is not symmetric.</li>
+    </ul>
+
+    <h2>The Link to Cross-Entropy</h2>
+
+    <p>
+      KL divergence is the gap between cross-entropy and entropy:
+    </p>
+
+    <p class="muted">
+      KL(P ‖ Q) = H(P, Q) − H(P)
+    </p>
+
+    <p>
+      When P is the data distribution, H(P) is fixed. So training a model Q by
+      minimising cross-entropy is exactly the same as minimising its KL
+      divergence from the data. Every language model's training objective is,
+      in this sense, a KL objective.
+    </p>
+
+    <h2>Why Direction Matters</h2>
+
+    <p>
+      KL(P ‖ Q) and KL(Q ‖ P) generally differ, and the difference has
+      practical consequences when Q is a simpler model fitting a complex P.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Forward KL, KL(P ‖ Q):</strong> heavily penalises Q for assigning low probability where P has mass. Q spreads out to cover every mode of P, even if that means putting mass in between. This is called mode-covering.</li>
+      <li><strong>Reverse KL, KL(Q ‖ P):</strong> heavily penalises Q for putting mass where P has little. Q picks one mode and fits it tightly. This is called mode-seeking.</li>
+    </ul>
+
+    <p class="muted">
+      Forward KL says don't miss anything. Reverse KL says don't make anything
+      up.
+    </p>
+
+    <h2>Where You Meet It</h2>
+
+    <ul class="post-list">
+      <li><strong>Distillation:</strong> students minimise KL from the teacher's distribution.</li>
+      <li><strong>RLHF:</strong> a KL penalty keeps the tuned model close to the reference model, limiting reward hacking.</li>
+      <li><strong>VAEs:</strong> a KL term keeps learned latent distributions close to a simple prior.</li>
+    </ul>
+
+    <p>
+      In each case, the direction was chosen deliberately, based on which kind
+      of mistake is worse.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      KL divergence is a precise way of asking how wrong one distribution is
+      about another. Once its asymmetry clicks, a lot of design choices in
+      modern training stop looking arbitrary.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

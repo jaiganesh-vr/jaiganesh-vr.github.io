@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The KV Cache: Why Generation Gets Faster After the First Token</title>
+  <meta name="description" content="Language models generate one token at a time. How caching keys and values avoids recomputing the past, and why that cache dominates memory." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The KV Cache: Why Generation Gets Faster After the First Token" />
+  <meta property="og:description" content="Language models generate one token at a time. How caching keys and values avoids recomputing the past, and why that cache dominates memory." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260422_kv_cache.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The KV Cache: Why Generation Gets Faster After the First Token</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Inference Systems</span>
+    </p>
+
+    <p class="muted">
+      Apr 22, 2026
+    </p>
+
+    <p>
+      A language model generates text one token at a time, and each new token
+      attends to every token before it. Done naively, producing token 1,000
+      would mean recomputing attention inputs for the previous 999 tokens,
+      then doing it all again for token 1,001.
+    </p>
+
+    <p>
+      The key-value cache removes that waste, and in doing so becomes one of
+      the most important data structures in LLM serving.
+    </p>
+
+    <h2>What Gets Cached</h2>
+
+    <p>
+      In each attention layer, every token produces a query, a key and a
+      value. For past tokens, the keys and values never change, because a
+      token cannot attend to anything after it.
+    </p>
+
+    <p>
+      So after computing them once, the model stores them. When generating the
+      next token, it only computes the new token's query, key and value,
+      appends the new key and value to the cache, and attends over the stored
+      history.
+    </p>
+
+    <p class="muted">
+      Each step does work for one new token, instead of the whole sequence.
+    </p>
+
+    <h2>Prefill and Decode</h2>
+
+    <p>
+      This splits inference into two phases:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Prefill:</strong> the whole prompt is processed in parallel and the cache is filled. This is compute-heavy and determines time to first token.</li>
+      <li><strong>Decode:</strong> tokens are generated one by one, each reading the full cache. This is memory-bandwidth-heavy and determines tokens per second.</li>
+    </ul>
+
+    <p>
+      That is why the first token often takes noticeably longer than the rest.
+    </p>
+
+    <h2>The Memory Cost</h2>
+
+    <p>
+      The cache grows with every token. Its size is roughly:
+    </p>
+
+    <p class="muted">
+      2 × layers × KV heads × head dimension × tokens × bytes per value
+    </p>
+
+    <p>
+      For a large model with long contexts, this reaches many gigabytes per
+      request, often more than the request's share of the model weights. It
+      limits how many users can be served at once and how long their contexts
+      can be.
+    </p>
+
+    <h2>Shrinking the Cache</h2>
+
+    <p>
+      Much recent architecture work targets this cost:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Grouped-query attention:</strong> several query heads share one set of keys and values.</li>
+      <li><strong>Quantized caches:</strong> storing keys and values in 8 or 4 bits.</li>
+      <li><strong>Paged allocation:</strong> managing cache memory in blocks to avoid fragmentation.</li>
+      <li><strong>Prefix caching:</strong> reusing the cache for shared prompt prefixes like system prompts.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The KV cache turns quadratic recomputation into a growing lookup table.
+      Many decisions about context length, batching and pricing are,
+      underneath, decisions about how to manage this one structure.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

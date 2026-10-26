@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top-k and Top-p Sampling</title>
+  <meta name="description" content="Pure sampling occasionally picks nonsense. How top-k and top-p truncate the probability tail, and how they interact with temperature." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Top-k and Top-p Sampling" />
+  <meta property="og:description" content="Pure sampling occasionally picks nonsense. How top-k and top-p truncate the probability tail, and how they interact with temperature." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260305_top_k_top_p.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Top-k and Top-p Sampling</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Decoding</span>
+    </p>
+
+    <p class="muted">
+      Mar 05, 2026
+    </p>
+
+    <p>
+      Sampling from a language model's full distribution produces natural,
+      varied text most of the time. Occasionally, though, it picks a token
+      from the long tail of unlikely options, and one bad token can derail
+      everything that follows.
+    </p>
+
+    <p>
+      Top-k and top-p are two simple algorithms that cut off that tail before
+      sampling.
+    </p>
+
+    <h2>Top-k Sampling</h2>
+
+    <p>
+      Top-k keeps only the k most likely tokens, sets every other probability
+      to zero, renormalises, and samples from what remains.
+    </p>
+
+    <ul class="post-list">
+      <li>With k = 1, it is greedy decoding.</li>
+      <li>With k = 40, the model chooses among its forty best candidates.</li>
+    </ul>
+
+    <p>
+      The weakness is that k is fixed. When the model is confident, forty
+      candidates is far too many and lets in junk. When the model is genuinely
+      uncertain, such as at the start of a creative sentence, forty may be too
+      few.
+    </p>
+
+    <h2>Top-p (Nucleus) Sampling</h2>
+
+    <p>
+      Top-p adapts to the shape of the distribution. It sorts tokens by
+      probability and keeps the smallest set whose cumulative probability
+      reaches p, for example 0.9, then samples from that set.
+    </p>
+
+    <ul class="post-list">
+      <li>When one token has 95 percent of the mass, the nucleus is a single token.</li>
+      <li>When probability is spread evenly, the nucleus may contain hundreds.</li>
+    </ul>
+
+    <p class="muted">
+      Top-p asks how many options are reasonable here, instead of assuming a
+      fixed number.
+    </p>
+
+    <h2>The Algorithm</h2>
+
+    <ul class="post-list">
+      <li>Apply temperature to the logits and compute softmax.</li>
+      <li>Sort tokens by probability, descending.</li>
+      <li>Accumulate probabilities until the running total reaches p.</li>
+      <li>Discard everything after that point, renormalise and sample.</li>
+    </ul>
+
+    <p>
+      Sorting a vocabulary of over a hundred thousand tokens every step sounds
+      expensive, but on modern hardware it is small next to the model's
+      forward pass. Implementations often apply top-k first to shrink the
+      candidate set before top-p.
+    </p>
+
+    <h2>Interaction With Temperature</h2>
+
+    <p>
+      Temperature changes the shape of the distribution; top-p then decides
+      how much of it to keep. A higher temperature flattens probabilities,
+      which makes the nucleus larger. That is why the two are usually tuned
+      together, and why changing both at once can be hard to reason about.
+    </p>
+
+    <p>
+      A practical approach is to fix top-p around 0.9 to 0.95 and adjust only
+      temperature for the task.
+    </p>
+
+    <h2>Other Variants</h2>
+
+    <p>
+      Min-p keeps tokens whose probability is at least a fraction of the top
+      token's probability, which scales the cutoff with the model's
+      confidence. It follows the same principle: trust the head of the
+      distribution, distrust the tail.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      These algorithms are tiny compared to the models they serve, but they
+      have an outsized effect on how output feels. Most of the difference
+      between coherent and erratic sampling lives in where the tail gets cut.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

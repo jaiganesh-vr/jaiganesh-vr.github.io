@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mixture of Experts: Bigger Models, Same Compute</title>
+  <meta name="description" content="How mixture-of-experts models activate only part of their parameters per token, and the trade-offs that come with sparse computation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Mixture of Experts: Bigger Models, Same Compute" />
+  <meta property="og:description" content="How mixture-of-experts models activate only part of their parameters per token, and the trade-offs that come with sparse computation." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260410_mixture_of_experts.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Mixture of Experts: Bigger Models, Same Compute</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Architecture</span>
+    </p>
+
+    <p class="muted">
+      Apr 10, 2026
+    </p>
+
+    <p>
+      For a dense transformer, every parameter participates in processing
+      every token. Doubling the parameters roughly doubles the compute per
+      token. Mixture of experts breaks that link by activating only a fraction
+      of the model at a time.
+    </p>
+
+    <h2>The Idea</h2>
+
+    <p>
+      In an MoE transformer, the feed-forward block in each layer is replaced
+      by several parallel feed-forward networks, called experts, plus a small
+      router.
+    </p>
+
+    <ul class="post-list">
+      <li>For each token, the router scores every expert.</li>
+      <li>Only the top few experts, often two, process that token.</li>
+      <li>Their outputs are combined, weighted by the router's scores.</li>
+    </ul>
+
+    <p>
+      A model like Mixtral 8x7B has eight experts per layer and routes each
+      token to two of them. It holds far more parameters than it uses on any
+      single token.
+    </p>
+
+    <p class="muted">
+      Total parameters set what the model can store. Active parameters set
+      what each token costs.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      MoE lets a model grow its capacity without growing its per-token compute
+      in proportion. In practice, MoE models often match dense models with
+      similar total parameter counts while running at the speed of much
+      smaller ones.
+    </p>
+
+    <p>
+      This is why many recent frontier and open-weight models use sparse
+      expert layers.
+    </p>
+
+    <h2>What the Experts Learn</h2>
+
+    <p>
+      The name suggests clean specialists for topics like biology or law. In
+      practice, routing tends to specialise along more mechanical lines, such
+      as particular token types, syntax patterns or positions. Experts are
+      better thought of as learned partitions of the computation than as
+      human-readable domains.
+    </p>
+
+    <h2>The Trade-offs</h2>
+
+    <ul class="post-list">
+      <li><strong>Memory:</strong> every expert must be loaded, even if few are used per token, so MoE models need a lot of memory.</li>
+      <li><strong>Load balancing:</strong> routers can collapse onto a few favourite experts. Training adds auxiliary losses or balancing mechanisms to spread the load.</li>
+      <li><strong>Serving complexity:</strong> experts are often spread across devices, adding communication overhead.</li>
+      <li><strong>Fine-tuning:</strong> sparse models can be less stable to adapt than dense ones.</li>
+    </ul>
+
+    <h2>Where It Fits</h2>
+
+    <p>
+      MoE is most attractive when serving at scale, where memory can be
+      amortised across many requests and compute per token drives cost. For
+      small local deployments, a dense model of similar active size is often
+      simpler.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Mixture of experts is conditional computation made practical. Not every
+      part of a model needs to think about every token, and exploiting that
+      has become one of the main levers for scaling efficiently.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory for Agents</title>
+  <meta name="description" content="Language models forget everything between calls. The kinds of memory agents need, and the practical ways to build each one." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Memory for Agents" />
+  <meta property="og:description" content="Language models forget everything between calls. The kinds of memory agents need, and the practical ways to build each one." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260311_agent_memory.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Memory for Agents</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Systems</span>
+    </p>
+
+    <p class="muted">
+      Mar 11, 2026
+    </p>
+
+    <p>
+      A language model has no memory between calls. Every request starts from
+      zero, and whatever continuity a user experiences is something the
+      application has rebuilt and placed back into the context.
+    </p>
+
+    <p>
+      For agents that run long tasks or serve the same person over weeks,
+      designing that memory is one of the most important engineering choices.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      Without memory, agents repeat questions, lose track of decisions and
+      redo work. With careless memory, they recall stale or wrong information
+      with full confidence. Both feel broken to users.
+    </p>
+
+    <p class="muted">
+      Memory is not storage. It is deciding what to bring back, and when.
+    </p>
+
+    <h2>Working Memory</h2>
+
+    <p>
+      The context window is the agent's working memory: the conversation,
+      recent tool results and the current plan. It is fast and precise, but
+      limited, and long tasks eventually overflow it.
+    </p>
+
+    <p>
+      Common techniques to manage it:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Summarisation:</strong> compress older turns into a running summary.</li>
+      <li><strong>Trimming tool output:</strong> keep the parts of a large result that matter, not the whole payload.</li>
+      <li><strong>Scratchpads:</strong> let the agent write notes or a task list to a file it can re-read.</li>
+    </ul>
+
+    <h2>Long-Term Memory</h2>
+
+    <p>
+      Information that should survive across sessions lives outside the model:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Semantic memory:</strong> facts about the user or domain, such as preferences, names and settings.</li>
+      <li><strong>Episodic memory:</strong> records of past interactions and what happened in them.</li>
+      <li><strong>Procedural memory:</strong> learned instructions about how to do things, often stored as updated system prompts.</li>
+    </ul>
+
+    <p>
+      These are typically stored in a database and retrieved by key, by
+      recency, or by embedding similarity, then inserted into the prompt.
+    </p>
+
+    <h2>Writing Is Harder Than Reading</h2>
+
+    <p>
+      Retrieval gets most of the attention, but deciding what to save is the
+      harder problem. Saving everything creates noise; saving too little loses
+      context. Many systems let the model decide what is worth remembering
+      through an explicit memory tool, and periodically consolidate or expire
+      old entries.
+    </p>
+
+    <p>
+      Conflicting memories are another trap. If a user moves city, the agent
+      needs to update the old fact, not store both.
+    </p>
+
+    <h2>Privacy and Control</h2>
+
+    <p>
+      Persistent memory about people raises obvious questions. Good designs
+      make memory visible and editable, avoid storing sensitive data without
+      reason, and give users a way to make the agent forget.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The model supplies reasoning; memory supplies continuity. The agents
+      that feel genuinely helpful over time are usually the ones where memory
+      was designed deliberately rather than bolted on.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

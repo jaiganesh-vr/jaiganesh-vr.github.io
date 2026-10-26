@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompting, RAG or Fine-Tuning?</title>
+  <meta name="description" content="Three ways to adapt a language model to your problem, what each one actually changes, and a practical order for trying them." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Prompting, RAG or Fine-Tuning?" />
+  <meta property="og:description" content="Three ways to adapt a language model to your problem, what each one actually changes, and a practical order for trying them." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260121_prompting_rag_finetuning.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Prompting, RAG or Fine-Tuning?</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">LLMs</span>
+    </p>
+
+    <p class="muted">
+      Jan 21, 2026
+    </p>
+
+    <p>
+      When a general-purpose model does not quite fit a problem, there are
+      three common ways to adapt it: change the prompt, give it retrieved
+      knowledge, or change its weights through fine-tuning. Teams often jump
+      to the most expensive option first.
+    </p>
+
+    <p>
+      Each approach changes something different, and knowing which lever moves
+      which behavior saves a lot of wasted effort.
+    </p>
+
+    <h2>What Each One Changes</h2>
+
+    <ul class="post-list">
+      <li><strong>Prompting</strong> changes the instructions. It shapes format, tone and task framing, using only what the model already knows.</li>
+      <li><strong>Retrieval-augmented generation</strong> changes the information. It puts relevant, current or private facts into the context at answer time.</li>
+      <li><strong>Fine-tuning</strong> changes the model. It adjusts weights so that a behavior, style or skill becomes the default.</li>
+    </ul>
+
+    <p>
+      A useful shorthand: RAG teaches the model <em>what</em> to say,
+      fine-tuning teaches it <em>how</em> to say it.
+    </p>
+
+    <h2>Start With Prompting</h2>
+
+    <p>
+      Prompting is fast to iterate, costs nothing to deploy and is easy to
+      roll back. Clear instructions, a few good examples and an explicit
+      output format solve a surprising share of problems.
+    </p>
+
+    <p>
+      If a carefully written prompt gets the behavior right most of the time,
+      the remaining issues are usually about missing knowledge or consistency,
+      which point to the next two options.
+    </p>
+
+    <h2>Add Retrieval for Knowledge</h2>
+
+    <p>
+      If the model gives fluent but wrong answers about your domain, the
+      problem is knowledge, not behavior. Fine-tuning is a poor way to inject
+      facts: it is hard to update, hard to audit and prone to blending facts
+      together.
+    </p>
+
+    <p>
+      Retrieval keeps knowledge outside the model, where it can be updated,
+      permissioned and cited. When a document changes, the next answer changes
+      with it.
+    </p>
+
+    <p class="muted">
+      Facts belong in a database. Habits belong in the weights.
+    </p>
+
+    <h2>Fine-Tune for Behavior</h2>
+
+    <p>
+      Fine-tuning pays off when you need a behavior that prompting cannot
+      reliably produce: a strict house style, a specialised output format, a
+      narrow classification task, or a smaller model that matches a larger
+      one's performance on a specific job.
+    </p>
+
+    <p>
+      It requires good training data, evaluation sets and a plan for
+      retraining when the base model changes. Parameter-efficient methods like
+      LoRA have made it far cheaper, but the data work remains.
+    </p>
+
+    <h2>They Combine</h2>
+
+    <p>
+      These are not exclusive. A common production pattern is a fine-tuned
+      model that follows a domain's conventions, prompted with clear
+      instructions, answering from retrieved documents.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The best order is usually cheapest first: prompt, then retrieve, then
+      fine-tune. Each step should be justified by a specific failure the
+      previous one could not fix.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

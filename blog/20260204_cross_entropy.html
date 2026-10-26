@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cross-Entropy: The Loss Behind Every Language Model</title>
+  <meta name="description" content="Language models are trained to minimise one number. What cross-entropy measures, where it comes from, and how to read it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Cross-Entropy: The Loss Behind Every Language Model" />
+  <meta property="og:description" content="Language models are trained to minimise one number. What cross-entropy measures, where it comes from, and how to read it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260204_cross_entropy.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Cross-Entropy: The Loss Behind Every Language Model</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Training</span>
+    </p>
+
+    <p class="muted">
+      Feb 04, 2026
+    </p>
+
+    <p>
+      Strip away the scale and engineering, and pre-training a language model
+      is the minimisation of a single quantity: cross-entropy loss on the next
+      token. It is worth understanding exactly what that number measures.
+    </p>
+
+    <h2>The Definition</h2>
+
+    <p>
+      At each position, the model outputs a probability distribution over the
+      vocabulary. The training data tells us which token actually came next.
+      Cross-entropy loss for that position is:
+    </p>
+
+    <p class="muted">
+      loss = −log p(correct token)
+    </p>
+
+    <p>
+      If the model gave the correct token probability 1, the loss is 0. If it
+      gave it probability 0.5, the loss is about 0.69. If it gave it 0.01, the
+      loss is about 4.6. The total loss is averaged over every position in the
+      batch.
+    </p>
+
+    <h2>Why the Logarithm</h2>
+
+    <p>
+      The log punishes confident mistakes severely. Assigning the right answer
+      a probability of 0.001 costs far more than assigning it 0.1, which
+      pushes the model to keep some probability on plausible alternatives
+      instead of betting everything on one guess.
+    </p>
+
+    <p>
+      The logarithm also turns products into sums. The probability of a whole
+      sequence is the product of per-token probabilities, so its log is a sum
+      of per-token terms, which is exactly what gets averaged.
+    </p>
+
+    <h2>Where the Name Comes From</h2>
+
+    <p>
+      In information theory, entropy measures the average surprise of a
+      distribution. Cross-entropy measures the average surprise when outcomes
+      come from the true distribution, but you predict them using another one.
+    </p>
+
+    <p>
+      Cross-entropy equals the true entropy plus the KL divergence between the
+      two distributions. Since the data's entropy is fixed, minimising
+      cross-entropy is the same as making the model's distribution as close as
+      possible to the data's.
+    </p>
+
+    <h2>Reading the Number</h2>
+
+    <ul class="post-list">
+      <li><strong>Baseline:</strong> a model guessing uniformly over a 50,000-token vocabulary has a loss of ln(50,000), about 10.8.</li>
+      <li><strong>Units:</strong> with natural logs, loss is measured in nats. Divide by ln 2 to get bits per token.</li>
+      <li><strong>Perplexity:</strong> exponentiating the loss gives perplexity, an easier-to-read measure of how many choices the model is effectively hesitating between.</li>
+    </ul>
+
+    <p>
+      Loss values are only comparable between models that share a tokenizer. A
+      tokenizer with larger tokens predicts fewer, harder tokens, so its
+      per-token loss is not directly comparable.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Everything a language model can do emerges from pushing this one number
+      down across trillions of tokens. It is a remarkably simple objective for
+      such a wide range of resulting behavior.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

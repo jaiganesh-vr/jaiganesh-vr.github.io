@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scaling Laws, Briefly</title>
+  <meta name="description" content="Model loss falls predictably as parameters, data and compute grow. What scaling laws say, what Chinchilla changed, and where the story is heading." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Scaling Laws, Briefly" />
+  <meta property="og:description" content="Model loss falls predictably as parameters, data and compute grow. What scaling laws say, what Chinchilla changed, and where the story is heading." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260621_scaling_laws.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Scaling Laws, Briefly</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Research</span>
+    </p>
+
+    <p class="muted">
+      Jun 21, 2026
+    </p>
+
+    <p>
+      One of the most consequential findings in modern AI is that language
+      model performance improves predictably with scale. Not just better with
+      more, but along smooth curves that can be measured on small models and
+      extrapolated to large ones.
+    </p>
+
+    <h2>The Original Finding</h2>
+
+    <p>
+      Early scaling studies trained many models of different sizes and found
+      that loss falls as a power law in three quantities:
+    </p>
+
+    <ul class="post-list">
+      <li>Number of parameters.</li>
+      <li>Amount of training data, in tokens.</li>
+      <li>Amount of compute used for training.</li>
+    </ul>
+
+    <p>
+      On a log-log plot, each relationship is close to a straight line, across
+      many orders of magnitude.
+    </p>
+
+    <p class="muted">
+      Predictability turned model training from an experiment into an
+      investment.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      If performance can be forecast, labs can decide how large a model to
+      train before spending the budget. Small pilot runs predict the loss of
+      runs hundreds of times larger, which reduces risk and justified the
+      enormous training runs of recent years.
+    </p>
+
+    <h2>The Chinchilla Correction</h2>
+
+    <p>
+      The early laws suggested putting most extra compute into bigger models.
+      A later study, known for its model Chinchilla, revisited this with more
+      careful experiments and found that parameters and data should grow
+      roughly together. Its rule of thumb was about 20 training tokens per
+      parameter for compute-optimal training.
+    </p>
+
+    <p>
+      Many earlier models had been undertrained: too large for the data they
+      saw. Chinchilla matched much larger models while being smaller and
+      cheaper to run.
+    </p>
+
+    <h2>Beyond Compute-Optimal</h2>
+
+    <p>
+      Compute-optimal is optimal for training cost, not for total cost. A
+      model that will serve billions of requests is cheaper overall if it is
+      smaller and trained on far more tokens than the 20-to-1 ratio suggests.
+      Many modern models are trained well past that ratio for this reason.
+    </p>
+
+    <h2>The Caveats</h2>
+
+    <ul class="post-list">
+      <li>Scaling laws predict loss, not specific capabilities. Some skills seem to appear suddenly, though much of that depends on how they are measured.</li>
+      <li>High-quality data is finite, which pushes interest toward synthetic data and better filtering.</li>
+      <li>Gains now also come from post-training and from test-time compute, where models spend more effort reasoning per question.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Scaling laws did not explain why large models work, but they made it
+      possible to plan for them. Much of the industry's direction over the
+      past few years follows from those straight lines.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

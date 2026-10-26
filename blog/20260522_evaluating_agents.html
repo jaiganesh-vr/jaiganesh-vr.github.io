@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluating Agents Is Harder Than Evaluating Models</title>
+  <meta name="description" content="Agents take many steps, use tools and rarely follow the same path twice. Why that breaks standard evaluation, and practical ways to measure them." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Evaluating Agents Is Harder Than Evaluating Models" />
+  <meta property="og:description" content="Agents take many steps, use tools and rarely follow the same path twice. Why that breaks standard evaluation, and practical ways to measure them." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260522_evaluating_agents.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Evaluating Agents Is Harder Than Evaluating Models</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Evaluation</span>
+    </p>
+
+    <p class="muted">
+      May 22, 2026
+    </p>
+
+    <p>
+      Evaluating a model on a question-answering benchmark is conceptually
+      simple: ask a question, compare the answer to a reference. Agents break
+      that simplicity. They take many steps, call tools that change state, and
+      can reach the right outcome by very different paths.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      Without solid evaluation, every change to a prompt, tool or model is a
+      guess. Teams end up shipping changes that fix one visible failure while
+      quietly breaking ten others.
+    </p>
+
+    <p class="muted">
+      If you can't measure an agent, you can't improve it. You can only change
+      it.
+    </p>
+
+    <h2>What Makes Agents Hard to Evaluate</h2>
+
+    <ul class="post-list">
+      <li><strong>Non-determinism:</strong> the same task can succeed on one run and fail on the next.</li>
+      <li><strong>Many valid paths:</strong> comparing the exact sequence of steps to a reference is too strict.</li>
+      <li><strong>Side effects:</strong> tools modify files, databases or tickets, so tests need isolated environments.</li>
+      <li><strong>Long horizons:</strong> a mistake at step two may only become visible at step twenty.</li>
+    </ul>
+
+    <h2>Evaluate Outcomes First</h2>
+
+    <p>
+      The most robust measure is whether the final state is correct. Did the
+      tests pass? Is the database in the expected state? Was the right ticket
+      created with the right fields? Outcome checks tolerate different paths
+      and are hard to game.
+    </p>
+
+    <p>
+      Where outcomes cannot be checked by code, a rubric scored by a model or
+      a person is the next best option.
+    </p>
+
+    <h2>Then Look at the Trajectory</h2>
+
+    <p>
+      Outcome scores say whether something failed, not why. Reviewing
+      trajectories, the full sequence of thoughts, tool calls and results,
+      reveals the patterns: a tool that is misused, an instruction that is
+      ignored, a loop the agent falls into.
+    </p>
+
+    <p>
+      Useful process metrics include steps taken, tool errors, tokens used and
+      time to completion.
+    </p>
+
+    <h2>Run It More Than Once</h2>
+
+    <p>
+      Because agents are stochastic, a single run per task is misleading. Run
+      each task several times and report the success rate. A metric like
+      pass^k, the chance that all k attempts succeed, captures reliability
+      better than a single lucky pass.
+    </p>
+
+    <h2>Build Your Own Set</h2>
+
+    <p>
+      Public benchmarks are useful for comparing models, but the evaluation
+      that matters most is a set of tasks drawn from your real use cases,
+      including the failures users have actually reported. Even twenty
+      well-chosen tasks catch most regressions.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Agent evaluation is less about a perfect score and more about a fast,
+      trustworthy feedback loop. The teams that build that loop early improve
+      their agents far faster than those who rely on spot checks.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

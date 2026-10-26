@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Byte-Pair Encoding: How Text Becomes Tokens</title>
+  <meta name="description" content="Language models never see words. A walk through byte-pair encoding, the compression algorithm that decides what a token is." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Byte-Pair Encoding: How Text Becomes Tokens" />
+  <meta property="og:description" content="Language models never see words. A walk through byte-pair encoding, the compression algorithm that decides what a token is." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260115_byte_pair_encoding.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Byte-Pair Encoding: How Text Becomes Tokens</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">NLP</span>
+    </p>
+
+    <p class="muted">
+      Jan 15, 2026
+    </p>
+
+    <p>
+      Language models do not read words or characters. They read tokens:
+      chunks of text drawn from a fixed vocabulary. The algorithm that builds
+      most of those vocabularies is byte-pair encoding, a technique that
+      started life as a data compression method.
+    </p>
+
+    <p>
+      Understanding it explains a surprising number of model quirks.
+    </p>
+
+    <h2>The Algorithm</h2>
+
+    <p>
+      Training a BPE tokenizer is a simple greedy loop:
+    </p>
+
+    <ul class="post-list">
+      <li>Start with a vocabulary of individual bytes or characters.</li>
+      <li>Count every adjacent pair of symbols in the training corpus.</li>
+      <li>Merge the most frequent pair into a new symbol and add it to the vocabulary.</li>
+      <li>Repeat until the vocabulary reaches the target size.</li>
+    </ul>
+
+    <p>
+      Early merges capture common pairs like "th" or "in". Later merges build
+      whole words like "the" and frequent fragments like "ing". The final
+      vocabulary is a mix of full words, subwords and single bytes.
+    </p>
+
+    <h2>Encoding New Text</h2>
+
+    <p>
+      To tokenize new text, the learned merges are replayed in the order they
+      were learned. Common words collapse into a single token. Rare words are
+      broken into familiar pieces. Nothing is ever unknown, because in the
+      worst case text falls back to individual bytes.
+    </p>
+
+    <p class="muted">
+      Byte-level BPE guarantees that any string, in any language, can be
+      encoded.
+    </p>
+
+    <h2>Why Vocabulary Size Matters</h2>
+
+    <p>
+      Vocabularies typically range from tens of thousands to a few hundred
+      thousand tokens. A larger vocabulary means shorter sequences, which
+      saves compute and context space, but it also means a larger embedding
+      table and more rarely-seen tokens.
+    </p>
+
+    <p>
+      In English, one token averages roughly four characters, or about three
+      quarters of a word. Other languages are often split into more tokens per
+      word, which makes them more expensive to process and leaves less room in
+      the same context window.
+    </p>
+
+    <h2>Quirks Explained by Tokens</h2>
+
+    <p>
+      Several well-known model weaknesses trace back to tokenization:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Counting letters:</strong> a word like "strawberry" may be two or three tokens, so the model never sees its individual letters directly.</li>
+      <li><strong>Arithmetic:</strong> numbers are split inconsistently, so digits do not always line up by place value.</li>
+      <li><strong>Whitespace and code:</strong> leading spaces are often part of tokens, so " the" and "the" are different symbols.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Tokenization is easy to dismiss as preprocessing, but it defines the
+      alphabet a model thinks in. Many behaviors that look like reasoning
+      failures are really the model working with pieces it was never shown
+      separately.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Injection and the Agent Security Problem</title>
+  <meta name="description" content="When agents read untrusted content, that content can give them instructions. Why prompt injection is hard to fix, and how to design around it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Prompt Injection and the Agent Security Problem" />
+  <meta property="og:description" content="When agents read untrusted content, that content can give them instructions. Why prompt injection is hard to fix, and how to design around it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260615_prompt_injection.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Prompt Injection and the Agent Security Problem</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Security</span>
+    </p>
+
+    <p class="muted">
+      Jun 15, 2026
+    </p>
+
+    <p>
+      A language model reads instructions and data in the same channel: text
+      in its context. It has no reliable way to tell a developer's instruction
+      from a sentence inside a web page it was asked to summarise. Prompt
+      injection exploits exactly that.
+    </p>
+
+    <h2>Direct and Indirect Injection</h2>
+
+    <ul class="post-list">
+      <li><strong>Direct injection:</strong> a user types instructions meant to override the system prompt, such as asking the model to ignore its rules.</li>
+      <li><strong>Indirect injection:</strong> malicious instructions hide in content the agent processes, like an email, a document, a web page or a tool result.</li>
+    </ul>
+
+    <p>
+      Indirect injection is the bigger threat for agents, because the attacker
+      never talks to the agent directly. They only need to put text somewhere
+      the agent will read it.
+    </p>
+
+    <p class="muted">
+      An agent that reads the internet is taking instructions from the
+      internet.
+    </p>
+
+    <h2>Why It Is Hard to Fix</h2>
+
+    <p>
+      Unlike SQL injection, there is no equivalent of parameterised queries.
+      Models can be trained to resist injected instructions, and they have
+      become much better at it, but resistance is statistical. A defence that
+      blocks 99 percent of attempts still fails when an attacker can try
+      thousands of variations.
+    </p>
+
+    <h2>The Dangerous Combination</h2>
+
+    <p>
+      Injection becomes serious when one agent has all three of these:
+    </p>
+
+    <ul class="post-list">
+      <li>Access to private data, like email, files or internal systems.</li>
+      <li>Exposure to untrusted content, like web pages or inbound messages.</li>
+      <li>A way to communicate externally, like sending email or making web requests.</li>
+    </ul>
+
+    <p>
+      With all three, injected text can instruct the agent to collect private
+      data and send it out. Removing any one of the three breaks the attack.
+    </p>
+
+    <h2>Designing Around It</h2>
+
+    <ul class="post-list">
+      <li><strong>Least privilege:</strong> give each agent only the tools and data its task needs.</li>
+      <li><strong>Separate trust levels:</strong> an agent that reads untrusted content should not hold powerful tools; it can pass structured, validated results to one that does.</li>
+      <li><strong>Human confirmation:</strong> require approval for consequential actions, like sending messages, payments or deletions.</li>
+      <li><strong>Constrain outputs:</strong> limit where the agent can send data, for example allow-listing domains.</li>
+      <li><strong>Monitor:</strong> log tool calls and flag unusual patterns.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Prompt injection is less a bug in models and more a property of systems
+      that mix trusted instructions with untrusted data. Until models can
+      separate the two perfectly, safety has to come from the architecture
+      around them.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

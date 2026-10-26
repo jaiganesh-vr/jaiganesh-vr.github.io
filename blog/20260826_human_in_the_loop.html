@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Human-in-the-Loop Design for Agents</title>
+  <meta name="description" content="Deciding when an agent should act alone and when it should ask. Practical patterns for approvals, checkpoints and escalation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Human-in-the-Loop Design for Agents" />
+  <meta property="og:description" content="Deciding when an agent should act alone and when it should ask. Practical patterns for approvals, checkpoints and escalation." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260826_human_in_the_loop.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Human-in-the-Loop Design for Agents</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Product Design</span>
+    </p>
+
+    <p class="muted">
+      Aug 26, 2026
+    </p>
+
+    <p>
+      Fully autonomous agents make impressive demos. In production, most
+      useful agents work alongside people, acting independently on routine
+      steps and pausing for a human at the moments that matter. Designing
+      those moments well is a large part of building agents people trust.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      Agents make mistakes, and some mistakes are expensive or irreversible. A
+      human checkpoint at the right place turns a potential incident into a
+      quick correction. At the wrong places, the same checkpoints turn an
+      agent into a slow form-filling exercise.
+    </p>
+
+    <p class="muted">
+      The goal is not maximum autonomy. It is the right autonomy for each
+      action.
+    </p>
+
+    <h2>Classify Actions by Risk</h2>
+
+    <p>
+      A practical starting point is to sort actions into tiers:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Read-only:</strong> searching, reading files, querying data. Usually safe to automate.</li>
+      <li><strong>Reversible changes:</strong> drafting content, editing in a sandbox, creating drafts. Automate, but show the result.</li>
+      <li><strong>Irreversible or external:</strong> sending emails, payments, deleting data, deploying. Require explicit approval.</li>
+    </ul>
+
+    <p>
+      Permissions should be enforced in code, not only in the prompt.
+    </p>
+
+    <h2>Patterns That Work</h2>
+
+    <ul class="post-list">
+      <li><strong>Approval gates:</strong> the agent prepares an action and a person approves, edits or rejects it.</li>
+      <li><strong>Plan review:</strong> the agent proposes a plan before starting a long task, so misunderstandings are caught early.</li>
+      <li><strong>Escalation:</strong> the agent hands off to a person when it is uncertain, blocked, or detects a sensitive situation.</li>
+      <li><strong>Asynchronous review:</strong> the agent completes work in a branch or draft, and a person reviews the batch later.</li>
+    </ul>
+
+    <h2>Make Review Easy</h2>
+
+    <p>
+      Approvals only help if reviewers can evaluate them quickly. Show what
+      will happen in concrete terms: the exact email, the diff, the record
+      being changed. Explain why the agent chose this action. A vague "approve
+      action?" prompt trains people to click yes without reading.
+    </p>
+
+    <h2>Watch for Approval Fatigue</h2>
+
+    <p>
+      If an agent asks for confirmation constantly, people stop paying
+      attention, and the safety benefit disappears. Reduce prompts for
+      low-risk actions, allow trusted actions to be approved once for a
+      session, and reserve interruptions for decisions that genuinely need a
+      human.
+    </p>
+
+    <h2>Learn From the Loop</h2>
+
+    <p>
+      Every edit or rejection is feedback. Logging them shows which steps the
+      agent handles well and which need better tools, instructions or tighter
+      limits, and over time where autonomy can safely increase.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Human-in-the-loop design is not an admission that agents are weak. It is
+      how responsibility is shared between people and software in a way that
+      lets both do what they are good at.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

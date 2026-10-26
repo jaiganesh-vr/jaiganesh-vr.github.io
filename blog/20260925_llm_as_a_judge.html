@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LLM-as-a-Judge</title>
+  <meta name="description" content="Using language models to grade other models' outputs scales evaluation dramatically. How to do it well, and the biases to watch for." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="LLM-as-a-Judge" />
+  <meta property="og:description" content="Using language models to grade other models' outputs scales evaluation dramatically. How to do it well, and the biases to watch for." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260925_llm_as_a_judge.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>LLM-as-a-Judge</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Evaluation</span>
+    </p>
+
+    <p class="muted">
+      Sep 25, 2026
+    </p>
+
+    <p>
+      Many qualities of a model's output, like helpfulness, tone, faithfulness
+      to sources or adherence to instructions, cannot be checked with exact
+      matching. Human review is the gold standard but slow and expensive.
+      Using a language model as the grader has become a standard way to
+      evaluate at scale.
+    </p>
+
+    <h2>How It Works</h2>
+
+    <p>
+      A judge model receives the task, the output to evaluate, and grading
+      criteria, and returns a score or a verdict. Common formats include:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Pointwise scoring:</strong> rate one output on a scale against a rubric.</li>
+      <li><strong>Pairwise comparison:</strong> decide which of two outputs is better.</li>
+      <li><strong>Reference-based grading:</strong> compare an output to a known good answer.</li>
+      <li><strong>Binary checks:</strong> answer specific yes or no questions, such as whether every claim is supported by the source.</li>
+    </ul>
+
+    <h2>Known Biases</h2>
+
+    <p>
+      Judges are useful but not neutral. Well-documented biases include:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Position bias:</strong> in pairwise comparisons, preferring whichever answer appears first, or second.</li>
+      <li><strong>Verbosity bias:</strong> favouring longer answers regardless of quality.</li>
+      <li><strong>Self-preference:</strong> rating outputs from the same model family more highly.</li>
+      <li><strong>Surface polish:</strong> rewarding confident, well-formatted answers even when they are wrong.</li>
+    </ul>
+
+    <p class="muted">
+      A judge is a model too. Evaluate it before you trust it.
+    </p>
+
+    <h2>Making Judges Reliable</h2>
+
+    <ul class="post-list">
+      <li><strong>Use specific rubrics.</strong> "Does the answer cite a source for each claim?" is far more reliable than "Is this a good answer?"</li>
+      <li><strong>Prefer binary or narrow scales</strong> over fine-grained 1 to 10 scores, which drift.</li>
+      <li><strong>Ask for reasoning before the verdict,</strong> so the judgment is grounded.</li>
+      <li><strong>Swap positions</strong> in pairwise comparisons and only count consistent verdicts.</li>
+      <li><strong>Calibrate against humans:</strong> grade a sample by hand and measure agreement before relying on the judge.</li>
+    </ul>
+
+    <h2>Where It Fits</h2>
+
+    <p>
+      Judges are best for fast iteration: comparing prompt versions, catching
+      regressions, and filtering large volumes of output. For high-stakes
+      decisions and final evaluations, they should complement human review,
+      not replace it.
+    </p>
+
+    <p>
+      Where correctness can be checked by code, such as running tests or
+      validating data, code-based checks are cheaper and more reliable than
+      any judge.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      LLM-as-a-judge makes it possible to evaluate the things that matter most
+      and are hardest to measure. Its value depends entirely on the care put
+      into its rubric and its calibration.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

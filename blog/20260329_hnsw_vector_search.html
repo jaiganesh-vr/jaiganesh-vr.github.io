@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HNSW: How Vector Search Stays Fast</title>
+  <meta name="description" content="Comparing a query against millions of embeddings one by one is too slow. How the HNSW graph finds near neighbours in logarithmic-ish time." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="HNSW: How Vector Search Stays Fast" />
+  <meta property="og:description" content="Comparing a query against millions of embeddings one by one is too slow. How the HNSW graph finds near neighbours in logarithmic-ish time." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260329_hnsw_vector_search.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>HNSW: How Vector Search Stays Fast</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Retrieval</span>
+    </p>
+
+    <p class="muted">
+      Mar 29, 2026
+    </p>
+
+    <p>
+      Retrieval systems store documents as embedding vectors and answer a
+      query by finding the vectors closest to it. With a few thousand
+      documents, you can compare against every one. With hundreds of millions,
+      exact search becomes too slow for interactive use.
+    </p>
+
+    <p>
+      Approximate nearest neighbour search trades a little accuracy for a huge
+      speedup. HNSW is the most widely used algorithm for it.
+    </p>
+
+    <h2>Navigable Small Worlds</h2>
+
+    <p>
+      The starting idea is a graph where each vector is a node connected to
+      some of its near neighbours. To search, you start at an entry node and
+      repeatedly move to whichever neighbour is closest to the query, stopping
+      when no neighbour is closer.
+    </p>
+
+    <p>
+      If the graph also contains some long-range links, this greedy walk
+      reaches the right region in surprisingly few hops, the same way any two
+      people are connected through a short chain of acquaintances.
+    </p>
+
+    <h2>Adding Hierarchy</h2>
+
+    <p>
+      HNSW, short for Hierarchical Navigable Small World, stacks several such
+      graphs in layers:
+    </p>
+
+    <ul class="post-list">
+      <li>The top layer contains very few nodes with long links, like a motorway network.</li>
+      <li>Each lower layer contains more nodes with shorter links.</li>
+      <li>The bottom layer contains every vector.</li>
+    </ul>
+
+    <p>
+      A search starts at the top, greedily moves close to the query, then
+      drops down a layer and continues from there. Each layer refines the
+      position, so the total work grows roughly logarithmically with the
+      dataset size.
+    </p>
+
+    <p class="muted">
+      Coarse to fine: cross the country on the motorway, then take local
+      roads.
+    </p>
+
+    <h2>The Parameters That Matter</h2>
+
+    <ul class="post-list">
+      <li><strong>M:</strong> how many links each node keeps. More links improve recall but cost memory.</li>
+      <li><strong>efConstruction:</strong> how widely to search when inserting a node. Higher builds a better graph, more slowly.</li>
+      <li><strong>efSearch:</strong> how many candidates to keep during a query. This is the main dial between speed and recall.</li>
+    </ul>
+
+    <h2>Trade-offs</h2>
+
+    <p>
+      HNSW delivers excellent recall at low latency, which is why most vector
+      databases support it. Its costs are memory, since the graph and vectors
+      usually live in RAM, and deletions, which leave holes in the graph that
+      need periodic repair.
+    </p>
+
+    <p>
+      For very large collections, it is often combined with quantization to
+      shrink vectors, or replaced with disk-friendly indexes.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Vector search feels like a database feature, but underneath it is a
+      clever graph algorithm. Knowing its dials explains why retrieval quality
+      sometimes changes when nothing in the model did.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

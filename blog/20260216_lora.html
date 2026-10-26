@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LoRA: Fine-Tuning Without Touching Most of the Model</title>
+  <meta name="description" content="Low-rank adaptation made fine-tuning large models practical on modest hardware. How it works and why so few parameters are enough." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="LoRA: Fine-Tuning Without Touching Most of the Model" />
+  <meta property="og:description" content="Low-rank adaptation made fine-tuning large models practical on modest hardware. How it works and why so few parameters are enough." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260216_lora.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>LoRA: Fine-Tuning Without Touching Most of the Model</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Fine-Tuning</span>
+    </p>
+
+    <p class="muted">
+      Feb 16, 2026
+    </p>
+
+    <p>
+      Fully fine-tuning a large language model means updating every one of its
+      billions of weights, storing gradients and optimizer state for all of
+      them, and saving a complete copy of the model for every task. For most
+      teams, that is not practical.
+    </p>
+
+    <p>
+      Low-rank adaptation, or LoRA, changes the economics by training a tiny
+      fraction of the parameters.
+    </p>
+
+    <h2>The Core Idea</h2>
+
+    <p>
+      LoRA freezes the original weights. For selected weight matrices, it adds
+      a small trainable update made of two thin matrices:
+    </p>
+
+    <p class="muted">
+      W' = W + B·A
+    </p>
+
+    <p>
+      If W is d × d, A is r × d and B is d × r, where the rank r is small,
+      often 8 to 64. The update B·A has the same shape as W, but it is
+      described by far fewer numbers.
+    </p>
+
+    <p>
+      B is initialised to zero, so at the start of training the model behaves
+      exactly like the original.
+    </p>
+
+    <h2>Why So Few Parameters Work</h2>
+
+    <p>
+      The hypothesis behind LoRA is that the change needed to adapt a
+      pre-trained model to a new task has low intrinsic rank. The model
+      already knows language. Adapting it is a nudge in a few directions, not
+      a rewrite.
+    </p>
+
+    <p>
+      Empirically this holds well. For many tasks, LoRA matches full
+      fine-tuning while training well under one percent of the parameters.
+    </p>
+
+    <h2>Practical Benefits</h2>
+
+    <ul class="post-list">
+      <li><strong>Memory:</strong> gradients and optimizer state are only needed for the small matrices.</li>
+      <li><strong>Storage:</strong> an adapter is megabytes, not gigabytes, so you can keep many of them.</li>
+      <li><strong>Swapping:</strong> one base model can serve several adapters, switching per request.</li>
+      <li><strong>No inference cost:</strong> the update can be merged back into W after training.</li>
+    </ul>
+
+    <p>
+      QLoRA pushes this further by keeping the frozen base model in 4-bit
+      precision while training adapters in higher precision, which brings
+      fine-tuning of large models within reach of a single GPU.
+    </p>
+
+    <h2>Things to Watch</h2>
+
+    <p class="muted">
+      LoRA lowers the cost of training. It does not lower the cost of good
+      data.
+    </p>
+
+    <p>
+      Rank, learning rate and which layers to adapt all matter, and the right
+      values depend on the task. Adapters trained on narrow data can also
+      reduce general capability, so evaluation should cover what the model
+      used to do well, not only the new task.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      LoRA is a good example of a simple mathematical observation turning into
+      a large practical shift. Fine-tuning went from a lab-scale project to
+      something an individual engineer can run in an afternoon.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How Vision-Language Models See</title>
+  <meta name="description" content="Models that read screenshots, charts and photos turn images into tokens a language model can attend to. How that pipeline works and where it struggles." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="How Vision-Language Models See" />
+  <meta property="og:description" content="Models that read screenshots, charts and photos turn images into tokens a language model can attend to. How that pipeline works and where it struggles." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20261016_vision_language_models.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>How Vision-Language Models See</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Multimodal</span>
+    </p>
+
+    <p class="muted">
+      Oct 16, 2026
+    </p>
+
+    <p>
+      Many language models now accept images: screenshots, charts, photos and
+      scanned documents. They do not see images the way people do. An image is
+      converted into a sequence of vectors that the language model treats much
+      like text tokens.
+    </p>
+
+    <h2>From Pixels to Patches</h2>
+
+    <p>
+      Most vision-language models start with a vision encoder based on the
+      Vision Transformer. The image is cut into a grid of small patches, for
+      example 14 × 14 pixels each. Each patch is flattened into a vector,
+      projected and given a position embedding, then processed by transformer
+      layers.
+    </p>
+
+    <p>
+      The output is one vector per patch, each describing that region in the
+      context of the whole image.
+    </p>
+
+    <h2>Aligning Images With Language</h2>
+
+    <p>
+      The vision encoder is often pre-trained contrastively, as in CLIP: it
+      learns from large numbers of image and caption pairs to place matching
+      images and texts close together in a shared space. That gives its
+      features a meaning that relates to language.
+    </p>
+
+    <h2>Connecting to the Language Model</h2>
+
+    <p>
+      A small projection network, sometimes just a few layers, maps the vision
+      encoder's outputs into the language model's embedding space. The
+      resulting image tokens are inserted into the input sequence alongside
+      text tokens.
+    </p>
+
+    <p class="muted">
+      To the language model, an image is a passage written in a learned visual
+      vocabulary.
+    </p>
+
+    <p>
+      The combined model is then trained on image and text data, from captions
+      to visual question answering to documents, so that the language model
+      learns to use those tokens.
+    </p>
+
+    <h2>Resolution and Cost</h2>
+
+    <p>
+      A high-resolution image can produce hundreds or thousands of tokens,
+      which costs context space and money. Models handle this by resizing
+      images, tiling large images into crops, or compressing patch tokens.
+      Small text in a downscaled screenshot can become unreadable, which is a
+      common source of errors.
+    </p>
+
+    <h2>Where They Struggle</h2>
+
+    <ul class="post-list">
+      <li><strong>Precise counting and measurement:</strong> patch-level representations blur exact quantities and positions.</li>
+      <li><strong>Fine spatial reasoning:</strong> questions about exact layout or relative positions remain harder than recognition.</li>
+      <li><strong>Dense small text:</strong> depends heavily on resolution.</li>
+      <li><strong>Charts:</strong> reading exact values from plots is error-prone without the underlying data.</li>
+    </ul>
+
+    <p>
+      These limits matter for agents that operate computers through
+      screenshots, where precise positions are essential.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Vision-language models extend the same recipe that made language models
+      work: turn everything into tokens and let attention connect them. The
+      images become part of the conversation, quirks and all.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

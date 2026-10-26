@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>High Dimensions Are Weird</title>
+  <meta name="description" content="Embeddings live in spaces with hundreds or thousands of dimensions, where intuition from 2D and 3D fails. The geometry that explains it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="High Dimensions Are Weird" />
+  <meta property="og:description" content="Embeddings live in spaces with hundreds or thousands of dimensions, where intuition from 2D and 3D fails. The geometry that explains it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20261001_high_dimensions.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>High Dimensions Are Weird</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Embeddings</span>
+    </p>
+
+    <p class="muted">
+      Oct 01, 2026
+    </p>
+
+    <p>
+      Embedding vectors typically have hundreds or thousands of dimensions. We
+      picture them as points on a 2D plot, but high-dimensional space behaves
+      in ways that 2D and 3D intuition gets badly wrong. A few of those
+      behaviors explain a lot about how embeddings and vector search work.
+    </p>
+
+    <h2>Almost Everything Is Orthogonal</h2>
+
+    <p>
+      Pick two random directions in 3D, and the angle between them could be
+      anything. Pick two random directions in 1,000 dimensions, and they are
+      almost certainly close to perpendicular. Their cosine similarity
+      concentrates tightly around zero, with spread shrinking roughly as one
+      over the square root of the dimension.
+    </p>
+
+    <p class="muted">
+      In high dimensions, there is room for an enormous number of nearly
+      unrelated directions.
+    </p>
+
+    <p>
+      This is part of why embeddings work. A space with a thousand dimensions
+      can hold vast numbers of distinct concepts as nearly independent
+      directions, with little interference between them.
+    </p>
+
+    <h2>Volume Lives Near the Surface</h2>
+
+    <p>
+      In high dimensions, almost all the volume of a ball sits in a thin shell
+      near its surface. For a 1,000-dimensional ball, more than 99.99 percent
+      of the volume is in the outer 1 percent of the radius.
+    </p>
+
+    <p>
+      One consequence: random points drawn from common distributions in high
+      dimensions mostly lie at nearly the same distance from the centre.
+    </p>
+
+    <h2>Distances Concentrate</h2>
+
+    <p>
+      For random points, the gap between the nearest and farthest neighbour
+      shrinks relative to the distances themselves as dimension grows. Every
+      point starts to look roughly equally far from every other.
+    </p>
+
+    <p>
+      This is the curse of dimensionality for search. It is why exact nearest
+      neighbour search gets hard, and why approximate methods like HNSW are
+      used.
+    </p>
+
+    <h2>Why Real Embeddings Still Work</h2>
+
+    <p>
+      Real embeddings are not random. Meaningful data lies near much
+      lower-dimensional structure within the space, and related texts cluster
+      together. Similarity search works because the signal lives in that
+      structure, even though the full space is vast.
+    </p>
+
+    <p>
+      It also explains a practical observation: similarity scores between
+      unrelated texts are rarely near zero for a given model, and absolute
+      score thresholds are unreliable. Relative rankings carry the meaning.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      High-dimensional geometry is strange, but it is not a bug. The same
+      properties that make distances misleading are what let embedding spaces
+      hold so many concepts at once.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

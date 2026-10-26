@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rerankers: The Missing Step in Retrieval</title>
+  <meta name="description" content="Embedding search is fast but approximate. How cross-encoder rerankers sharpen the top results, and how to fit them into a RAG pipeline." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Rerankers: The Missing Step in Retrieval" />
+  <meta property="og:description" content="Embedding search is fast but approximate. How cross-encoder rerankers sharpen the top results, and how to fit them into a RAG pipeline." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260901_rerankers.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Rerankers: The Missing Step in Retrieval</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Retrieval</span>
+    </p>
+
+    <p class="muted">
+      Sep 01, 2026
+    </p>
+
+    <p>
+      Most RAG pipelines retrieve documents with embedding search and pass the
+      top results straight to the language model. Adding one more step, a
+      reranker, is often the single biggest improvement in answer quality.
+    </p>
+
+    <h2>Two Kinds of Encoder</h2>
+
+    <p>
+      Embedding search uses a bi-encoder. The query and each document are
+      turned into vectors separately, and relevance is a similarity between
+      vectors. Because documents are encoded ahead of time, searching millions
+      of them is fast.
+    </p>
+
+    <p>
+      The cost is that the query and document never meet. Each is compressed
+      into a single vector without knowing what the other contains, so subtle
+      relevance is lost.
+    </p>
+
+    <p>
+      A cross-encoder takes the query and a document together as one input and
+      outputs a relevance score. Every word of the query can attend to every
+      word of the document. It is far more accurate, and far too slow to run
+      against an entire collection.
+    </p>
+
+    <p class="muted">
+      Bi-encoders find candidates. Cross-encoders judge them.
+    </p>
+
+    <h2>Retrieve, Then Rerank</h2>
+
+    <p>
+      The two are combined in stages:
+    </p>
+
+    <ul class="post-list">
+      <li>Retrieve a generous candidate set, perhaps 50 to 200 documents, with embedding or hybrid search.</li>
+      <li>Score each candidate against the query with a cross-encoder.</li>
+      <li>Pass only the top few, perhaps 5 to 10, to the language model.</li>
+    </ul>
+
+    <p>
+      The first stage optimises recall: do not miss the right document. The
+      second optimises precision: put it at the top.
+    </p>
+
+    <h2>Why It Helps So Much</h2>
+
+    <p>
+      Language models answer better from a few highly relevant passages than
+      from many loosely related ones. Irrelevant context dilutes attention and
+      invites the model to use the wrong source. Reranking improves the
+      quality of exactly the tokens that reach the model.
+    </p>
+
+    <h2>Practical Considerations</h2>
+
+    <ul class="post-list">
+      <li><strong>Latency:</strong> reranking 100 candidates adds noticeable time, so batch the pairs and tune candidate counts.</li>
+      <li><strong>Model choice:</strong> dedicated reranker models are small and fast. Using a general LLM as a reranker is more flexible but more expensive.</li>
+      <li><strong>Domain fit:</strong> rerankers trained on web search may need fine-tuning for legal, medical or code retrieval.</li>
+      <li><strong>Evaluation:</strong> measure retrieval with metrics like recall at k and nDCG, separately from answer quality.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Reranking is a classic search engine technique that RAG systems
+      rediscovered. It costs little to add and directly improves the evidence
+      a model reasons from.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

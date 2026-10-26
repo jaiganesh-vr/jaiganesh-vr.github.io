@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tree Search for Reasoning</title>
+  <meta name="description" content="Classic search algorithms are finding a new role in language model reasoning. From beam search over thoughts to Monte Carlo tree search." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Tree Search for Reasoning" />
+  <meta property="og:description" content="Classic search algorithms are finding a new role in language model reasoning. From beam search over thoughts to Monte Carlo tree search." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260820_tree_search_reasoning.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Tree Search for Reasoning</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Reasoning</span>
+    </p>
+
+    <p class="muted">
+      Aug 20, 2026
+    </p>
+
+    <p>
+      A language model normally reasons in a single straight line: one step
+      after another, with no way back. Search algorithms offer an alternative,
+      exploring several lines of reasoning and keeping the most promising. It
+      is an old idea from game-playing AI applied to a new kind of state.
+    </p>
+
+    <h2>Reasoning as a Tree</h2>
+
+    <p>
+      Treat each partial solution as a node. From any node, the model can
+      propose several possible next steps, each creating a child node. A
+      complete solution is a path from the root to a leaf.
+    </p>
+
+    <p>
+      Two ingredients make search possible:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>A generator:</strong> the model proposes candidate next steps.</li>
+      <li><strong>An evaluator:</strong> something scores how promising a partial path is, such as the model itself, a trained value model or an external check.</li>
+    </ul>
+
+    <h2>Tree of Thoughts</h2>
+
+    <p>
+      Tree of Thoughts applies breadth-first or depth-first search over
+      reasoning steps. At each level, the model generates several thoughts,
+      rates them, and continues only the best. Dead ends are abandoned and the
+      search backtracks.
+    </p>
+
+    <p>
+      On puzzles that need planning or trial and error, this beats single-pass
+      reasoning by a wide margin.
+    </p>
+
+    <h2>Monte Carlo Tree Search</h2>
+
+    <p>
+      MCTS, famous from game-playing systems like AlphaGo, balances
+      exploration and exploitation:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Select:</strong> walk down the tree, preferring nodes with high value or few visits.</li>
+      <li><strong>Expand:</strong> add a new child step at the frontier.</li>
+      <li><strong>Evaluate:</strong> estimate the value of the new node, by a value model or by completing the solution.</li>
+      <li><strong>Backpropagate:</strong> update value estimates along the path.</li>
+    </ul>
+
+    <p class="muted">
+      Search spends extra compute where it is most likely to change the
+      answer.
+    </p>
+
+    <h2>Verifiers Make or Break It</h2>
+
+    <p>
+      Search is only as good as its evaluator. Where answers can be checked,
+      such as code with tests or maths with known solutions, search can be
+      very effective. Where they cannot, a model judging its own partial
+      reasoning may confidently prefer wrong paths.
+    </p>
+
+    <p>
+      Process reward models, trained to score individual reasoning steps
+      rather than final answers, were developed partly to provide that signal.
+    </p>
+
+    <h2>Explicit Search vs Learned Reasoning</h2>
+
+    <p>
+      Reasoning models trained with reinforcement learning now perform a kind
+      of implicit search within one long chain of thought, backtracking in
+      text. Explicit tree search remains useful when strong verifiers exist
+      and when the budget allows many parallel attempts.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Search turns a model's ability to propose ideas into an ability to
+      explore them. As with game-playing, the combination of a good proposer
+      and a good evaluator is stronger than either alone.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

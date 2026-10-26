@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Positional Encoding and RoPE</title>
+  <meta name="description" content="Attention has no built-in sense of order. How transformers encode position, from sinusoids to rotary embeddings, and why rotation works so well." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Positional Encoding and RoPE" />
+  <meta property="og:description" content="Attention has no built-in sense of order. How transformers encode position, from sinusoids to rotary embeddings, and why rotation works so well." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260627_positional_encoding_rope.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Positional Encoding and RoPE</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Transformers</span>
+    </p>
+
+    <p class="muted">
+      Jun 27, 2026
+    </p>
+
+    <p>
+      Attention compares every token with every other token, but nothing in
+      the operation itself knows which token came first. Without extra
+      information, "dog bites man" and "man bites dog" look identical.
+      Positional encoding supplies that missing order.
+    </p>
+
+    <h2>Absolute Positions</h2>
+
+    <p>
+      The original transformer added a fixed vector to each token embedding,
+      built from sine and cosine waves of different frequencies. Each position
+      gets a unique pattern, and nearby positions get similar patterns.
+    </p>
+
+    <p>
+      Later models often learned these position vectors instead. Both
+      approaches share a limitation: they encode where a token is, while
+      language mostly cares about how far apart tokens are.
+    </p>
+
+    <h2>Rotary Position Embedding</h2>
+
+    <p>
+      RoPE takes a different approach. Instead of adding position to the
+      embedding, it rotates the query and key vectors by an angle that depends
+      on position.
+    </p>
+
+    <ul class="post-list">
+      <li>Each query and key vector is split into pairs of dimensions.</li>
+      <li>Each pair is treated as a point in 2D and rotated by angle m·θᵢ, where m is the position.</li>
+      <li>Different pairs use different frequencies θᵢ, from fast to slow.</li>
+    </ul>
+
+    <h2>Why Rotation Works</h2>
+
+    <p>
+      The key property comes from how rotations interact with dot products. If
+      a query at position m and a key at position n are both rotated, their
+      dot product depends only on the difference m − n.
+    </p>
+
+    <p class="muted">
+      Rotate both vectors by their positions, and attention sees only the
+      distance between them.
+    </p>
+
+    <p>
+      That gives relative position information for free, without any extra
+      parameters, and it applies inside the attention score itself, exactly
+      where order matters.
+    </p>
+
+    <p>
+      The mix of frequencies also helps. Fast-rotating pairs distinguish
+      nearby positions; slow-rotating pairs vary gently across long distances,
+      so the model can track both local and long-range structure.
+    </p>
+
+    <h2>Extending Context</h2>
+
+    <p>
+      Models only see positions up to their training length. RoPE made
+      extending context more tractable, because the rotation frequencies can
+      be rescaled. Techniques such as position interpolation and NTK-aware
+      scaling stretch the angles so longer sequences fall within the range the
+      model learned, usually with a short round of extra training.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      RoPE is an elegant piece of geometry: order becomes rotation, and
+      relative distance falls out of the dot product. It is a large part of
+      why most modern language models handle long contexts at all.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Softmax and Temperature</title>
+  <meta name="description" content="How a language model turns raw scores into probabilities, and what the temperature setting really does to that distribution." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Softmax and Temperature" />
+  <meta property="og:description" content="How a language model turns raw scores into probabilities, and what the temperature setting really does to that distribution." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260109_softmax_temperature.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Softmax and Temperature</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">LLMs</span>
+    </p>
+
+    <p class="muted">
+      Jan 09, 2026
+    </p>
+
+    <p>
+      Every time a language model produces a token, it first produces a score
+      for every token in its vocabulary. These scores, called logits, can be
+      any real number. Softmax is the function that turns them into a
+      probability distribution.
+    </p>
+
+    <p>
+      Temperature is the single knob most people touch when using a model, and
+      it acts directly on that function.
+    </p>
+
+    <h2>The Formula</h2>
+
+    <p>
+      For logits z₁ … zₙ, softmax assigns each token the probability:
+    </p>
+
+    <p class="muted">
+      p(i) = exp(zᵢ) / Σⱼ exp(zⱼ)
+    </p>
+
+    <p>
+      Exponentiation makes every value positive, and dividing by the sum makes
+      them add up to one. Because the exponential grows quickly, softmax
+      exaggerates differences: a token whose logit is 2 higher than another
+      ends up roughly 7.4 times more likely.
+    </p>
+
+    <h2>Why Exponentials</h2>
+
+    <p>
+      Softmax is not an arbitrary choice. It is the natural pairing for
+      cross-entropy loss, and its gradient has a clean form: the predicted
+      probability minus the true label. That simplicity is a large part of why
+      training large networks with it is stable.
+    </p>
+
+    <p>
+      It is also shift-invariant. Adding the same constant to every logit
+      changes nothing, which is why implementations subtract the maximum logit
+      before exponentiating. The result is identical, and it avoids overflow.
+    </p>
+
+    <h2>What Temperature Does</h2>
+
+    <p>
+      Temperature T divides the logits before softmax:
+    </p>
+
+    <p class="muted">
+      p(i) = exp(zᵢ / T) / Σⱼ exp(zⱼ / T)
+    </p>
+
+    <ul class="post-list">
+      <li><strong>T = 1:</strong> the model's distribution as trained.</li>
+      <li><strong>T below 1:</strong> differences are amplified, so the top token dominates. As T approaches 0, sampling becomes greedy decoding.</li>
+      <li><strong>T above 1:</strong> differences shrink and the distribution flattens toward uniform. Rare tokens get picked more often.</li>
+    </ul>
+
+    <p>
+      Temperature does not make a model more or less intelligent. It changes
+      how much of the probability mass outside the top choice gets explored.
+    </p>
+
+    <h2>Choosing a Value</h2>
+
+    <p>
+      For extraction, classification and code, low temperatures tend to work
+      well, because there is usually one right answer and variety is a
+      liability. For brainstorming and creative writing, moderate temperatures
+      produce more varied output without drifting into nonsense.
+    </p>
+
+    <p>
+      Very high temperatures rarely help. Once the long tail of the vocabulary
+      gets meaningful probability, output degrades quickly, which is why
+      temperature is usually combined with top-p or top-k truncation.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Softmax is one line of math, but it sits at the exact point where a
+      model's knowledge becomes a choice. Understanding it makes sampling
+      settings feel less like superstition and more like engineering.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

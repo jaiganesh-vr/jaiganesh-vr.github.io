@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Structured Outputs You Can Trust</title>
+  <meta name="description" content="Turning free-form model output into data your code can rely on. Schemas, validation, and the design choices that keep extraction accurate." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Structured Outputs You Can Trust" />
+  <meta property="og:description" content="Turning free-form model output into data your code can rely on. Schemas, validation, and the design choices that keep extraction accurate." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260802_structured_outputs.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Structured Outputs You Can Trust</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Engineering</span>
+    </p>
+
+    <p class="muted">
+      Aug 02, 2026
+    </p>
+
+    <p>
+      The moment a language model's output is consumed by code instead of a
+      person, its format becomes a contract. A missing field, an extra comment
+      before the JSON, or a number written as text can break a pipeline.
+      Structured outputs are how you make that contract reliable.
+    </p>
+
+    <h2>Three Levels of Reliability</h2>
+
+    <ul class="post-list">
+      <li><strong>Prompting for a format:</strong> describe the structure and give an example. Works often, fails occasionally.</li>
+      <li><strong>Tool or function calling:</strong> define the output as a tool's arguments. The model is trained to produce well-formed arguments.</li>
+      <li><strong>Schema-enforced output:</strong> the provider constrains decoding to a JSON Schema, so output always parses.</li>
+    </ul>
+
+    <p class="muted">
+      Use the strongest guarantee available, then validate anyway.
+    </p>
+
+    <h2>Validate on Your Side</h2>
+
+    <p>
+      Even with guaranteed syntax, validate with a schema library such as
+      Pydantic or Zod. Validation catches values that are well-formed but
+      wrong: dates in the future, negative quantities, enums the business no
+      longer uses.
+    </p>
+
+    <p>
+      When validation fails, sending the error back to the model with a
+      request to fix it resolves most issues in a single retry.
+    </p>
+
+    <h2>Design Schemas for the Model</h2>
+
+    <p>
+      The shape of a schema affects accuracy, not only parsing:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Use descriptive field names.</strong> customer_email beats field_3.</li>
+      <li><strong>Add descriptions</strong> to fields whose meaning is not obvious.</li>
+      <li><strong>Prefer enums</strong> to free text when the set of values is known.</li>
+      <li><strong>Allow null</strong> for information that might be missing, so the model is not forced to invent a value.</li>
+      <li><strong>Keep nesting shallow</strong> where possible.</li>
+    </ul>
+
+    <h2>Leave Room to Think</h2>
+
+    <p>
+      Forcing a model to output a single classification label immediately can
+      reduce accuracy on hard cases. Adding a short reasoning field before the
+      answer field gives the model space to work through the decision, and the
+      reasoning doubles as an explanation for debugging.
+    </p>
+
+    <p>
+      Field order matters, since the model generates fields in sequence.
+    </p>
+
+    <h2>Extraction Pitfalls</h2>
+
+    <ul class="post-list">
+      <li>Documents that do not contain the requested information: allow an explicit "not found".</li>
+      <li>Ambiguous source text: capture a confidence field or the supporting quote.</li>
+      <li>Long documents: extract in chunks and merge, rather than asking for everything at once.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Structured outputs are where AI meets ordinary software engineering.
+      Treating the schema as an interface, designed, documented and validated,
+      is what turns a clever demo into a dependable component.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

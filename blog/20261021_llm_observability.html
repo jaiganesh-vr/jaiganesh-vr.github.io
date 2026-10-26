@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Observability for LLM Applications</title>
+  <meta name="description" content="Traditional monitoring tells you a request succeeded. LLM observability tells you whether the answer was any good. What to log, measure and review." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Observability for LLM Applications" />
+  <meta property="og:description" content="Traditional monitoring tells you a request succeeded. LLM observability tells you whether the answer was any good. What to log, measure and review." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20261021_llm_observability.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Observability for LLM Applications</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Engineering</span>
+    </p>
+
+    <p class="muted">
+      Oct 21, 2026
+    </p>
+
+    <p>
+      Traditional monitoring answers questions like whether a service is up
+      and how long requests take. For applications built on language models,
+      those numbers can all look healthy while users receive wrong, unhelpful
+      or unsafe answers. Observability has to reach into what the model
+      actually did.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      LLM applications fail quietly. A prompt change, a model update or a new
+      kind of user question can degrade quality without a single error in the
+      logs. Without visibility into inputs and outputs, these problems are
+      found by users first.
+    </p>
+
+    <p class="muted">
+      A 200 status code tells you the model answered. It does not tell you the
+      answer was right.
+    </p>
+
+    <h2>Traces, Not Just Logs</h2>
+
+    <p>
+      The core unit is the trace: a record of everything that happened for one
+      request.
+    </p>
+
+    <ul class="post-list">
+      <li>Prompts and responses for every model call, including system prompts.</li>
+      <li>Tool calls, their arguments and their results.</li>
+      <li>Retrieved documents and their scores.</li>
+      <li>Tokens, latency and cost at each step.</li>
+      <li>Model name, version and sampling settings.</li>
+    </ul>
+
+    <p>
+      For agents with many steps, a trace shows the full path, which is
+      essential for finding where a run went wrong.
+    </p>
+
+    <h2>What to Measure</h2>
+
+    <ul class="post-list">
+      <li><strong>Operational:</strong> latency, time to first token, error rates, token usage and cost per request.</li>
+      <li><strong>Quality:</strong> automated evaluations on samples of production traffic, using code checks or LLM judges.</li>
+      <li><strong>User signals:</strong> thumbs up and down, retries, edits to generated content, abandoned sessions.</li>
+      <li><strong>Safety:</strong> rates of refusals, flagged content and policy violations.</li>
+    </ul>
+
+    <h2>Close the Loop</h2>
+
+    <p>
+      Observability pays off when it feeds improvement. Review a sample of
+      traces regularly, especially failures and low-rated responses. Turn
+      recurring problems into evaluation cases, so fixes can be tested and
+      regressions caught before release.
+    </p>
+
+    <h2>Privacy Matters</h2>
+
+    <p>
+      Traces contain user input, which may include personal or sensitive
+      information. Decide upfront what to store, redact sensitive fields, set
+      retention limits and control who can view traces. Logging everything
+      forever is not a responsible default.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The non-determinism of language models makes observability more
+      important, not less. You cannot predict every output, so you need to be
+      able to see them, measure them and learn from them.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

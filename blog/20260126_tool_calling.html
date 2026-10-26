@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool Calling: How Language Models Use Functions</title>
+  <meta name="description" content="Language models cannot run code or call APIs on their own. How tool calling works, step by step, and how to design tools models use well." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Tool Calling: How Language Models Use Functions" />
+  <meta property="og:description" content="Language models cannot run code or call APIs on their own. How tool calling works, step by step, and how to design tools models use well." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260126_tool_calling.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Tool Calling: How Language Models Use Functions</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">LLMs</span>
+    </p>
+
+    <p class="muted">
+      Jan 26, 2026
+    </p>
+
+    <p>
+      A language model only produces text. It cannot query a database, send an
+      email or check today's weather. Tool calling is the mechanism that lets
+      it ask the surrounding application to do those things on its behalf.
+    </p>
+
+    <p>
+      It is the foundation every agent is built on.
+    </p>
+
+    <h2>How It Works</h2>
+
+    <p>
+      The application describes each available tool to the model: a name, a
+      plain-language description and a schema for its arguments, usually JSON
+      Schema. The model then decides, as part of its normal output, whether to
+      respond directly or to request a tool.
+    </p>
+
+    <ul class="post-list">
+      <li>The model emits a structured request: tool name plus arguments.</li>
+      <li>The application validates the arguments and runs the actual function.</li>
+      <li>The result is passed back to the model as a new message.</li>
+      <li>The model continues, either calling another tool or answering.</li>
+    </ul>
+
+    <p class="muted">
+      The model never executes anything. It asks, and your code decides.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      That separation is what makes tool calling safe to build on. The
+      application keeps full control over what runs, with what permissions and
+      with what limits. A model can request a file deletion, but only the
+      application can perform one.
+    </p>
+
+    <p>
+      It also means the quality of an agent depends heavily on code that has
+      nothing to do with the model: input validation, error messages, timeouts
+      and permission checks.
+    </p>
+
+    <h2>Designing Good Tools</h2>
+
+    <p>
+      Models choose tools by reading their descriptions, so tool design is
+      closer to API documentation than to programming.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Name tools clearly.</strong> A name like search_orders beats a generic query tool.</li>
+      <li><strong>Describe when to use it,</strong> not only what it does. Include what it returns and its limits.</li>
+      <li><strong>Keep arguments few and typed.</strong> Enums and required fields reduce guessing.</li>
+      <li><strong>Return useful errors.</strong> "Customer ID not found, expected format C-12345" lets the model recover. A stack trace does not.</li>
+    </ul>
+
+    <h2>Fewer, Better Tools</h2>
+
+    <p>
+      Giving a model fifty overlapping tools makes selection harder and fills
+      the context with descriptions. A smaller set of well-scoped tools almost
+      always performs better than a large set of thin wrappers around every
+      endpoint.
+    </p>
+
+    <p>
+      A good rule of thumb is to design tools around tasks a person would
+      describe, not around the shape of your internal APIs.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Tool calling turns a model from something that talks about the world
+      into something that can act in it. The model provides judgment, but the
+      reliability comes from how carefully the tools around it are built.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

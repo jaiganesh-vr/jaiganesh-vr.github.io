@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Low-Rank Matrices and SVD</title>
+  <meta name="description" content="The linear algebra behind LoRA, compression and embeddings. What rank means, how SVD finds structure, and why low-rank approximations work." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Low-Rank Matrices and SVD" />
+  <meta property="og:description" content="The linear algebra behind LoRA, compression and embeddings. What rank means, how SVD finds structure, and why low-rank approximations work." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260721_low_rank_svd.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Low-Rank Matrices and SVD</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Linear Algebra</span>
+    </p>
+
+    <p class="muted">
+      Jul 21, 2026
+    </p>
+
+    <p>
+      Many ideas in modern machine learning, from LoRA to model compression to
+      embedding analysis, rely on one observation: large matrices often
+      contain much less information than their size suggests. Rank and the
+      singular value decomposition are the tools for seeing that.
+    </p>
+
+    <h2>What Rank Means</h2>
+
+    <p>
+      The rank of a matrix is the number of independent directions its rows or
+      columns span. A 1,000 × 1,000 matrix can have rank up to 1,000. If its
+      rank is 10, every row is a combination of just 10 underlying patterns.
+    </p>
+
+    <p>
+      A low-rank matrix can be written as a product of two thin matrices:
+    </p>
+
+    <p class="muted">
+      M (m × n) = A (m × r) · B (r × n)
+    </p>
+
+    <p>
+      Storing A and B takes r·(m + n) numbers instead of m·n, which is a large
+      saving when r is small.
+    </p>
+
+    <h2>The Singular Value Decomposition</h2>
+
+    <p>
+      Any matrix can be factored as:
+    </p>
+
+    <p class="muted">
+      M = U · Σ · Vᵀ
+    </p>
+
+    <ul class="post-list">
+      <li>U and V are rotations: their columns are orthonormal directions.</li>
+      <li>Σ is diagonal, holding the singular values, sorted from largest to smallest.</li>
+    </ul>
+
+    <p>
+      Each singular value measures how much the matrix stretches along one
+      pair of directions. Large values are the main structure; small values
+      are fine detail or noise.
+    </p>
+
+    <h2>Best Low-Rank Approximation</h2>
+
+    <p>
+      Keeping only the top k singular values and their directions gives a
+      rank-k matrix. The Eckart–Young theorem says this is the best possible
+      rank-k approximation, in the sense of minimising the squared error.
+    </p>
+
+    <p class="muted">
+      If the singular values fall off quickly, a few directions capture almost
+      everything.
+    </p>
+
+    <h2>Where It Shows Up</h2>
+
+    <ul class="post-list">
+      <li><strong>LoRA:</strong> weight updates are learned directly in low-rank form, B·A, on the assumption that task adaptation needs few directions.</li>
+      <li><strong>Compression:</strong> large weight matrices can be replaced by truncated SVD factors to reduce size.</li>
+      <li><strong>PCA:</strong> principal component analysis is SVD on centred data, used to visualise and reduce embeddings.</li>
+      <li><strong>Recommendation systems:</strong> user-item matrices are modelled as low-rank, with each user and item described by a few latent factors.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Rank is a measure of how much is really going on inside a matrix. A lot
+      of practical efficiency in machine learning comes from noticing that the
+      answer is often far less than the dimensions suggest.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

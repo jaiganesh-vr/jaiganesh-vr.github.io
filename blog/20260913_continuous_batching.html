@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Continuous Batching and PagedAttention</title>
+  <meta name="description" content="How LLM servers handle many users at once: iteration-level scheduling and paged KV cache memory, the two ideas behind modern inference throughput." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Continuous Batching and PagedAttention" />
+  <meta property="og:description" content="How LLM servers handle many users at once: iteration-level scheduling and paged KV cache memory, the two ideas behind modern inference throughput." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260913_continuous_batching.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Continuous Batching and PagedAttention</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Inference Systems</span>
+    </p>
+
+    <p class="muted">
+      Sep 13, 2026
+    </p>
+
+    <p>
+      Serving a language model to many users is a scheduling problem. Requests
+      arrive at random times, prompts vary in length, and outputs can be ten
+      tokens or ten thousand. How a server groups this work determines how
+      many users one GPU can handle.
+    </p>
+
+    <h2>Why Batch at All</h2>
+
+    <p>
+      During decoding, the GPU spends most of its time loading model weights
+      from memory. Processing one sequence or thirty-two costs nearly the same
+      weight traffic, so batching many sequences together multiplies
+      throughput almost for free.
+    </p>
+
+    <h2>The Problem With Static Batches</h2>
+
+    <p>
+      The simple approach collects a batch of requests, runs them together and
+      returns results when all are finished. But sequences finish at different
+      times. A request that needs 20 tokens waits for one that needs 2,000,
+      and its slot in the batch sits idle.
+    </p>
+
+    <p>
+      New requests also wait until the whole batch completes, adding latency.
+    </p>
+
+    <h2>Continuous Batching</h2>
+
+    <p>
+      Continuous batching, also called iteration-level scheduling, makes
+      batching decisions at every decoding step instead of once per batch:
+    </p>
+
+    <ul class="post-list">
+      <li>When a sequence finishes, its slot is freed immediately.</li>
+      <li>A waiting request is inserted into that slot on the next step.</li>
+      <li>The batch stays full as long as there is work.</li>
+    </ul>
+
+    <p class="muted">
+      The batch becomes a stream that requests join and leave, not a group
+      that moves together.
+    </p>
+
+    <p>
+      This can raise throughput several times over static batching with
+      realistic traffic.
+    </p>
+
+    <h2>The Memory Problem</h2>
+
+    <p>
+      Each active sequence needs a KV cache that grows with every token. Early
+      servers reserved a contiguous block for the maximum possible length of
+      each request. Most of that reserved memory went unused, which limited
+      how many sequences could run at once.
+    </p>
+
+    <h2>PagedAttention</h2>
+
+    <p>
+      PagedAttention borrows virtual memory from operating systems. The KV
+      cache is split into small fixed-size blocks, allocated on demand as a
+      sequence grows. A table maps each sequence's logical positions to
+      physical blocks, which need not be contiguous.
+    </p>
+
+    <ul class="post-list">
+      <li>Waste drops to at most one partially filled block per sequence.</li>
+      <li>More sequences fit in memory, so batches can be larger.</li>
+      <li>Sequences sharing a prefix, such as a common system prompt, can share blocks.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Much of the cost reduction in serving language models came from systems
+      ideas like these rather than from changes to models. Scheduling and
+      memory management decide how much intelligence a GPU can deliver.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

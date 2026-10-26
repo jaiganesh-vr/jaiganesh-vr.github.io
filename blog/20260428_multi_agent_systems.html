@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>When One Agent Isn&#x27;t Enough</title>
+  <meta name="description" content="Multi-agent systems split work between several model-driven agents. When that helps, the common architectures, and the costs people underestimate." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="When One Agent Isn't Enough" />
+  <meta property="og:description" content="Multi-agent systems split work between several model-driven agents. When that helps, the common architectures, and the costs people underestimate." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260428_multi_agent_systems.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>When One Agent Isn&#x27;t Enough</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Multi-Agent Systems</span>
+    </p>
+
+    <p class="muted">
+      Apr 28, 2026
+    </p>
+
+    <p>
+      As single agents take on larger tasks, a natural next step is to use
+      several: one to research, one to write, one to review. Multi-agent
+      systems can do things a single agent struggles with, but they also
+      multiply cost and failure modes.
+    </p>
+
+    <h2>Why Split the Work</h2>
+
+    <p>
+      There are three good reasons to use more than one agent:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Context limits:</strong> each sub-agent gets a clean, focused context instead of one overloaded history.</li>
+      <li><strong>Parallelism:</strong> independent sub-tasks, like researching several topics, can run at the same time.</li>
+      <li><strong>Specialisation:</strong> different agents can have different instructions, tools and permissions.</li>
+    </ul>
+
+    <p>
+      The first reason is often the most important. A sub-agent can read fifty
+      documents and hand back a one-page summary, keeping the coordinator's
+      context clean.
+    </p>
+
+    <h2>Common Architectures</h2>
+
+    <ul class="post-list">
+      <li><strong>Orchestrator and workers:</strong> a lead agent breaks the task down, delegates, and assembles the results. This is the most common and easiest to reason about.</li>
+      <li><strong>Pipeline:</strong> agents hand work along a fixed sequence, such as draft, review, edit. Effectively a workflow with agents at each step.</li>
+      <li><strong>Peer collaboration:</strong> agents message each other freely. Flexible, but hard to debug and prone to loops.</li>
+    </ul>
+
+    <p class="muted">
+      Most successful systems are hierarchies, not committees.
+    </p>
+
+    <h2>The Costs</h2>
+
+    <p>
+      Each agent consumes its own tokens, so a multi-agent run can cost many
+      times more than a single agent. Information is also lost at every
+      hand-off: a sub-agent only knows what it was told, and a coordinator
+      only knows what it was given back.
+    </p>
+
+    <p>
+      Errors compound too. If each agent is 95 percent reliable, a chain of
+      five is noticeably less so.
+    </p>
+
+    <h2>Making Hand-offs Work</h2>
+
+    <ul class="post-list">
+      <li>Give sub-agents explicit goals, constraints and the expected output format.</li>
+      <li>Ask for structured results rather than free-form prose.</li>
+      <li>Avoid splitting tasks whose parts depend tightly on each other, like editing interdependent code.</li>
+      <li>Log every message between agents so failures can be traced.</li>
+    </ul>
+
+    <h2>When to Stay Single</h2>
+
+    <p>
+      If a task is sequential and fits comfortably in one context, a single
+      well-equipped agent is usually cheaper, faster and more reliable. Reach
+      for multiple agents when the work is genuinely broad or parallel.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Multi-agent design is mostly organisational design. The same questions
+      apply as with human teams: who owns what, what gets handed over, and how
+      anyone knows the work is done.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

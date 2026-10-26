@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Actually Makes a System an Agent</title>
+  <meta name="description" content="The word agent is used for everything from chatbots to autonomous workflows. A practical definition, and why the distinction matters when you build one." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="What Actually Makes a System an Agent" />
+  <meta property="og:description" content="The word agent is used for everything from chatbots to autonomous workflows. A practical definition, and why the distinction matters when you build one." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260103_what_makes_an_agent.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>What Actually Makes a System an Agent</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Systems</span>
+    </p>
+
+    <p class="muted">
+      Jan 03, 2026
+    </p>
+
+    <p>
+      Few words in AI have been stretched as far as <em>agent</em>. It gets
+      attached to chatbots, scripted workflows, browser extensions and
+      research prototypes alike. When a word means everything, it stops
+      helping anyone make design decisions.
+    </p>
+
+    <p>
+      A more useful definition is narrow: an agent is a system where a
+      language model decides what to do next, takes an action through a tool,
+      observes the result, and repeats until the goal is met or it gives up.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      The difference between a workflow and an agent is who owns the control
+      flow. In a workflow, the developer writes the steps and the model fills
+      in the blanks. In an agent, the model chooses the steps.
+    </p>
+
+    <p>
+      That single shift changes everything downstream: how you test the
+      system, how you bound its cost, and how you explain its behavior when
+      something goes wrong.
+    </p>
+
+    <p class="muted">
+      A workflow fails in predictable places. An agent fails wherever it
+      decided to go.
+    </p>
+
+    <h2>The Core Loop</h2>
+
+    <p>
+      Almost every agent, however sophisticated, reduces to the same loop:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Observe:</strong> read the goal, the conversation and the results of previous actions.</li>
+      <li><strong>Decide:</strong> choose a tool to call, or decide the task is finished.</li>
+      <li><strong>Act:</strong> execute the tool call outside the model.</li>
+      <li><strong>Update:</strong> append the result to the context and go around again.</li>
+    </ul>
+
+    <p>
+      The intelligence lives in the decide step. Everything else is ordinary
+      software: tool implementations, state management, retries and logging.
+    </p>
+
+    <h2>Autonomy Is a Dial, Not a Switch</h2>
+
+    <p>
+      It helps to think of autonomy as a spectrum. At one end, the model
+      classifies a request and routes it. In the middle, it picks from a small
+      set of tools with a human approving each step. At the far end, it plans
+      multi-step work, runs for minutes or hours, and reports back.
+    </p>
+
+    <p>
+      Moving along that dial buys flexibility at the price of predictability.
+      Many production systems that are marketed as agents deliberately sit
+      near the middle, and that is usually the right call.
+    </p>
+
+    <h2>When Not to Build One</h2>
+
+    <p>
+      If the steps of a task are known in advance, a workflow is cheaper,
+      faster and easier to debug. Agents earn their complexity when the path
+      depends on what is discovered along the way: investigating a bug,
+      researching a question, or navigating a system with many possible
+      states.
+    </p>
+
+    <p>
+      A simple test is to ask whether you could draw the flowchart. If you
+      can, write the flowchart as code and use the model inside its boxes.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The interesting question is not whether something qualifies as an agent.
+      It is how much decision-making you are willing to hand to a model, and
+      what you have put in place to catch it when it decides badly.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

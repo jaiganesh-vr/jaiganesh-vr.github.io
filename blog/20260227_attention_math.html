@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Math Inside Attention</title>
+  <meta name="description" content="A line-by-line reading of scaled dot-product attention: queries, keys, values, and why the square root is there." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Math Inside Attention" />
+  <meta property="og:description" content="A line-by-line reading of scaled dot-product attention: queries, keys, values, and why the square root is there." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260227_attention_math.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Math Inside Attention</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Transformers</span>
+    </p>
+
+    <p class="muted">
+      Feb 27, 2026
+    </p>
+
+    <p>
+      The transformer's central operation fits on one line:
+    </p>
+
+    <p class="muted">
+      Attention(Q, K, V) = softmax(Q·Kᵀ / √dₖ) · V
+    </p>
+
+    <p>
+      It looks dense, but each piece has a clear job. Reading it slowly is one
+      of the best ways to understand what a transformer does.
+    </p>
+
+    <h2>Queries, Keys and Values</h2>
+
+    <p>
+      Each token's vector is multiplied by three learned matrices to produce
+      three new vectors:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Query:</strong> what this token is looking for.</li>
+      <li><strong>Key:</strong> what this token offers to others.</li>
+      <li><strong>Value:</strong> the information this token passes on if it is attended to.</li>
+    </ul>
+
+    <p>
+      The analogy to a search engine is loose but helpful. A query is compared
+      against every key; good matches retrieve the corresponding values.
+    </p>
+
+    <h2>Scores From Dot Products</h2>
+
+    <p>
+      Q·Kᵀ computes the dot product between every query and every key, giving
+      a score matrix with one row per token and one column per token it can
+      look at. A high score means the query and key point in similar
+      directions.
+    </p>
+
+    <p>
+      For n tokens this matrix is n × n, which is why attention cost grows
+      quadratically with sequence length.
+    </p>
+
+    <h2>Why Divide by √dₖ</h2>
+
+    <p>
+      If query and key components have roughly unit variance, their dot
+      product over dₖ dimensions has variance around dₖ. With dₖ = 128,
+      typical scores would be large, and softmax over large values saturates:
+      one score takes almost all the probability and gradients become
+      vanishingly small.
+    </p>
+
+    <p>
+      Dividing by √dₖ brings the variance back to about 1, keeping softmax in
+      a range where it can learn.
+    </p>
+
+    <p class="muted">
+      The square root is not decoration. Without it, deep transformers train
+      poorly.
+    </p>
+
+    <h2>Softmax, Then Mix</h2>
+
+    <p>
+      Softmax across each row turns scores into weights that sum to one. The
+      output for each token is the weighted average of all value vectors,
+      using those weights.
+    </p>
+
+    <p>
+      In decoder models, a causal mask sets scores for future tokens to minus
+      infinity before softmax, so each token can only attend to itself and
+      earlier positions.
+    </p>
+
+    <h2>Many Heads</h2>
+
+    <p>
+      Multi-head attention runs this operation several times in parallel with
+      smaller dimensions, each head with its own projection matrices.
+      Different heads can specialise, such as tracking syntax, nearby words or
+      long-range references, and their outputs are concatenated and projected
+      back.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Attention is a learned, differentiable lookup: every token decides how
+      much to listen to every other token. Almost everything else in a
+      transformer exists to support this one step.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

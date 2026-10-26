@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Model Context Protocol, Explained</title>
+  <meta name="description" content="An open standard for connecting AI applications to tools and data. What MCP is, how its pieces fit, and why a protocol was needed at all." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Model Context Protocol, Explained" />
+  <meta property="og:description" content="An open standard for connecting AI applications to tools and data. What MCP is, how its pieces fit, and why a protocol was needed at all." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260222_model_context_protocol.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Model Context Protocol, Explained</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Protocols</span>
+    </p>
+
+    <p class="muted">
+      Feb 22, 2026
+    </p>
+
+    <p>
+      Every AI application that wants to use external tools faces the same
+      integration problem. A chat app, an IDE assistant and an internal agent
+      all need to reach the same databases, file systems and APIs, and each
+      one used to build its own connectors.
+    </p>
+
+    <p>
+      The Model Context Protocol, or MCP, is an open standard that turns that
+      many-to-many problem into a one-to-one problem.
+    </p>
+
+    <h2>Why This Matters</h2>
+
+    <p>
+      Without a shared protocol, M applications and N data sources need M × N
+      custom integrations. With one, each application implements the protocol
+      once as a client, and each data source implements it once as a server.
+    </p>
+
+    <p>
+      It is the same move that made language servers succeed in code editors:
+      one standard interface instead of a connector per pair.
+    </p>
+
+    <p class="muted">
+      Build the integration once, use it from any compatible application.
+    </p>
+
+    <h2>The Architecture</h2>
+
+    <p>
+      MCP has three roles:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Host:</strong> the application the user interacts with, such as a desktop assistant or IDE.</li>
+      <li><strong>Client:</strong> a component inside the host that maintains a connection to one server.</li>
+      <li><strong>Server:</strong> a program that exposes capabilities from some system, like a database, a repository or a SaaS API.</li>
+    </ul>
+
+    <p>
+      Messages are JSON-RPC. Servers can run locally and talk over standard
+      input and output, or run remotely over HTTP.
+    </p>
+
+    <h2>What Servers Expose</h2>
+
+    <p>
+      A server can offer three kinds of capability:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Tools:</strong> functions the model can call, such as running a query or creating a ticket.</li>
+      <li><strong>Resources:</strong> data the application can read into context, such as files or records.</li>
+      <li><strong>Prompts:</strong> reusable templates that users can invoke.</li>
+    </ul>
+
+    <p>
+      The model sees tools in the same form as ordinary tool calling: a name,
+      a description and a schema. MCP standardises how those definitions are
+      discovered and how calls travel.
+    </p>
+
+    <h2>Security Considerations</h2>
+
+    <p>
+      A protocol that makes connecting tools easy also makes connecting
+      untrusted tools easy. Tool descriptions are read by the model, so a
+      malicious server can attempt prompt injection through them. Remote
+      servers need proper authentication, and powerful tools still need
+      permission checks and human approval.
+    </p>
+
+    <p>
+      Treat an MCP server the way you would treat any third-party dependency:
+      know who wrote it and what it can access.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      MCP does not make models smarter. It makes the world around them easier
+      to reach, and that has turned out to be one of the main bottlenecks in
+      building useful agents.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

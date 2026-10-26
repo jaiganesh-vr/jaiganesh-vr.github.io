@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backpropagation Is Just the Chain Rule</title>
+  <meta name="description" content="How a network with billions of parameters computes every gradient in one backward pass, explained through the chain rule and computational graphs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Backpropagation Is Just the Chain Rule" />
+  <meta property="og:description" content="How a network with billions of parameters computes every gradient in one backward pass, explained through the chain rule and computational graphs." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260907_backpropagation.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Backpropagation Is Just the Chain Rule</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Training</span>
+    </p>
+
+    <p class="muted">
+      Sep 07, 2026
+    </p>
+
+    <p>
+      Training needs the gradient of the loss with respect to every parameter
+      in the network. For a model with billions of parameters, computing each
+      one separately would be hopeless. Backpropagation computes all of them
+      in a single backward pass, at roughly the cost of one forward pass.
+    </p>
+
+    <p>
+      Underneath, it is the chain rule from calculus, applied systematically.
+    </p>
+
+    <h2>The Chain Rule</h2>
+
+    <p>
+      If y depends on u, and u depends on x, then:
+    </p>
+
+    <p class="muted">
+      dy/dx = (dy/du) · (du/dx)
+    </p>
+
+    <p>
+      A neural network is a long chain of such dependencies: inputs feed layer
+      one, which feeds layer two, and so on until the loss. The gradient of
+      the loss with respect to any weight is a product of local derivatives
+      along the path from that weight to the loss.
+    </p>
+
+    <h2>Computational Graphs</h2>
+
+    <p>
+      Frameworks represent a model as a graph of simple operations: matrix
+      multiplies, additions, activation functions. Each operation knows two
+      things:
+    </p>
+
+    <ul class="post-list">
+      <li>How to compute its output from its inputs, for the forward pass.</li>
+      <li>How to turn the gradient of its output into gradients of its inputs, for the backward pass.</li>
+    </ul>
+
+    <h2>The Two Passes</h2>
+
+    <ul class="post-list">
+      <li><strong>Forward:</strong> compute every operation from inputs to loss, storing intermediate values.</li>
+      <li><strong>Backward:</strong> start with the gradient of the loss with respect to itself, which is 1, and walk the graph in reverse. Each operation receives the gradient of its output and passes gradients back to its inputs.</li>
+    </ul>
+
+    <p>
+      When a value feeds into several operations, the gradients flowing back
+      from each are summed.
+    </p>
+
+    <p class="muted">
+      Going backward lets every shared intermediate result be reused, which is
+      what makes it efficient.
+    </p>
+
+    <h2>Why Backward, Not Forward</h2>
+
+    <p>
+      The network has one output, the loss, and billions of inputs, the
+      parameters. Working backward from the single output computes all the
+      gradients at once. Working forward would require a separate pass per
+      parameter. This is reverse-mode automatic differentiation.
+    </p>
+
+    <h2>The Memory Trade-off</h2>
+
+    <p>
+      The backward pass needs intermediate values from the forward pass, so
+      they must be kept in memory. For large models, these activations can use
+      more memory than the weights. Activation checkpointing saves only some
+      of them and recomputes the rest during the backward pass, trading
+      compute for memory.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Backpropagation is not a learning algorithm in itself. It is an
+      efficient way to answer one question: which direction should every
+      parameter move? The optimizer decides how far.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Distillation</title>
+  <meta name="description" content="How a small model can learn from a large one, why soft probabilities carry more information than labels, and where distillation is used today." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Knowledge Distillation" />
+  <meta property="og:description" content="How a small model can learn from a large one, why soft probabilities carry more information than labels, and where distillation is used today." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260504_knowledge_distillation.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Knowledge Distillation</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Model Compression</span>
+    </p>
+
+    <p class="muted">
+      May 04, 2026
+    </p>
+
+    <p>
+      Large models are capable but expensive to run. Small models are cheap
+      but weaker. Knowledge distillation is a way to transfer much of a large
+      model's behavior into a small one, so that you pay the training cost
+      once and the inference savings forever.
+    </p>
+
+    <h2>The Basic Setup</h2>
+
+    <p>
+      Distillation uses two models:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Teacher:</strong> a large, accurate model that has already been trained.</li>
+      <li><strong>Student:</strong> a smaller model trained to imitate the teacher.</li>
+    </ul>
+
+    <p>
+      Instead of learning only from the dataset's labels, the student learns
+      from the teacher's outputs.
+    </p>
+
+    <h2>Why Soft Targets Help</h2>
+
+    <p>
+      A label says a picture is a cat. A teacher's probabilities say it is 90
+      percent cat, 8 percent fox and 0.1 percent truck. That extra
+      information, sometimes called dark knowledge, tells the student which
+      mistakes are reasonable and how classes relate.
+    </p>
+
+    <p class="muted">
+      A probability distribution carries more information per example than a
+      single correct answer.
+    </p>
+
+    <p>
+      In the classic formulation, both models' logits are softened with a
+      temperature above 1 before softmax, so that small probabilities become
+      visible, and the student minimises the difference from the teacher's
+      distribution, usually measured with KL divergence. This is often mixed
+      with ordinary loss on the true labels.
+    </p>
+
+    <h2>Distillation for Language Models</h2>
+
+    <p>
+      With language models, distillation takes a few forms:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Logit distillation:</strong> the student matches the teacher's next-token distribution at each position. This needs access to the teacher's probabilities.</li>
+      <li><strong>Sequence distillation:</strong> the teacher generates responses, and the student is fine-tuned on them as ordinary training data.</li>
+      <li><strong>Reasoning distillation:</strong> the teacher's step-by-step reasoning traces are used to teach a small model to reason in a similar way.</li>
+    </ul>
+
+    <p>
+      Sequence distillation is the most common, because it only needs the
+      teacher's text output. Many capable small models owe a large share of
+      their quality to training on outputs from larger ones.
+    </p>
+
+    <h2>Limits</h2>
+
+    <p>
+      A student rarely surpasses its teacher on the distilled skills, and it
+      inherits the teacher's errors and biases along with its strengths. Small
+      models also have less capacity, so distillation tends to work best on a
+      focused set of tasks rather than everything the teacher can do.
+    </p>
+
+    <p>
+      Terms of service matter too: some providers restrict using their model
+      outputs to train competing models.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Distillation reflects a useful idea: the expensive part of intelligence
+      is often finding the right behavior, not executing it. Once a large
+      model has found it, a smaller one can learn to repeat it.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

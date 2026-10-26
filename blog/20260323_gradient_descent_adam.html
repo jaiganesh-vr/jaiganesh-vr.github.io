@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gradient Descent, Momentum and Adam</title>
+  <meta name="description" content="How neural networks actually learn: from plain gradient descent to momentum and Adam, the optimizer behind most modern models." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Gradient Descent, Momentum and Adam" />
+  <meta property="og:description" content="How neural networks actually learn: from plain gradient descent to momentum and Adam, the optimizer behind most modern models." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260323_gradient_descent_adam.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Gradient Descent, Momentum and Adam</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Optimization</span>
+    </p>
+
+    <p class="muted">
+      Mar 23, 2026
+    </p>
+
+    <p>
+      Training a neural network means finding parameter values that make a
+      loss function small. With billions of parameters there is no formula for
+      the answer, so we search for it step by step, guided by the gradient.
+    </p>
+
+    <h2>Gradient Descent</h2>
+
+    <p>
+      The gradient of the loss points in the direction of steepest increase.
+      Gradient descent moves the parameters a small step the other way:
+    </p>
+
+    <p class="muted">
+      θ ← θ − η · ∇L(θ)
+    </p>
+
+    <p>
+      The learning rate η controls the step size. Too small and training
+      crawls; too large and the loss oscillates or explodes.
+    </p>
+
+    <p>
+      In practice the gradient is estimated on a mini-batch rather than the
+      full dataset. This is stochastic gradient descent. The noise from
+      sampling batches is not just tolerated, it often helps the model avoid
+      poor regions of the loss surface.
+    </p>
+
+    <h2>Momentum</h2>
+
+    <p>
+      Loss surfaces are often shaped like long narrow valleys. Plain gradient
+      descent zig-zags across the valley walls while making slow progress
+      along the floor.
+    </p>
+
+    <p>
+      Momentum keeps a running average of past gradients and steps in that
+      direction instead. Oscillations across the valley cancel out; consistent
+      movement along it accumulates. The usual decay factor is around 0.9.
+    </p>
+
+    <h2>Adam</h2>
+
+    <p>
+      Adam extends momentum by also tracking a running average of squared
+      gradients for every parameter:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>m:</strong> average gradient, the momentum term, decayed with β₁ ≈ 0.9.</li>
+      <li><strong>v:</strong> average squared gradient, decayed with β₂ ≈ 0.999.</li>
+      <li><strong>Update:</strong> step by m divided by the square root of v, plus a small ε.</li>
+    </ul>
+
+    <p>
+      Dividing by √v gives each parameter its own effective learning rate.
+      Parameters with consistently large gradients take smaller steps;
+      parameters with small or rare gradients take larger ones. Both averages
+      are bias-corrected because they start at zero.
+    </p>
+
+    <p class="muted">
+      Adam's real contribution is per-parameter step sizes, which makes
+      training far less sensitive to tuning.
+    </p>
+
+    <h2>AdamW and Schedules</h2>
+
+    <p>
+      AdamW decouples weight decay from the gradient update, which fixed a
+      subtle interaction in the original algorithm and became the default for
+      training transformers.
+    </p>
+
+    <p>
+      Large models also use learning rate schedules: a short warm-up from near
+      zero, then a gradual decay, often following a cosine curve. Warm-up
+      matters because Adam's statistics are unreliable in the first steps.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The optimizer is easy to overlook because it rarely changes, but every
+      capability a model has was found one small step at a time by this
+      process.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constrained Decoding with Grammars</title>
+  <meta name="description" content="How to guarantee a model's output matches a JSON schema or grammar by masking invalid tokens during generation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Constrained Decoding with Grammars" />
+  <meta property="og:description" content="How to guarantee a model's output matches a JSON schema or grammar by masking invalid tokens during generation." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260727_constrained_decoding.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Constrained Decoding with Grammars</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Decoding</span>
+    </p>
+
+    <p class="muted">
+      Jul 27, 2026
+    </p>
+
+    <p>
+      Asking a model nicely to return valid JSON works most of the time. Most
+      of the time is not enough for software that parses the result.
+      Constrained decoding makes invalid output impossible rather than
+      unlikely.
+    </p>
+
+    <h2>The Core Idea</h2>
+
+    <p>
+      At each step, a language model produces a probability for every token in
+      its vocabulary. Constrained decoding adds a filter before sampling:
+    </p>
+
+    <ul class="post-list">
+      <li>Track where generation currently is in the target format.</li>
+      <li>Determine which tokens could legally come next.</li>
+      <li>Set the probability of every other token to zero.</li>
+      <li>Sample from what remains.</li>
+    </ul>
+
+    <p class="muted">
+      The model still chooses what to say. The grammar decides what it is
+      allowed to say.
+    </p>
+
+    <h2>From Schema to Automaton</h2>
+
+    <p>
+      The format is usually given as a regular expression, a JSON Schema or a
+      context-free grammar. These are compiled into a state machine: for
+      regular expressions, a finite automaton; for nested structures like
+      JSON, a pushdown automaton that tracks open brackets.
+    </p>
+
+    <p>
+      At each step, the current state determines the set of valid next
+      characters.
+    </p>
+
+    <h2>The Token Problem</h2>
+
+    <p>
+      Grammars are defined over characters, but models produce tokens, and a
+      single token may span several characters, such as a quote followed by a
+      letter. For each state, the decoder must work out which tokens are valid
+      as complete character sequences.
+    </p>
+
+    <p>
+      Checking the entire vocabulary at every step would be slow, so
+      implementations precompute, for each automaton state, a mask of allowed
+      tokens. With that index built in advance, constraining a step costs
+      little more than applying a mask.
+    </p>
+
+    <h2>What It Guarantees and What It Doesn't</h2>
+
+    <ul class="post-list">
+      <li><strong>Guaranteed:</strong> syntactically valid output that matches the schema, every time.</li>
+      <li><strong>Not guaranteed:</strong> correct values. A field can be valid JSON and still wrong.</li>
+      <li><strong>Possible side effect:</strong> if the model wanted to write something the grammar forbids, forcing it down an unlikely path can reduce quality.</li>
+    </ul>
+
+    <p>
+      Good practice is to let the format be reasonably natural for the model,
+      such as allowing a reasoning field before the answer field.
+    </p>
+
+    <h2>Where It's Used</h2>
+
+    <p>
+      Structured output features in model APIs, open-source libraries for
+      local models and tool calling implementations all use variants of this
+      technique to ensure arguments parse correctly.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Constrained decoding turns a soft request into a hard guarantee. It is a
+      small piece of classic computer science, automata theory, applied at
+      exactly the point where model output meets traditional software.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

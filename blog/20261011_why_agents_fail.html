@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why Agents Fail in Production</title>
+  <meta name="description" content="Agents that shine in demos often stumble with real users. The most common failure patterns, and the engineering habits that prevent them." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Why Agents Fail in Production" />
+  <meta property="og:description" content="Agents that shine in demos often stumble with real users. The most common failure patterns, and the engineering habits that prevent them." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20261011_why_agents_fail.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Why Agents Fail in Production</h1>
+
+    <p class="muted">
+      <span class="pill">AI Agents</span>
+      <span class="pill">Reliability</span>
+    </p>
+
+    <p class="muted">
+      Oct 11, 2026
+    </p>
+
+    <p>
+      An agent that works beautifully in a demo can fall apart within a week
+      of real use. The model is usually not the problem. The failures come
+      from the gap between the controlled conditions of a demo and the messy
+      variety of real tasks, data and users.
+    </p>
+
+    <h2>Compounding Errors</h2>
+
+    <p>
+      Agents chain many steps, and small error rates multiply. A step that
+      succeeds 95 percent of the time sounds reliable, but a task of twenty
+      such steps succeeds only about a third of the time.
+    </p>
+
+    <p class="muted">
+      Reliability is a property of the whole chain, not of any single step.
+    </p>
+
+    <p>
+      Shorter chains, verification at key steps and the ability to recover
+      from errors matter more than any individual prompt improvement.
+    </p>
+
+    <h2>Common Failure Patterns</h2>
+
+    <ul class="post-list">
+      <li><strong>Wrong tool, wrong arguments:</strong> ambiguous tool descriptions lead the agent to call the wrong function or guess parameters.</li>
+      <li><strong>Lost context:</strong> in long tasks, early instructions or findings get buried or summarised away.</li>
+      <li><strong>Loops:</strong> the agent retries the same failing action repeatedly, burning time and tokens.</li>
+      <li><strong>Premature success:</strong> the agent declares a task done without checking, because nothing forced it to verify.</li>
+      <li><strong>Unhandled tool errors:</strong> a raw stack trace gives the model nothing to recover with.</li>
+      <li><strong>Unexpected inputs:</strong> real users ask things no demo anticipated, in formats no test covered.</li>
+    </ul>
+
+    <h2>Habits That Prevent Them</h2>
+
+    <ul class="post-list">
+      <li><strong>Start narrow.</strong> An agent with a well-defined scope and a few tools is far more reliable than a general one.</li>
+      <li><strong>Write tool errors for the model.</strong> Explain what went wrong and how to fix it.</li>
+      <li><strong>Require verification.</strong> Make the agent check its work against something real: tests, a query, a validator.</li>
+      <li><strong>Set budgets.</strong> Cap steps, time and cost per task, and fail gracefully when they are reached.</li>
+      <li><strong>Design for handoff.</strong> Let the agent escalate to a person instead of guessing.</li>
+      <li><strong>Evaluate continuously.</strong> Turn every production failure into a test case.</li>
+    </ul>
+
+    <h2>Observability Is Not Optional</h2>
+
+    <p>
+      When an agent fails, the only way to understand why is to see what it
+      saw and did: every model call, tool call and result. Teams that log
+      complete traces from day one fix problems in hours; teams that don't are
+      left guessing.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Production agents succeed through ordinary engineering discipline more
+      than clever prompting. Scope, verification, budgets and visibility turn
+      an impressive prototype into something people can depend on.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

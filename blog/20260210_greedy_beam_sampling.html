@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greedy, Beam Search and Sampling</title>
+  <meta name="description" content="A model gives you probabilities, not text. The decoding algorithms that turn one into the other, and why the choice changes output quality." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Greedy, Beam Search and Sampling" />
+  <meta property="og:description" content="A model gives you probabilities, not text. The decoding algorithms that turn one into the other, and why the choice changes output quality." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260210_greedy_beam_sampling.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Greedy, Beam Search and Sampling</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Decoding</span>
+    </p>
+
+    <p class="muted">
+      Feb 10, 2026
+    </p>
+
+    <p>
+      A language model does not generate text directly. At every step it
+      produces a probability distribution over possible next tokens. A
+      decoding algorithm decides which token to actually pick, then feeds it
+      back in and repeats.
+    </p>
+
+    <p>
+      The same model can feel sharp or repetitive depending on that choice.
+    </p>
+
+    <h2>Greedy Decoding</h2>
+
+    <p>
+      The simplest strategy picks the single most likely token at every step.
+      It is deterministic, fast and easy to reason about.
+    </p>
+
+    <p>
+      Its weakness is that it is short-sighted. The locally best token is not
+      always part of the best overall sequence, and greedy decoding is prone
+      to loops, where a phrase becomes likely because it was just said.
+    </p>
+
+    <h2>Beam Search</h2>
+
+    <p>
+      Beam search keeps the k most likely partial sequences, called beams, at
+      each step. Every beam is extended by its most likely next tokens, and
+      only the top k overall survive.
+    </p>
+
+    <ul class="post-list">
+      <li>It finds sequences with higher total probability than greedy decoding.</li>
+      <li>It works well for tasks with one correct output, like translation or speech recognition.</li>
+      <li>Its cost grows with the beam width, since k sequences are tracked in parallel.</li>
+    </ul>
+
+    <p>
+      For open-ended generation, beam search has a known flaw: the most
+      probable text is often bland and repetitive. Human writing is rarely the
+      single most likely continuation.
+    </p>
+
+    <p class="muted">
+      Maximising probability and maximising quality are not the same goal.
+    </p>
+
+    <h2>Sampling</h2>
+
+    <p>
+      Sampling draws the next token at random according to the model's
+      distribution. This produces varied, natural-sounding text, but pure
+      sampling occasionally picks a very unlikely token and derails.
+    </p>
+
+    <p>
+      In practice, sampling is almost always combined with controls:
+      temperature to sharpen or flatten the distribution, and top-k or top-p
+      truncation to remove the unreliable tail.
+    </p>
+
+    <h2>Choosing a Strategy</h2>
+
+    <ul class="post-list">
+      <li><strong>Structured or factual output:</strong> greedy or low-temperature sampling.</li>
+      <li><strong>Translation and summarisation with classic models:</strong> beam search.</li>
+      <li><strong>Chat, writing and brainstorming:</strong> sampling with temperature and top-p.</li>
+    </ul>
+
+    <p>
+      Modern chat models are tuned with sampling in mind, which is why it is
+      the default in most APIs.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Decoding is where a probability distribution becomes a sentence. It is
+      one of the few places where you can change model behavior meaningfully
+      without retraining anything.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

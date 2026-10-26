@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perplexity: What the Number Actually Means</title>
+  <meta name="description" content="Perplexity is the classic language model metric. Where it comes from, how to interpret it, and why it says little about usefulness." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Perplexity: What the Number Actually Means" />
+  <meta property="og:description" content="Perplexity is the classic language model metric. Where it comes from, how to interpret it, and why it says little about usefulness." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/blog/20260603_perplexity.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Perplexity: What the Number Actually Means</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Evaluation</span>
+    </p>
+
+    <p class="muted">
+      Jun 03, 2026
+    </p>
+
+    <p>
+      Perplexity was the headline metric for language models long before
+      benchmarks and leaderboards took over. It still appears in papers and
+      training dashboards, and it has an intuitive meaning once you unpack it.
+    </p>
+
+    <h2>The Definition</h2>
+
+    <p>
+      Perplexity is the exponential of the average cross-entropy loss per
+      token:
+    </p>
+
+    <p class="muted">
+      PPL = exp( −(1/N) Σ log p(tokenᵢ | previous tokens) )
+    </p>
+
+    <p>
+      Equivalently, it is the inverse of the geometric mean probability the
+      model assigned to each actual next token.
+    </p>
+
+    <h2>The Intuition</h2>
+
+    <p>
+      A perplexity of k means the model is, on average, as uncertain as if it
+      were choosing uniformly among k options at each step.
+    </p>
+
+    <ul class="post-list">
+      <li>A model that always predicts the right token with certainty has perplexity 1.</li>
+      <li>A model guessing uniformly over a 50,000-token vocabulary has perplexity 50,000.</li>
+      <li>A strong model on ordinary text may sit in the single digits.</li>
+    </ul>
+
+    <p class="muted">
+      Perplexity is the effective number of choices the model is hesitating
+      between.
+    </p>
+
+    <p>
+      This makes it easier to read than raw loss. A drop from 2.3 to 2.2 in
+      loss looks small; the matching drop in perplexity, from about 10 to 9,
+      is easier to feel.
+    </p>
+
+    <h2>Comparing Values Carefully</h2>
+
+    <p>
+      Perplexity is only comparable when the setup matches:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Same tokenizer:</strong> a tokenizer with larger tokens has fewer, harder predictions, which changes per-token perplexity.</li>
+      <li><strong>Same evaluation text:</strong> perplexity on news is not comparable with perplexity on code.</li>
+      <li><strong>Same context length:</strong> models given more preceding context predict better.</li>
+    </ul>
+
+    <p>
+      Normalising by characters or bytes instead of tokens, giving bits per
+      byte, allows fairer comparisons across tokenizers.
+    </p>
+
+    <h2>What It Doesn't Tell You</h2>
+
+    <p>
+      Low perplexity means a model predicts text well. It does not directly
+      measure whether the model follows instructions, reasons correctly or
+      gives safe answers. Preference tuning often makes a model more useful
+      while slightly increasing its perplexity on raw text, because it shifts
+      the model away from imitating the average document.
+    </p>
+
+    <p>
+      It remains valuable during pre-training, where it tracks learning
+      progress smoothly and predictably, which is exactly what scaling laws
+      are built on.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Perplexity answers one narrow question very precisely: how surprised is
+      this model by this text? That is the foundation of everything else, but
+      not a substitute for measuring the rest.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>
