@@ -400,3 +400,35 @@ menu {
     0 0 6px rgba(108, 182, 255, 0.25);
   pointer-events: none;
 }
+/* ===== Reading Progress Bar (js/post.js) ===== */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow-primary);
+  z-index: 200;
+}
+
+/* ===== Collapsible Post List (js/collapse.js) ===== */
+.post[hidden] {
+  display: none;
+}
+
+.posts-toggle {
+  margin-top: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-date);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.posts-toggle:hover {
+  color: var(--link-hover);
+}
