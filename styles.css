@@ -512,3 +512,196 @@ pre code {
   font-family: inherit;
   white-space: pre;
 }
+
+/* ===== Reading Highlight (js/quote.js) ===== */
+:root {
+  --quote-marker: rgba(124, 192, 255, 0.28);
+}
+
+[data-theme="light"] {
+  --quote-marker: rgba(11, 99, 197, 0.16);
+}
+
+.reading-quote {
+  position: relative;
+  margin: 18px 0;
+}
+
+.reading-quote .quote-text {
+  margin-bottom: 8px;
+}
+
+.quote-source {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-date);
+  text-align: right;
+  transition: opacity 0.6s ease;
+}
+
+.quote-source:empty {
+  display: none;
+}
+
+.quote-source.rq-hidden {
+  opacity: 0;
+}
+
+/* Typewriter */
+.rq-cursor {
+  display: inline-block;
+  width: 0.6em;
+  border-bottom: 2px solid var(--accent);
+  animation: rq-blink 1s steps(1) infinite;
+}
+
+@keyframes rq-blink {
+  50% { opacity: 0; }
+}
+
+/* Highlighter sweep and underline draw: inline backgrounds fill line by line */
+.rq-marker,
+.rq-uline {
+  background-repeat: no-repeat;
+  transition: background-size 2s ease-in-out;
+}
+
+.rq-marker {
+  background-image: linear-gradient(var(--quote-marker), var(--quote-marker));
+  background-size: 0% 100%;
+}
+
+.rq-marker.on {
+  background-size: 100% 100%;
+}
+
+.rq-uline {
+  padding-bottom: 3px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+}
+
+.rq-uline.on {
+  background-size: 100% 1.5px;
+}
+
+/* Shine sweep */
+.rq-shine {
+  background: linear-gradient(100deg, var(--text-muted) 40%, var(--accent) 50%, var(--text-muted) 60%) 100% 0 / 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rq-shine.on {
+  animation: rq-shine 2.2s ease-in-out forwards;
+}
+
+@keyframes rq-shine {
+  to { background-position: 0 0; }
+}
+
+/* Focus pull */
+.rq-focus {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(1.06);
+  transform-origin: left center;
+}
+
+.rq-focus.on {
+  animation: rq-focus 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+@keyframes rq-focus {
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+
+/* Word-by-word reveal */
+.rq-w {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(4px);
+}
+
+.rq-w.on {
+  animation: rq-word 0.5s ease forwards;
+}
+
+@keyframes rq-word {
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+
+/* Line rise */
+.rq-lw {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.rq-li {
+  display: inline-block;
+  transform: translateY(110%);
+}
+
+.rq-li.on {
+  transform: none;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Neon glow-in */
+.rq-neon {
+  opacity: 0;
+}
+
+.rq-neon.on {
+  animation: rq-neon 1.8s ease forwards;
+}
+
+@keyframes rq-neon {
+  0%   { opacity: 0; text-shadow: none; }
+  10%  { opacity: 0.8; text-shadow: 0 0 12px var(--accent); }
+  15%  { opacity: 0.2; }
+  25%  { opacity: 1; text-shadow: 0 0 14px var(--accent), 0 0 28px var(--accent-glow-primary); }
+  30%  { opacity: 0.5; }
+  40%  { opacity: 1; text-shadow: 0 0 10px var(--accent), 0 0 24px var(--accent-glow-primary); }
+  100% { opacity: 1; text-shadow: 0 0 6px var(--accent-glow-secondary); }
+}
+
+
+/* ===== Page Transitions ===== */
+/* Crossfade between pages on the same site. Browsers without support
+   simply navigate as normal. */
+@view-transition {
+  navigation: auto;
+}
+
+/* The header is identical on every page, so keep it still while the page fades */
+header {
+  view-transition-name: site-header;
+}
+
+::view-transition-old(root) {
+  animation: page-out 0.2s ease both;
+}
+
+::view-transition-new(root) {
+  animation: page-in 0.3s ease both;
+}
+
+@keyframes page-out {
+  to { opacity: 0; }
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
