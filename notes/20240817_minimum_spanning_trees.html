@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minimum Spanning Trees</title>
+  <meta name="description" content="Connecting all vertices at minimum total cost: the cut property, Kruskal's algorithm with union-find, and Prim's algorithm with a priority queue." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Minimum Spanning Trees" />
+  <meta property="og:description" content="Connecting all vertices at minimum total cost: the cut property, Kruskal's algorithm with union-find, and Prim's algorithm with a priority queue." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240817_minimum_spanning_trees.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Minimum Spanning Trees</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Graphs</span>
+    </p>
+
+    <p class="muted">
+      Aug 17, 2024
+    </p>
+
+    <p>
+      Suppose you need to connect a set of towns with cables, and each
+      possible link has a cost. The cheapest network that connects every town
+      is a minimum spanning tree: a subset of edges that connects all vertices
+      with no cycles and minimum total weight.
+    </p>
+
+    <h2>The Generic Approach</h2>
+
+    <p>
+      Both classic MST algorithms grow a set of edges A that is always a
+      subset of some minimum spanning tree. At each step they add a safe edge,
+      one that keeps this true.
+    </p>
+
+    <h2>The Cut Property</h2>
+
+    <p>
+      A cut divides the vertices into two groups. An edge crosses the cut if
+      its endpoints are in different groups.
+    </p>
+
+    <p class="muted">
+      The lightest edge crossing any cut that respects A is safe to add.
+    </p>
+
+    <p>
+      If an MST did not contain that edge, swapping it in for a heavier edge
+      crossing the same cut would give a tree that is no heavier. This one
+      lemma proves both algorithms correct.
+    </p>
+
+    <h2>Kruskal's Algorithm</h2>
+
+    <p>
+      Kruskal's algorithm considers edges in increasing order of weight and
+      adds each edge that does not create a cycle.
+    </p>
+
+    <pre><code>def kruskal(n, edges):
+    parent = list(range(n))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]   # path halving
+            x = parent[x]
+        return x
+
+    tree = []
+    for w, u, v in sorted(edges):
+        ru, rv = find(u), find(v)
+        if ru != rv:            # different components: no cycle
+            parent[ru] = rv
+            tree.append((u, v, w))
+    return tree</code></pre>
+
+    <p>
+      A disjoint-set structure tracks which vertices are already connected.
+      Sorting dominates, so the running time is O(E lg V).
+    </p>
+
+    <h2>Prim's Algorithm</h2>
+
+    <p>
+      Prim's algorithm grows a single tree from a starting vertex. At each
+      step it adds the lightest edge connecting the tree to a vertex outside
+      it, using a priority queue keyed by each outside vertex's cheapest
+      connection.
+    </p>
+
+    <p>
+      With a binary heap, Prim's algorithm runs in O(E lg V). With a Fibonacci
+      heap, it improves to O(E + V lg V), which helps on dense graphs.
+    </p>
+
+    <h2>Choosing Between Them</h2>
+
+    <ul class="post-list">
+      <li><strong>Kruskal:</strong> simple, works well on sparse graphs, and naturally handles disconnected graphs, producing a spanning forest.</li>
+      <li><strong>Prim:</strong> resembles Dijkstra's algorithm, and is often faster on dense graphs.</li>
+    </ul>
+
+    <p>
+      Both are greedy algorithms whose greedy choice is justified by the cut
+      property.
+    </p>
+
+    <h2>Applications</h2>
+
+    <p>
+      Network design, cluster analysis (removing the heaviest MST edges splits
+      data into clusters), and approximation algorithms for problems like the
+      travelling salesperson all build on minimum spanning trees.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Minimum spanning trees are a rare case where greedy choices are provably
+      optimal. One clean lemma, the cut property, turns two simple procedures
+      into exact algorithms.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

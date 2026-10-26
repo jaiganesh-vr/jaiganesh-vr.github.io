@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red-Black Trees</title>
+  <meta name="description" content="A self-balancing binary search tree: the five red-black properties, why they bound the height, and how rotations restore balance." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Red-Black Trees" />
+  <meta property="og:description" content="A self-balancing binary search tree: the five red-black properties, why they bound the height, and how rotations restore balance." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220820_red_black_trees.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Red-Black Trees</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Data Structures</span>
+    </p>
+
+    <p class="muted">
+      Aug 20, 2022
+    </p>
+
+    <p>
+      A plain binary search tree can degrade into a linked list. Red-black
+      trees add a colour bit to each node and a few rules, which together keep
+      the tree approximately balanced and guarantee O(lg n) operations.
+    </p>
+
+    <h2>The Five Properties</h2>
+
+    <ul class="post-list">
+      <li>Every node is either red or black.</li>
+      <li>The root is black.</li>
+      <li>Every leaf, represented by a shared NIL sentinel, is black.</li>
+      <li>If a node is red, both its children are black.</li>
+      <li>For each node, every path from it down to a leaf contains the same number of black nodes.</li>
+    </ul>
+
+    <p>
+      The number of black nodes on such a path, not counting the node itself,
+      is its black-height.
+    </p>
+
+    <h2>Why the Height Is Bounded</h2>
+
+    <p>
+      The fourth rule means red nodes can never appear twice in a row on a
+      path. The fifth rule means all paths have the same number of black
+      nodes. So the longest path, alternating red and black, is at most twice
+      as long as the shortest, all black.
+    </p>
+
+    <p>
+      From this one can prove that a red-black tree with n internal nodes has
+      height at most 2 lg(n + 1).
+    </p>
+
+    <p class="muted">
+      The tree is never perfectly balanced, but it is never badly unbalanced
+      either.
+    </p>
+
+    <h2>Rotations</h2>
+
+    <p>
+      Insertions and deletions can violate the properties. They are repaired
+      with recolouring and rotations, local operations that change the tree's
+      shape while preserving the BST ordering.
+    </p>
+
+    <pre><code>  x                y
+ / \    left      / \
+a   y   ----&gt;    x   c
+   / \   rotate  / \
+  b   c         a   b</code></pre>
+
+    <p>
+      A rotation changes a constant number of pointers, so it takes O(1) time.
+    </p>
+
+    <h2>Insertion</h2>
+
+    <p>
+      A new node is inserted as in an ordinary BST and coloured red, which
+      preserves black-heights. The only possible violation is a red node with
+      a red parent. The fix-up walks up the tree:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Uncle is red:</strong> recolour parent and uncle black, grandparent red, and continue from the grandparent.</li>
+      <li><strong>Uncle is black, node is an inner child:</strong> rotate to turn it into the outer case.</li>
+      <li><strong>Uncle is black, node is an outer child:</strong> rotate at the grandparent and recolour. The tree is now valid.</li>
+    </ul>
+
+    <p>
+      At most two rotations are needed per insertion, plus O(lg n)
+      recolourings.
+    </p>
+
+    <h2>Deletion</h2>
+
+    <p>
+      Deletion is more involved, because removing a black node reduces some
+      black-heights. Its fix-up has four cases, but it also needs at most
+      three rotations and runs in O(lg n).
+    </p>
+
+    <h2>Where They Are Used</h2>
+
+    <p>
+      Red-black trees implement ordered maps and sets in many standard
+      libraries, including C++'s std::map and Java's TreeMap, and appear in
+      operating system schedulers and memory managers. AVL trees are more
+      strictly balanced, giving faster lookups but more rotations on updates.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Red-black trees achieve guaranteed logarithmic performance with very
+      little extra information: one bit per node. A handful of local repairs
+      keeps the whole tree in shape.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NP-Completeness</title>
+  <meta name="description" content="What P, NP and NP-complete mean, why checking an answer can be easy when finding one seems hard, and how reductions prove hardness, with a subset-sum example in code." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="NP-Completeness" />
+  <meta property="og:description" content="What P, NP and NP-complete mean, why checking an answer can be easy when finding one seems hard, and how reductions prove hardness, with a subset-sum example in code." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260926_np_completeness.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>NP-Completeness</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Complexity</span>
+    </p>
+
+    <p class="muted">
+      Sep 26, 2026
+    </p>
+
+    <p>
+      Every algorithm in these notes runs in polynomial time. Many important
+      problems, however, have no known polynomial-time algorithm, and
+      NP-completeness theory explains why we suspect none exists. Recognising
+      an NP-complete problem tells you to stop looking for a perfect, fast
+      algorithm and choose a different strategy.
+    </p>
+
+    <h2>Decision Problems</h2>
+
+    <p>
+      The theory is framed in terms of decision problems, which have yes or no
+      answers. Instead of asking for the shortest route, we ask whether there
+      is a route of length at most k. An optimization problem is at least as
+      hard as its decision version, so hardness results carry over.
+    </p>
+
+    <h2>P and NP</h2>
+
+    <ul class="post-list">
+      <li><strong>P:</strong> problems that can be solved in polynomial time, such as sorting, shortest paths and minimum spanning trees.</li>
+      <li><strong>NP:</strong> problems where a proposed yes-answer, called a certificate, can be verified in polynomial time.</li>
+    </ul>
+
+    <p>
+      Every problem in P is in NP. Whether P = NP is the most famous open
+      question in computer science.
+    </p>
+
+    <p class="muted">
+      For problems in NP, checking an answer is easy. Finding one may not be.
+    </p>
+
+    <h2>An Example: Subset Sum</h2>
+
+    <p>
+      Given a set of integers and a target t, is there a subset that adds up
+      to exactly t?
+    </p>
+
+    <p>
+      Verifying is easy: given a candidate subset, add it up. Solving appears
+      hard: the obvious method tries all 2ⁿ subsets.
+    </p>
+
+    <pre><code>from itertools import combinations
+
+# Verifying a certificate: polynomial time, O(n)
+def verify(numbers, target, subset):
+    return set(subset) &lt;= set(numbers) and sum(subset) == target
+
+# Finding a solution: exponential time, O(2^n · n)
+def solve(numbers, target):
+    for size in range(len(numbers) + 1):
+        for subset in combinations(numbers, size):
+            if sum(subset) == target:
+                return subset
+    return None
+
+numbers = [3, 34, 4, 12, 5, 2]
+print(solve(numbers, 9))              # (4, 5)
+print(verify(numbers, 9, (4, 5)))     # True</code></pre>
+
+    <p>
+      With 6 numbers, the search checks at most 64 subsets. With 60 numbers it
+      could need over a quintillion, while verifying any one answer still
+      takes microseconds.
+    </p>
+
+    <h2>Reductions</h2>
+
+    <p>
+      A reduction transforms instances of problem A into instances of problem
+      B in polynomial time, such that the answers match. If A reduces to B,
+      then B is at least as hard as A: a fast algorithm for B would give a
+      fast algorithm for A.
+    </p>
+
+    <h2>NP-Hard and NP-Complete</h2>
+
+    <ul class="post-list">
+      <li><strong>NP-hard:</strong> every problem in NP reduces to it.</li>
+      <li><strong>NP-complete:</strong> NP-hard and also in NP.</li>
+    </ul>
+
+    <p>
+      The Cook-Levin theorem showed that Boolean satisfiability, SAT, is
+      NP-complete. Since then, thousands of problems have been proved
+      NP-complete by reducing a known NP-complete problem to them: 3-SAT,
+      clique, vertex cover, Hamiltonian cycle, travelling salesperson and
+      subset sum among them.
+    </p>
+
+    <p>
+      If any NP-complete problem had a polynomial-time algorithm, every
+      problem in NP would, and P would equal NP.
+    </p>
+
+    <h2>What To Do in Practice</h2>
+
+    <ul class="post-list">
+      <li><strong>Small inputs:</strong> exact exponential algorithms are fine.</li>
+      <li><strong>Special structure:</strong> subset sum has a pseudo-polynomial dynamic programming solution, O(n·t), practical when t is small.</li>
+      <li><strong>Approximation:</strong> some problems, like metric TSP and vertex cover, have polynomial algorithms with provable error bounds.</li>
+      <li><strong>Heuristics and solvers:</strong> local search, SAT solvers and integer programming solve many large real instances well, despite the worst case.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      NP-completeness is a map of where efficient algorithms probably do not
+      exist. Knowing a problem's place on that map saves the effort of
+      searching for the impossible and points toward approaches that work.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

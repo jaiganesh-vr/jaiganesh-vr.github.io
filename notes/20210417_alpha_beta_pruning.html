@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alpha-Beta Pruning</title>
+  <meta name="description" content="How to compute the exact minimax decision while skipping large parts of the game tree, and why move ordering makes all the difference." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Alpha-Beta Pruning" />
+  <meta property="og:description" content="How to compute the exact minimax decision while skipping large parts of the game tree, and why move ordering makes all the difference." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210417_alpha_beta_pruning.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Alpha-Beta Pruning</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Games</span>
+    </p>
+
+    <p class="muted">
+      Apr 17, 2021
+    </p>
+
+    <p>
+      Minimax examines every node in the game tree. Alpha-beta pruning returns
+      exactly the same decision while ignoring branches that cannot possibly
+      influence it. On good move orderings it can search roughly twice as deep
+      in the same time.
+    </p>
+
+    <h2>The Key Insight</h2>
+
+    <p>
+      Suppose MAX has already found a move guaranteeing a value of 5. While
+      examining another move, MAX sees that MIN can reply with something worth
+      3. MIN would never allow more than 3 there, so that whole move is worse
+      than the 5 already secured. There is no need to look at MIN's other
+      replies.
+    </p>
+
+    <p class="muted">
+      If a move is already known to be worse than an alternative, how much
+      worse doesn't matter.
+    </p>
+
+    <h2>Alpha and Beta</h2>
+
+    <p>
+      The algorithm tracks two values during the search:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>α (alpha):</strong> the best value found so far for MAX along the current path. MAX is guaranteed at least this.</li>
+      <li><strong>β (beta):</strong> the best value found so far for MIN along the current path. MIN is guaranteed at most this.</li>
+    </ul>
+
+    <p>
+      Whenever α ≥ β at a node, the remaining children of that node are
+      pruned.
+    </p>
+
+    <pre><code>def alphabeta(state, alpha, beta, maximizing):
+    if state.is_terminal():
+        return state.utility()
+    if maximizing:
+        value = float("-inf")
+        for child in state.children():
+            value = max(value, alphabeta(child, alpha, beta, False))
+            alpha = max(alpha, value)
+            if alpha &gt;= beta:
+                break  # MIN will avoid this branch
+        return value
+    value = float("inf")
+    for child in state.children():
+        value = min(value, alphabeta(child, alpha, beta, True))
+        beta = min(beta, value)
+        if alpha &gt;= beta:
+            break  # MAX will avoid this branch
+    return value</code></pre>
+
+    <h2>Move Ordering</h2>
+
+    <p>
+      Pruning effectiveness depends entirely on the order in which moves are
+      examined. If the best moves are searched first, alpha-beta examines
+      about O(b^(m/2)) nodes instead of O(b^m), reducing the effective
+      branching factor from b to about √b. With random ordering, the gain is
+      smaller, around O(b^(3m/4)).
+    </p>
+
+    <p>
+      Practical ordering heuristics include trying captures first, trying
+      moves that were best in previous searches (killer moves), and iterative
+      deepening, where shallower searches inform the ordering of deeper ones.
+    </p>
+
+    <h2>Transposition Tables</h2>
+
+    <p>
+      The same position can arise through different move orders. Storing the
+      evaluation of positions already seen in a hash table avoids searching
+      them again, and can dramatically reduce search effort.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Alpha-beta is pure gain: no approximation, just less wasted work. It
+      remained the backbone of game-playing programs for decades, until Monte
+      Carlo methods opened a different path for games like Go.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

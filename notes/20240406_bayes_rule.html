@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bayes&#x27; Rule</title>
+  <meta name="description" content="The single equation behind most probabilistic reasoning in AI: how to turn evidence into updated beliefs, and why base rates matter so much." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Bayes' Rule" />
+  <meta property="og:description" content="The single equation behind most probabilistic reasoning in AI: how to turn evidence into updated beliefs, and why base rates matter so much." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240406_bayes_rule.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Bayes&#x27; Rule</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Apr 06, 2024
+    </p>
+
+    <p>
+      Bayes' rule is a short equation with an outsized role in AI. It tells an
+      agent how to update its beliefs when new evidence arrives, and it lets
+      us compute the probabilities we want from the ones we actually know.
+    </p>
+
+    <h2>The Rule</h2>
+
+    <p>
+      From the product rule, P(a ∧ b) = P(a | b) P(b) = P(b | a) P(a).
+      Dividing by P(b) gives:
+    </p>
+
+    <p class="muted">
+      P(a | b) = P(b | a) · P(a) / P(b)
+    </p>
+
+    <p>
+      In the language of diagnosis, with a cause and an effect:
+    </p>
+
+    <p class="muted">
+      P(cause | effect) = P(effect | cause) · P(cause) / P(effect)
+    </p>
+
+    <ul class="post-list">
+      <li><strong>P(cause):</strong> the prior, belief before seeing evidence.</li>
+      <li><strong>P(effect | cause):</strong> the likelihood, how expected the evidence is if the cause is present.</li>
+      <li><strong>P(cause | effect):</strong> the posterior, belief after seeing evidence.</li>
+    </ul>
+
+    <h2>Why It Is Useful</h2>
+
+    <p>
+      Causal knowledge, P(effect | cause), tends to be stable and easy to
+      obtain. Doctors know how often meningitis causes a stiff neck.
+      Diagnostic knowledge, P(cause | effect), is what we need, but it changes
+      with circumstances such as an epidemic.
+    </p>
+
+    <p>
+      Bayes' rule computes the diagnostic direction from the causal one. With
+      P(stiff neck | meningitis) = 0.7, P(meningitis) = 1/50,000 and P(stiff
+      neck) = 0.01, we get P(meningitis | stiff neck) = 0.0014. Even with a
+      stiff neck, meningitis remains unlikely, because it is rare.
+    </p>
+
+    <h2>The Base Rate Trap</h2>
+
+    <p>
+      Suppose a disease affects 1 percent of people, and a test detects it 99
+      percent of the time but gives false positives 5 percent of the time.
+      After a positive test:
+    </p>
+
+    <p class="muted">
+      P(disease | positive) = 0.99 × 0.01 / (0.99 × 0.01 + 0.05 × 0.99) ≈ 0.17
+    </p>
+
+    <p>
+      Only about 17 percent. Most positive results come from the large healthy
+      population. Ignoring the prior, called base rate neglect, is one of the
+      most common reasoning errors people make.
+    </p>
+
+    <p class="muted">
+      Strong evidence for a rare event can still leave it unlikely.
+    </p>
+
+    <h2>Normalisation</h2>
+
+    <p>
+      Often P(effect) is hard to obtain directly. It can be avoided: compute
+      P(effect | cause) P(cause) for every possible cause, then divide by
+      their sum so the results add to 1. This normalisation constant is
+      written α.
+    </p>
+
+    <h2>Combining Evidence</h2>
+
+    <p>
+      With several pieces of evidence, Bayes' rule needs their joint
+      likelihood, which quickly becomes too large to estimate. If the pieces
+      of evidence are conditionally independent given the cause, the
+      likelihood factors into a product of individual terms. That assumption
+      leads directly to the naive Bayes model.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Bayes' rule is the mathematics of learning from evidence. Much of
+      probabilistic AI, from spam filters to robot localisation, is this
+      equation applied carefully and at scale.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markov Decision Processes</title>
+  <meta name="description" content="Sequential decision-making under uncertainty: states, actions, transitions, rewards, discounting, policies and the Bellman equation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Markov Decision Processes" />
+  <meta property="og:description" content="Sequential decision-making under uncertainty: states, actions, transitions, rewards, discounting, policies and the Bellman equation." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250920_markov_decision_processes.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Markov Decision Processes</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Decisions</span>
+    </p>
+
+    <p class="muted">
+      Sep 20, 2025
+    </p>
+
+    <p>
+      One-shot decisions pick a single action. Many problems require a
+      sequence of decisions, where each action affects future options and the
+      outcomes are uncertain. Markov decision processes formalise that.
+    </p>
+
+    <h2>The Components</h2>
+
+    <p>
+      An MDP is defined by:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>States S:</strong> the situations the agent can be in.</li>
+      <li><strong>Actions A(s):</strong> what the agent can do in each state.</li>
+      <li><strong>Transition model P(s' | s, a):</strong> the probability of reaching s' by doing a in s.</li>
+      <li><strong>Reward function R(s, a, s'):</strong> the immediate reward for each transition.</li>
+      <li><strong>Discount factor γ:</strong> between 0 and 1, how much future rewards count.</li>
+    </ul>
+
+    <p>
+      The Markov property means transitions depend only on the current state
+      and action, not on the history.
+    </p>
+
+    <h2>A Grid World</h2>
+
+    <p>
+      The classic example is a robot in a small grid. Each move succeeds with
+      probability 0.8 and slips sideways otherwise. Two exit squares give +1
+      and −1, and every other step costs a little. The robot must find a route
+      to +1 that avoids the risk of slipping into −1.
+    </p>
+
+    <h2>Policies</h2>
+
+    <p>
+      Because outcomes are uncertain, a fixed sequence of actions is not
+      enough. The solution is a policy π(s), which specifies an action for
+      every state. An optimal policy maximises expected total discounted
+      reward.
+    </p>
+
+    <p class="muted">
+      A plan says what to do next. A policy says what to do wherever you end
+      up.
+    </p>
+
+    <p>
+      The best policy depends on the rewards. If each step is very costly, the
+      robot risks the dangerous path. If steps are cheap, it takes the long,
+      safe route.
+    </p>
+
+    <h2>Discounting</h2>
+
+    <p>
+      The total value of a sequence of rewards is:
+    </p>
+
+    <p class="muted">
+      r₀ + γ r₁ + γ² r₂ + …
+    </p>
+
+    <p>
+      Discounting keeps total reward finite in infinite tasks, and reflects a
+      preference for sooner rewards. A γ close to 1 makes the agent
+      far-sighted; close to 0, myopic.
+    </p>
+
+    <h2>The Bellman Equation</h2>
+
+    <p>
+      The utility of a state is the immediate reward plus the discounted
+      utility of the best next state, in expectation:
+    </p>
+
+    <p class="muted">
+      U(s) = max over a of Σ P(s' | s, a) [ R(s, a, s') + γ U(s') ]
+    </p>
+
+    <p>
+      This recursive relationship, the Bellman equation, defines the optimal
+      utilities. Once they are known, the optimal policy simply chooses the
+      action that achieves the maximum in each state.
+    </p>
+
+    <h2>Partially Observable MDPs</h2>
+
+    <p>
+      When the agent cannot observe the state directly, the problem becomes a
+      POMDP. The agent acts on a belief state, a probability distribution over
+      states, combining the ideas of HMMs and MDPs. POMDPs are far harder to
+      solve exactly.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      MDPs are the standard model of sequential decision-making under
+      uncertainty, and the foundation of reinforcement learning. The next note
+      looks at how to actually solve the Bellman equation.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

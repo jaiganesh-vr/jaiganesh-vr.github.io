@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bayesian Networks</title>
+  <meta name="description" content="Representing joint distributions compactly with directed graphs and conditional probability tables, and how to read independence from the structure." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Bayesian Networks" />
+  <meta property="og:description" content="Representing joint distributions compactly with directed graphs and conditional probability tables, and how to read independence from the structure." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240921_bayesian_networks.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Bayesian Networks</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Sep 21, 2024
+    </p>
+
+    <p>
+      The full joint distribution answers any probabilistic question but grows
+      exponentially with the number of variables. Bayesian networks represent
+      the same distribution compactly by making conditional independence
+      explicit in a graph.
+    </p>
+
+    <h2>The Structure</h2>
+
+    <p>
+      A Bayesian network is a directed acyclic graph:
+    </p>
+
+    <ul class="post-list">
+      <li>Each node is a random variable.</li>
+      <li>An arrow from X to Y means X directly influences Y.</li>
+      <li>Each node has a conditional probability table, P(node | parents).</li>
+    </ul>
+
+    <h2>The Classic Example</h2>
+
+    <p>
+      A house has a burglar alarm that can be set off by a burglary or an
+      earthquake. Two neighbours, John and Mary, may call when they hear it.
+      The network has arrows Burglary → Alarm, Earthquake → Alarm, Alarm →
+      JohnCalls and Alarm → MaryCalls.
+    </p>
+
+    <p>
+      John and Mary do not influence each other directly. Once we know whether
+      the alarm rang, their calls are independent.
+    </p>
+
+    <h2>The Joint Distribution</h2>
+
+    <p>
+      The network defines the full joint distribution as a product of local
+      tables:
+    </p>
+
+    <p class="muted">
+      P(x₁, …, xₙ) = Π P(xᵢ | parents(Xᵢ))
+    </p>
+
+    <p>
+      For the alarm network, that means 10 numbers instead of the 31 needed
+      for a full table over five Boolean variables. In general, if each of n
+      Boolean variables has at most k parents, the network needs about n · 2ᵏ
+      numbers instead of 2ⁿ.
+    </p>
+
+    <p class="muted">
+      A Bayesian network turns an exponential table into a collection of small
+      local ones.
+    </p>
+
+    <h2>Reading Independence</h2>
+
+    <p>
+      Each node is conditionally independent of its non-descendants, given its
+      parents. More generally, d-separation tells us whether two variables are
+      independent given some evidence, by examining the paths between them:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Chain, A → B → C:</strong> observing B blocks the path.</li>
+      <li><strong>Common cause, A ← B → C:</strong> observing B blocks the path.</li>
+      <li><strong>Common effect, A → B ← C:</strong> the path is blocked unless B, or one of its descendants, is observed.</li>
+    </ul>
+
+    <p>
+      The last case explains "explaining away". Burglary and earthquake are
+      independent, but if the alarm rang and we learn there was an earthquake,
+      burglary becomes less likely.
+    </p>
+
+    <h2>Inference</h2>
+
+    <p>
+      Inference computes the posterior distribution of query variables given
+      evidence. Exact methods include enumeration and variable elimination,
+      which avoids repeated work by caching intermediate factors.
+    </p>
+
+    <p>
+      For networks shaped like trees, called polytrees, exact inference is
+      linear in size. In general it is NP-hard, which is why approximate
+      methods based on sampling are important.
+    </p>
+
+    <h2>Building Networks</h2>
+
+    <p>
+      Networks can be built from expert knowledge, by ordering variables so
+      that causes come before effects, or learned from data. Causal ordering
+      usually gives the simplest network.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Bayesian networks connect probability with structure. They make it
+      possible to reason correctly about uncertainty in problems with many
+      variables, as long as most of them influence only a few others.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

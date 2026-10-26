@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sorting in Linear Time</title>
+  <meta name="description" content="Why comparison sorts can't beat n lg n, and how counting sort, radix sort and bucket sort break that barrier by not comparing at all." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Sorting in Linear Time" />
+  <meta property="og:description" content="Why comparison sorts can't beat n lg n, and how counting sort, radix sort and bucket sort break that barrier by not comparing at all." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210227_linear_time_sorting.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Sorting in Linear Time</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Sorting</span>
+    </p>
+
+    <p class="muted">
+      Feb 27, 2021
+    </p>
+
+    <p>
+      Merge sort, heapsort and quicksort all run in Θ(n lg n) at best. That is
+      not a coincidence: no algorithm that sorts only by comparing elements
+      can do better. Breaking the barrier requires exploiting something about
+      the keys themselves.
+    </p>
+
+    <h2>The Lower Bound</h2>
+
+    <p>
+      Any comparison sort can be modelled as a decision tree. Each internal
+      node is a comparison, and each leaf is a final ordering. To sort every
+      input correctly, the tree must have at least n! leaves, one for each
+      permutation.
+    </p>
+
+    <p>
+      A binary tree with n! leaves has height at least lg(n!), which is Θ(n lg
+      n). The height is the worst-case number of comparisons.
+    </p>
+
+    <p class="muted">
+      Every comparison sort needs Ω(n lg n) comparisons in the worst case.
+    </p>
+
+    <h2>Counting Sort</h2>
+
+    <p>
+      If keys are integers in a small range 0 to k, we can count instead of
+      compare:
+    </p>
+
+    <pre><code>def counting_sort(a, k):
+    count = [0] * (k + 1)
+    for x in a:
+        count[x] += 1
+    for i in range(1, k + 1):        # prefix sums: final positions
+        count[i] += count[i - 1]
+    out = [0] * len(a)
+    for x in reversed(a):            # reversed keeps it stable
+        count[x] -= 1
+        out[count[x]] = x
+    return out</code></pre>
+
+    <p>
+      It runs in Θ(n + k), linear when k = O(n). Crucially, it is stable:
+      equal keys keep their original order.
+    </p>
+
+    <h2>Radix Sort</h2>
+
+    <p>
+      Radix sort handles larger keys by sorting digit by digit, starting from
+      the least significant digit, using a stable sort such as counting sort
+      for each pass.
+    </p>
+
+    <p>
+      Stability is what makes this work: after sorting by the tens digit,
+      elements with equal tens digits stay in the order the ones-digit pass
+      left them.
+    </p>
+
+    <p>
+      For n numbers with d digits each in base k, radix sort takes Θ(d(n +
+      k)). Sorting a million 32-bit integers as four 8-bit digits takes four
+      linear passes.
+    </p>
+
+    <h2>Bucket Sort</h2>
+
+    <p>
+      Bucket sort assumes keys are uniformly distributed over an interval,
+      such as [0, 1). It divides the interval into n equal buckets, places
+      each element in its bucket, sorts each bucket with insertion sort, and
+      concatenates them.
+    </p>
+
+    <p>
+      With uniform input, buckets stay small and the expected time is Θ(n).
+      With skewed input, many elements can land in one bucket and performance
+      degrades.
+    </p>
+
+    <h2>The Trade-off</h2>
+
+    <ul class="post-list">
+      <li>Linear sorts depend on assumptions about keys: small integer ranges, fixed digit lengths or known distributions.</li>
+      <li>They often need extra memory, unlike in-place comparison sorts.</li>
+      <li>Comparison sorts work on anything that can be compared, which is why they remain the default.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The n lg n bound is a limit on comparing, not on sorting. When keys
+      carry exploitable structure, sorting can be as fast as reading the
+      input.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

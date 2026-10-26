@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asymptotic Notation</title>
+  <meta name="description" content="Big-O, Big-Omega and Big-Theta: how to describe an algorithm's growth rate precisely, ignoring constants and focusing on what matters at scale." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Asymptotic Notation" />
+  <meta property="og:description" content="Big-O, Big-Omega and Big-Theta: how to describe an algorithm's growth rate precisely, ignoring constants and focusing on what matters at scale." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20181215_asymptotic_notation.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Asymptotic Notation</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Analysis</span>
+    </p>
+
+    <p class="muted">
+      Dec 15, 2018
+    </p>
+
+    <p>
+      Comparing algorithms by measuring running time on a particular machine
+      tells you little about how they behave on bigger inputs. Asymptotic
+      notation describes how running time grows with input size n, ignoring
+      constant factors and lower-order terms.
+    </p>
+
+    <h2>Why Ignore Constants</h2>
+
+    <p>
+      An algorithm taking 100n steps eventually beats one taking n², no matter
+      how much faster the second one's machine is. For large n, growth rate
+      dominates everything else.
+    </p>
+
+    <p class="muted">
+      Asymptotic analysis asks how cost scales, not how fast a single run is.
+    </p>
+
+    <h2>Big-Theta: Tight Bounds</h2>
+
+    <p>
+      f(n) = Θ(g(n)) if there are positive constants c₁, c₂ and n₀ such that:
+    </p>
+
+    <p class="muted">
+      0 ≤ c₁·g(n) ≤ f(n) ≤ c₂·g(n) for all n ≥ n₀
+    </p>
+
+    <p>
+      f grows at the same rate as g, up to constant factors. For example, 3n²
+      + 10n + 5 = Θ(n²): beyond some point, the n² term dominates and the
+      whole expression stays between two multiples of n².
+    </p>
+
+    <h2>Big-O: Upper Bounds</h2>
+
+    <p>
+      f(n) = O(g(n)) if there are positive constants c and n₀ such that 0 ≤
+      f(n) ≤ c·g(n) for all n ≥ n₀.
+    </p>
+
+    <p>
+      Big-O says f grows no faster than g. It is an upper bound, so it is
+      technically true that 3n = O(n²), even though it is not tight. In
+      everyday use, people often write O when they mean Θ.
+    </p>
+
+    <h2>Big-Omega: Lower Bounds</h2>
+
+    <p>
+      f(n) = Ω(g(n)) if there are positive constants c and n₀ such that 0 ≤
+      c·g(n) ≤ f(n) for all n ≥ n₀.
+    </p>
+
+    <p>
+      Big-Omega says f grows at least as fast as g. A useful theorem ties the
+      three together: f(n) = Θ(g(n)) exactly when f(n) = O(g(n)) and f(n) =
+      Ω(g(n)).
+    </p>
+
+    <h2>Little-o and Little-omega</h2>
+
+    <ul class="post-list">
+      <li><strong>o(g(n)):</strong> strictly slower growth. 2n = o(n²), but 2n² ≠ o(n²).</li>
+      <li><strong>ω(g(n)):</strong> strictly faster growth. n² = ω(n).</li>
+    </ul>
+
+    <h2>Common Growth Rates</h2>
+
+    <p>
+      From slowest to fastest:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Θ(1):</strong> constant, such as array indexing.</li>
+      <li><strong>Θ(lg n):</strong> logarithmic, such as binary search.</li>
+      <li><strong>Θ(n):</strong> linear, such as scanning a list.</li>
+      <li><strong>Θ(n lg n):</strong> such as merge sort and heapsort.</li>
+      <li><strong>Θ(n²):</strong> quadratic, such as insertion sort in the worst case.</li>
+      <li><strong>Θ(2ⁿ):</strong> exponential, such as trying every subset.</li>
+    </ul>
+
+    <h2>Worst, Best and Average Case</h2>
+
+    <p>
+      Asymptotic notation describes functions, and an algorithm can have
+      different functions for different cases. Insertion sort is Θ(n²) in the
+      worst case and Θ(n) in the best case. Saying its running time is O(n²)
+      is correct for every input.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Asymptotic notation is the vocabulary of algorithm analysis. It strips
+      away details that change from machine to machine and keeps the one thing
+      that decides whether an algorithm can handle large inputs.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

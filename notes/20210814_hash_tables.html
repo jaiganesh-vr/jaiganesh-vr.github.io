@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Tables</title>
+  <meta name="description" content="How hash tables achieve average constant-time lookup: hash functions, collisions, chaining, open addressing and load factors." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Hash Tables" />
+  <meta property="og:description" content="How hash tables achieve average constant-time lookup: hash functions, collisions, chaining, open addressing and load factors." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210814_hash_tables.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Hash Tables</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Data Structures</span>
+    </p>
+
+    <p class="muted">
+      Aug 14, 2021
+    </p>
+
+    <p>
+      Dictionaries, sets, caches and database indexes all need fast insert,
+      search and delete. Hash tables provide all three in expected constant
+      time, which makes them one of the most widely used data structures.
+    </p>
+
+    <h2>Direct Addressing</h2>
+
+    <p>
+      If keys are small integers, we can use them as array indexes and get
+      true O(1) operations. But most key universes, such as all possible
+      strings, are vast, while only a few keys are stored. An array indexed by
+      every possible key is impossible.
+    </p>
+
+    <h2>Hashing</h2>
+
+    <p>
+      A hash table uses a much smaller array of m slots and a hash function
+      h(k) that maps each key to a slot. Two keys mapping to the same slot is
+      a collision. Collisions are unavoidable when there are more possible
+      keys than slots, so the design is about handling them well.
+    </p>
+
+    <h2>Chaining</h2>
+
+    <p>
+      With chaining, each slot holds a linked list of the keys that hash to
+      it. Insert adds to a list; search scans one list.
+    </p>
+
+    <p>
+      The load factor α = n/m is the average number of keys per slot. Under
+      the assumption that keys hash uniformly, a search takes Θ(1 + α)
+      expected time. Keeping m proportional to n keeps α constant, so
+      operations are O(1) on average.
+    </p>
+
+    <p class="muted">
+      Hash tables are fast on average, not in the worst case. Everything rests
+      on the hash function spreading keys evenly.
+    </p>
+
+    <h2>Hash Functions</h2>
+
+    <ul class="post-list">
+      <li><strong>Division method:</strong> h(k) = k mod m, with m a prime not close to a power of 2.</li>
+      <li><strong>Multiplication method:</strong> h(k) = ⌊m · (kA mod 1)⌋ for a constant 0 &lt; A &lt; 1, which works with any m.</li>
+      <li><strong>Universal hashing:</strong> choose the hash function at random from a family, so no fixed input can reliably cause collisions. This protects against adversarial inputs.</li>
+    </ul>
+
+    <h2>Open Addressing</h2>
+
+    <p>
+      Open addressing stores every key in the table itself. On a collision, it
+      probes other slots in a fixed sequence until it finds an empty one:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Linear probing:</strong> try h(k), h(k) + 1, h(k) + 2, … Simple and cache friendly, but long clusters form.</li>
+      <li><strong>Quadratic probing:</strong> step sizes grow quadratically, reducing clustering.</li>
+      <li><strong>Double hashing:</strong> a second hash function sets the step size, giving the best spread.</li>
+    </ul>
+
+    <p>
+      With load factor α &lt; 1, an unsuccessful search makes at most about
+      1/(1 − α) expected probes. At α = 0.5 that is two probes; at 0.9, ten.
+      Deletion is awkward, since removing a key can break probe sequences, so
+      deleted slots are marked rather than emptied.
+    </p>
+
+    <h2>Resizing</h2>
+
+    <p>
+      When the load factor grows too high, the table is resized, typically
+      doubled, and every key is re-inserted. A single resize costs O(n), but
+      spread across all insertions, the amortised cost per insert stays O(1).
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Hash tables trade order for speed: they cannot return keys in sorted
+      order or find ranges efficiently. For everything else, they are usually
+      the right default.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

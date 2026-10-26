@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genetic Algorithms</title>
+  <meta name="description" content="Optimization inspired by natural selection: populations, fitness, selection, crossover and mutation, and when this approach actually helps." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Genetic Algorithms" />
+  <meta property="og:description" content="Optimization inspired by natural selection: populations, fitness, selection, crossover and mutation, and when this approach actually helps." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20200801_genetic_algorithms.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Genetic Algorithms</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Optimization</span>
+    </p>
+
+    <p class="muted">
+      Aug 01, 2020
+    </p>
+
+    <p>
+      Genetic algorithms are a family of local search methods inspired by
+      evolution. Instead of improving one state, they maintain a population of
+      candidate solutions and combine the good ones to produce new candidates.
+    </p>
+
+    <h2>The Ingredients</h2>
+
+    <ul class="post-list">
+      <li><strong>Representation:</strong> each individual is encoded as a string, often of bits or digits. For 8-queens, a string of eight digits giving each queen's row.</li>
+      <li><strong>Fitness function:</strong> scores how good each individual is. For 8-queens, the number of non-attacking pairs.</li>
+      <li><strong>Population:</strong> a set of individuals, usually initialised randomly.</li>
+    </ul>
+
+    <h2>One Generation</h2>
+
+    <ul class="post-list">
+      <li><strong>Selection:</strong> choose parents with probability proportional to fitness, so better individuals reproduce more often.</li>
+      <li><strong>Crossover:</strong> pick a crossover point and swap the parents' strings after it, producing two children.</li>
+      <li><strong>Mutation:</strong> with small probability, change random positions in each child.</li>
+      <li><strong>Replacement:</strong> the children form the next generation.</li>
+    </ul>
+
+    <p>
+      Repeat until an individual is fit enough or a time limit is reached.
+    </p>
+
+    <h2>Why Crossover Matters</h2>
+
+    <p>
+      Mutation alone is just a random walk. Crossover is what makes genetic
+      algorithms different: it can combine large, independently evolved good
+      blocks from two parents into one child.
+    </p>
+
+    <p class="muted">
+      Crossover helps when good solutions are built from good parts that can
+      be combined.
+    </p>
+
+    <p>
+      This only works when the encoding places related components together. If
+      useful blocks are scattered randomly across the string, crossover mostly
+      destroys them.
+    </p>
+
+    <h2>Schemas</h2>
+
+    <p>
+      The theory behind this uses schemas: patterns where some positions are
+      fixed and others are free, such as strings starting with 246 followed by
+      any five digits. Schemas whose instances have above-average fitness tend
+      to increase in the population over generations, so good partial
+      solutions spread.
+    </p>
+
+    <h2>Strengths and Weaknesses</h2>
+
+    <ul class="post-list">
+      <li><strong>Strengths:</strong> need little problem knowledge, work in rugged landscapes and parallelise naturally.</li>
+      <li><strong>Weaknesses:</strong> many parameters to tune (population size, mutation rate, selection method), no guarantee of optimality, and often slower than a well-designed specific method.</li>
+    </ul>
+
+    <p>
+      Genetic algorithms have been used for scheduling, circuit design and
+      evolving neural network architectures. Related methods, such as genetic
+      programming, evolve programs rather than fixed strings.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Evolution is a slow but general optimizer. Genetic algorithms borrow
+      that generality, and are most useful when a problem is poorly understood
+      but candidates are easy to evaluate.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

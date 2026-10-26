@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quicksort</title>
+  <meta name="description" content="The partition-based sort that is fast in practice: how partitioning works, why the worst case is quadratic, and how randomisation fixes it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Quicksort" />
+  <meta property="og:description" content="The partition-based sort that is fast in practice: how partitioning works, why the worst case is quadratic, and how randomisation fixes it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20200912_quicksort.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Quicksort</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Sorting</span>
+    </p>
+
+    <p class="muted">
+      Sep 12, 2020
+    </p>
+
+    <p>
+      Quicksort has a worst-case running time of Θ(n²), worse than merge sort
+      or heapsort. Yet it is often the fastest sorting algorithm in practice.
+      Understanding why requires looking at both its average-case behavior and
+      its constant factors.
+    </p>
+
+    <h2>The Idea</h2>
+
+    <p>
+      Quicksort is divide and conquer with the work done before the recursion:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Divide:</strong> choose a pivot and partition the array so that elements smaller than the pivot come before it and larger ones after it.</li>
+      <li><strong>Conquer:</strong> recursively sort the two parts.</li>
+      <li><strong>Combine:</strong> nothing to do; the array is already sorted in place.</li>
+    </ul>
+
+    <h2>Partitioning</h2>
+
+    <p>
+      The Lomuto partition scheme uses the last element as the pivot and
+      sweeps once through the array:
+    </p>
+
+    <pre><code>import random
+
+def partition(a, lo, hi):
+    pivot = a[hi]
+    i = lo - 1
+    for j in range(lo, hi):
+        if a[j] &lt;= pivot:
+            i += 1
+            a[i], a[j] = a[j], a[i]
+    a[i + 1], a[hi] = a[hi], a[i + 1]
+    return i + 1
+
+def quicksort(a, lo=0, hi=None):
+    if hi is None:
+        hi = len(a) - 1
+    if lo &lt; hi:
+        r = random.randint(lo, hi)        # random pivot
+        a[r], a[hi] = a[hi], a[r]
+        p = partition(a, lo, hi)
+        quicksort(a, lo, p - 1)
+        quicksort(a, p + 1, hi)</code></pre>
+
+    <p>
+      Partitioning takes Θ(n) time and no extra memory.
+    </p>
+
+    <h2>Best and Worst Cases</h2>
+
+    <ul class="post-list">
+      <li><strong>Best case:</strong> the pivot always splits the array evenly. T(n) = 2T(n/2) + Θ(n) = Θ(n lg n).</li>
+      <li><strong>Worst case:</strong> the pivot is always the smallest or largest element, so one side is empty. T(n) = T(n − 1) + Θ(n) = Θ(n²).</li>
+    </ul>
+
+    <p>
+      With the last element as pivot, an already sorted array triggers the
+      worst case, which is a realistic input.
+    </p>
+
+    <h2>Randomisation</h2>
+
+    <p>
+      Choosing the pivot at random makes the worst case extremely unlikely for
+      any input. The expected running time of randomised quicksort is Θ(n lg
+      n). Even a consistently lopsided split, such as 9 to 1, still gives O(n
+      lg n), because the recursion depth stays logarithmic.
+    </p>
+
+    <p class="muted">
+      Randomisation moves the risk from the input, which you don't control, to
+      the coin flips, which average out.
+    </p>
+
+    <h2>Why It Is Fast in Practice</h2>
+
+    <ul class="post-list">
+      <li>Its inner loop is simple, with few operations per element.</li>
+      <li>It works in place and accesses memory sequentially, which suits caches.</li>
+      <li>Practical versions use median-of-three pivots, switch to insertion sort for small subarrays, and handle many equal keys with three-way partitioning.</li>
+    </ul>
+
+    <p>
+      Introsort, used in several standard libraries, starts with quicksort and
+      falls back to heapsort if the recursion gets too deep, guaranteeing O(n
+      lg n).
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Quicksort shows the gap between worst-case theory and practical
+      performance. With a random pivot, its bad cases become so improbable
+      that its speed on typical inputs is what counts.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hidden Markov Models</title>
+  <meta name="description" content="Reasoning about hidden states over time: transition and sensor models, filtering, prediction, smoothing and the Viterbi algorithm." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Hidden Markov Models" />
+  <meta property="og:description" content="Reasoning about hidden states over time: transition and sensor models, filtering, prediction, smoothing and the Viterbi algorithm." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250405_hidden_markov_models.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Hidden Markov Models</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Apr 05, 2025
+    </p>
+
+    <p>
+      Many problems involve a state that changes over time and can only be
+      observed indirectly: a speaker's intended words behind an audio signal,
+      a robot's position behind noisy sensor readings. Hidden Markov models
+      are the classic framework for this.
+    </p>
+
+    <h2>The Model</h2>
+
+    <p>
+      An HMM has a hidden state variable Xₜ and an observed evidence variable
+      Eₜ at each time step. It is defined by:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Initial distribution:</strong> P(X₀).</li>
+      <li><strong>Transition model:</strong> P(Xₜ | Xₜ₋₁), how the state evolves.</li>
+      <li><strong>Sensor model:</strong> P(Eₜ | Xₜ), how observations relate to the state.</li>
+    </ul>
+
+    <p>
+      Two assumptions keep this tractable:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Markov assumption:</strong> the next state depends only on the current state, not the full history.</li>
+      <li><strong>Sensor Markov assumption:</strong> each observation depends only on the current state.</li>
+    </ul>
+
+    <h2>A Simple Example</h2>
+
+    <p>
+      A security guard underground cannot see the weather but sees whether the
+      director arrives with an umbrella. The hidden state is Rain; the
+      evidence is Umbrella. Rain tends to persist from day to day, and
+      umbrellas are much more likely on rainy days.
+    </p>
+
+    <h2>Four Inference Tasks</h2>
+
+    <ul class="post-list">
+      <li><strong>Filtering:</strong> what is the current state, given all evidence so far? P(Xₜ | e₁:ₜ)</li>
+      <li><strong>Prediction:</strong> what will the state be in the future?</li>
+      <li><strong>Smoothing:</strong> what was the state at some past time, given all evidence including later observations?</li>
+      <li><strong>Most likely explanation:</strong> what sequence of states best explains the observations?</li>
+    </ul>
+
+    <h2>Filtering With the Forward Algorithm</h2>
+
+    <p>
+      Filtering is computed recursively. Each step predicts the next state
+      using the transition model, then updates with the new observation using
+      the sensor model:
+    </p>
+
+    <p class="muted">
+      f₁:ₜ₊₁ = α · P(eₜ₊₁ | Xₜ₊₁) · Σₓₜ P(Xₜ₊₁ | xₜ) · f₁:ₜ
+    </p>
+
+    <p>
+      The cost per step is constant in the length of the sequence, so an agent
+      can track the state indefinitely.
+    </p>
+
+    <p class="muted">
+      Predict with the transition model, correct with the sensor model,
+      repeat.
+    </p>
+
+    <h2>Smoothing</h2>
+
+    <p>
+      The forward-backward algorithm combines a forward pass over evidence up
+      to time k with a backward pass over evidence after k, giving better
+      estimates of past states than filtering alone.
+    </p>
+
+    <h2>The Viterbi Algorithm</h2>
+
+    <p>
+      The most likely state sequence is not the same as the sequence of
+      individually most likely states. The Viterbi algorithm finds it with
+      dynamic programming, keeping for each state the probability of the best
+      path ending there. Its cost is linear in the length of the sequence.
+    </p>
+
+    <h2>Applications</h2>
+
+    <p>
+      HMMs powered speech recognition for decades, and are used in
+      part-of-speech tagging, gene sequence analysis and handwriting
+      recognition. Kalman filters apply the same ideas to continuous states,
+      and particle filters approximate them with sampling.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Hidden Markov models capture a pattern found everywhere: a hidden
+      process unfolding over time, glimpsed only through noisy evidence. The
+      predict-then-update cycle is the core of nearly all tracking systems.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

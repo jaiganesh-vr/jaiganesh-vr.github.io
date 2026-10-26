@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amortized Analysis</title>
+  <meta name="description" content="Why a dynamic array's occasional expensive resize still means constant time per insert: the aggregate, accounting and potential methods." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Amortized Analysis" />
+  <meta property="og:description" content="Why a dynamic array's occasional expensive resize still means constant time per insert: the aggregate, accounting and potential methods." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260314_amortized_analysis.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Amortized Analysis</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Analysis</span>
+    </p>
+
+    <p class="muted">
+      Mar 14, 2026
+    </p>
+
+    <p>
+      Some data structures have operations that are usually cheap but
+      occasionally expensive. Worst-case analysis per operation gives a
+      misleadingly pessimistic picture. Amortized analysis bounds the average
+      cost per operation over any sequence of operations, without using
+      probability.
+    </p>
+
+    <h2>The Classic Example: Dynamic Arrays</h2>
+
+    <p>
+      A dynamic array, like Python's list, stores elements in a fixed-size
+      block. When it fills up, it allocates a block twice as large and copies
+      everything over.
+    </p>
+
+    <p>
+      Most appends cost O(1). An append that triggers a resize costs O(n). Is
+      appending therefore O(n)? Only in the worst case for a single operation.
+      Over many appends, the expensive ones are rare.
+    </p>
+
+    <p class="muted">
+      Amortized cost is a guarantee about sequences, not an average over
+      random inputs.
+    </p>
+
+    <h2>The Aggregate Method</h2>
+
+    <p>
+      Count the total cost of n operations and divide by n.
+    </p>
+
+    <p>
+      For n appends with doubling, copies happen at sizes 1, 2, 4, 8, and so
+      on up to n. The total copying is less than 2n, plus n for the appends
+      themselves. So the total is under 3n, and each append costs O(1)
+      amortized.
+    </p>
+
+    <h2>The Accounting Method</h2>
+
+    <p>
+      Charge each operation a fixed fee, possibly more than its actual cost,
+      and store the surplus as credit on the data structure. Expensive
+      operations spend that credit.
+    </p>
+
+    <p>
+      For dynamic arrays, charge 3 units per append: 1 pays for the insertion,
+      and 2 are saved. When the array doubles, the elements added since the
+      last resize have saved enough credit to pay for copying themselves and
+      the older elements. The credit never goes negative, so 3 per operation
+      is a valid bound.
+    </p>
+
+    <h2>The Potential Method</h2>
+
+    <p>
+      Define a potential function Φ on the state of the data structure,
+      representing stored work. The amortized cost of an operation is its
+      actual cost plus the change in potential:
+    </p>
+
+    <p class="muted">
+      amortized cost = actual cost + Φ(after) − Φ(before)
+    </p>
+
+    <p>
+      As long as the potential never drops below its starting value, the total
+      amortized cost bounds the total actual cost. For dynamic arrays, Φ =
+      2·(number of elements) − (capacity) works neatly: it rises with each
+      cheap append and falls sharply at each resize, paying for the copy.
+    </p>
+
+    <h2>Another Example: A Binary Counter</h2>
+
+    <p>
+      Incrementing a binary counter can flip many bits, for example 0111 to
+      1000. But bit 0 flips every time, bit 1 every second time, bit 2 every
+      fourth time. Over n increments the total number of flips is under 2n, so
+      each increment costs O(1) amortized.
+    </p>
+
+    <h2>Where It Matters</h2>
+
+    <p>
+      Amortized bounds explain the efficiency of hash table resizing,
+      union-find with path compression, splay trees and Fibonacci heaps. They
+      are not suitable when every single operation must be fast, as in hard
+      real-time systems.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Amortized analysis captures a common pattern in data structures:
+      occasional expensive work that pays for itself by making many later
+      operations cheap.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

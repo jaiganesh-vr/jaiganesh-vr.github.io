@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naive Bayes</title>
+  <meta name="description" content="A simple, fast classifier built on Bayes' rule and a strong independence assumption, with spam filtering as the classic example." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Naive Bayes" />
+  <meta property="og:description" content="A simple, fast classifier built on Bayes' rule and a strong independence assumption, with spam filtering as the classic example." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240629_naive_bayes.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Naive Bayes</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Jun 29, 2024
+    </p>
+
+    <p>
+      Naive Bayes is one of the simplest probabilistic classifiers and still a
+      strong baseline for text classification. It applies Bayes' rule with one
+      bold simplifying assumption.
+    </p>
+
+    <h2>The Model</h2>
+
+    <p>
+      We want the most probable class given a set of features, such as whether
+      an email is spam given the words in it. By Bayes' rule:
+    </p>
+
+    <p class="muted">
+      P(class | features) ∝ P(features | class) · P(class)
+    </p>
+
+    <p>
+      Estimating P(features | class) for every combination of words is
+      impossible. Naive Bayes assumes all features are conditionally
+      independent given the class:
+    </p>
+
+    <p class="muted">
+      P(class | f₁, …, fₙ) ∝ P(class) · Π P(fᵢ | class)
+    </p>
+
+    <p>
+      The assumption is naive, because words in an email are clearly not
+      independent. Yet the classifier works well in practice, because it only
+      needs to rank classes correctly, not estimate exact probabilities.
+    </p>
+
+    <h2>Training</h2>
+
+    <p>
+      Training is just counting:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>P(class):</strong> the fraction of training examples in each class.</li>
+      <li><strong>P(word | class):</strong> how often each word appears in examples of that class.</li>
+    </ul>
+
+    <p>
+      This makes naive Bayes extremely fast to train and easy to update with
+      new data.
+    </p>
+
+    <h2>Two Practical Details</h2>
+
+    <ul class="post-list">
+      <li><strong>Smoothing:</strong> a word never seen in spam during training would get probability zero, wiping out the whole product. Laplace smoothing adds one to every count so no probability is ever zero.</li>
+      <li><strong>Log probabilities:</strong> multiplying hundreds of small probabilities underflows. Summing their logarithms gives the same ranking safely.</li>
+    </ul>
+
+    <pre><code>import math
+from collections import Counter
+
+def train(docs, labels):
+    classes = set(labels)
+    prior = {c: labels.count(c) / len(labels) for c in classes}
+    counts = {c: Counter() for c in classes}
+    for words, c in zip(docs, labels):
+        counts[c].update(words)
+    vocab = {w for words in docs for w in words}
+    return prior, counts, vocab
+
+def classify(words, prior, counts, vocab):
+    def score(c):
+        total = sum(counts[c].values()) + len(vocab)
+        return math.log(prior[c]) + sum(
+            math.log((counts[c][w] + 1) / total) for w in words)
+    return max(prior, key=score)</code></pre>
+
+    <p class="muted">
+      Count, smooth, take logs, add. That is the whole classifier.
+    </p>
+
+    <h2>Strengths and Weaknesses</h2>
+
+    <ul class="post-list">
+      <li><strong>Strengths:</strong> fast, needs little data, handles many features, and is easy to interpret.</li>
+      <li><strong>Weaknesses:</strong> probability estimates are poorly calibrated, often too close to 0 or 1, and strongly correlated features get counted several times.</li>
+    </ul>
+
+    <h2>Where It Is Used</h2>
+
+    <p>
+      Spam filtering, document categorisation, sentiment analysis and simple
+      medical diagnosis systems have all used naive Bayes. It remains a
+      sensible first model to try before reaching for something heavier.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Naive Bayes shows that a model can be wrong in its assumptions and still
+      useful in its predictions. The next step, Bayesian networks, keeps only
+      the independence assumptions that are actually justified.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

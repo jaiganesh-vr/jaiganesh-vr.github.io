@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greedy Algorithms</title>
+  <meta name="description" content="Making the locally best choice at each step: when that leads to a global optimum, with activity selection, Huffman codes and the knapsack problem as examples." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Greedy Algorithms" />
+  <meta property="og:description" content="Making the locally best choice at each step: when that leads to a global optimum, with activity selection, Huffman codes and the knapsack problem as examples." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230826_greedy_algorithms.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Greedy Algorithms</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Design Techniques</span>
+    </p>
+
+    <p class="muted">
+      Aug 26, 2023
+    </p>
+
+    <p>
+      A greedy algorithm makes the choice that looks best right now and never
+      reconsiders it. That is simpler and faster than dynamic programming,
+      which weighs every option. The catch is that greedy choices only lead to
+      an optimal solution for certain problems.
+    </p>
+
+    <h2>When Greedy Works</h2>
+
+    <p>
+      Greedy algorithms are correct when a problem has two properties:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Greedy-choice property:</strong> a globally optimal solution can be reached by making a locally optimal choice first.</li>
+      <li><strong>Optimal substructure:</strong> after making that choice, the remaining problem is a smaller instance of the same problem.</li>
+    </ul>
+
+    <p>
+      Proving the greedy-choice property is the essential step. A common
+      technique is the exchange argument: take any optimal solution and show
+      it can be modified to include the greedy choice without getting worse.
+    </p>
+
+    <h2>Activity Selection</h2>
+
+    <p>
+      Given activities with start and finish times, select the largest set of
+      non-overlapping activities.
+    </p>
+
+    <p>
+      The greedy rule: always pick the activity that finishes earliest, then
+      repeat with the activities that start after it.
+    </p>
+
+    <pre><code>def select_activities(activities):
+    chosen, last_finish = [], float("-inf")
+    for start, finish in sorted(activities, key=lambda a: a[1]):
+        if start &gt;= last_finish:
+            chosen.append((start, finish))
+            last_finish = finish
+    return chosen</code></pre>
+
+    <p>
+      Finishing earliest leaves the most room for everything else. After
+      sorting, this takes linear time.
+    </p>
+
+    <p class="muted">
+      Greedy works when one good local decision never closes off a better
+      global outcome.
+    </p>
+
+    <h2>Huffman Codes</h2>
+
+    <p>
+      Huffman coding builds an optimal prefix-free binary code for compressing
+      data. Frequent characters get short codes, rare ones long codes.
+    </p>
+
+    <p>
+      The greedy step: repeatedly merge the two least frequent nodes into a
+      new node whose frequency is their sum. Using a priority queue, this runs
+      in O(n lg n) for n characters. Huffman coding is part of formats such as
+      DEFLATE, used in ZIP and PNG.
+    </p>
+
+    <h2>Knapsack: Where Greedy Fails</h2>
+
+    <p>
+      In the fractional knapsack problem, items can be split. Taking items in
+      order of value per unit weight is optimal.
+    </p>
+
+    <p>
+      In the 0-1 knapsack problem, items must be taken whole. The same greedy
+      rule can fail: a high-ratio item may leave unused capacity that a
+      combination of other items would have filled better. The 0-1 version
+      needs dynamic programming.
+    </p>
+
+    <h2>Other Greedy Algorithms</h2>
+
+    <p>
+      Several fundamental graph algorithms are greedy: Prim's and Kruskal's
+      algorithms for minimum spanning trees, and Dijkstra's algorithm for
+      shortest paths. Each relies on a property guaranteeing that its local
+      choice is safe.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Greedy algorithms are often the simplest and fastest solution, but they
+      require proof. The difference between fractional and 0-1 knapsack shows
+      how a small change to a problem can make the greedy approach fail.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

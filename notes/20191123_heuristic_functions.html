@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heuristic Functions</title>
+  <meta name="description" content="What heuristics are, what makes them admissible and consistent, and how to invent good ones by relaxing a problem." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Heuristic Functions" />
+  <meta property="og:description" content="What heuristics are, what makes them admissible and consistent, and how to invent good ones by relaxing a problem." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20191123_heuristic_functions.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Heuristic Functions</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Search</span>
+    </p>
+
+    <p class="muted">
+      Nov 23, 2019
+    </p>
+
+    <p>
+      Uninformed search explores blindly. Informed search uses a heuristic
+      function, h(n), which estimates the cost of the cheapest path from a
+      state n to a goal. A good heuristic can turn an impossible search into a
+      fast one.
+    </p>
+
+    <h2>Example: The 8-Puzzle</h2>
+
+    <p>
+      Two classic heuristics for the sliding tile puzzle:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>h₁, misplaced tiles:</strong> count the tiles not in their goal position.</li>
+      <li><strong>h₂, Manhattan distance:</strong> sum, over all tiles, of the horizontal and vertical distance to the goal position.</li>
+    </ul>
+
+    <p>
+      Both are cheap to compute and both never overestimate the true number of
+      moves, since each misplaced tile needs at least one move, and in fact at
+      least its Manhattan distance.
+    </p>
+
+    <h2>Admissibility</h2>
+
+    <p>
+      A heuristic is admissible if it never overestimates the true cost to
+      reach the goal. Admissible heuristics are optimistic. This property is
+      what guarantees that A* tree search returns an optimal solution.
+    </p>
+
+    <h2>Consistency</h2>
+
+    <p>
+      A heuristic is consistent if, for every node n and successor n' reached
+      with step cost c:
+    </p>
+
+    <p class="muted">
+      h(n) ≤ c + h(n')
+    </p>
+
+    <p>
+      This is a form of the triangle inequality. Every consistent heuristic is
+      admissible, and consistency guarantees A* graph search is optimal
+      without reopening nodes.
+    </p>
+
+    <h2>Dominance</h2>
+
+    <p>
+      If h₂(n) ≥ h₁(n) for every n, and both are admissible, h₂ dominates h₁.
+      A dominating heuristic never expands more nodes. Manhattan distance
+      dominates misplaced tiles, and in practice expands far fewer nodes on
+      deeper puzzles.
+    </p>
+
+    <p class="muted">
+      Prefer the larger heuristic, as long as it stays admissible and cheap to
+      compute.
+    </p>
+
+    <h2>Inventing Heuristics by Relaxation</h2>
+
+    <p>
+      A relaxed problem has fewer restrictions on actions. The cost of an
+      optimal solution to a relaxed problem is an admissible heuristic for the
+      original.
+    </p>
+
+    <ul class="post-list">
+      <li>If a tile could move anywhere, we get misplaced tiles.</li>
+      <li>If a tile could move to any adjacent square, even occupied, we get Manhattan distance.</li>
+    </ul>
+
+    <p>
+      Other techniques include pattern databases, which precompute exact costs
+      for subproblems, and learning heuristics from solved examples.
+    </p>
+
+    <h2>Effective Branching Factor</h2>
+
+    <p>
+      Heuristic quality can be measured by the effective branching factor b*:
+      the branching factor a uniform tree would need to contain the number of
+      nodes actually expanded. Good heuristics push b* close to 1.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      A heuristic is knowledge compressed into a number. The better it
+      approximates the true remaining cost, the less of the space search has
+      to explore.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

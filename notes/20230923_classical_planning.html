@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classical Planning</title>
+  <meta name="description" content="Representing actions with preconditions and effects, the STRIPS and PDDL languages, forward and backward state-space planning, and planning heuristics." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Classical Planning" />
+  <meta property="og:description" content="Representing actions with preconditions and effects, the STRIPS and PDDL languages, forward and backward state-space planning, and planning heuristics." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230923_classical_planning.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Classical Planning</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Planning</span>
+    </p>
+
+    <p class="muted">
+      Sep 23, 2023
+    </p>
+
+    <p>
+      Planning is the task of finding a sequence of actions that achieves a
+      goal. Search can do this, but planning uses a structured representation
+      of states and actions, which allows general, domain-independent
+      heuristics.
+    </p>
+
+    <h2>Representing States and Actions</h2>
+
+    <p>
+      In classical planning, a state is a conjunction of ground facts, like
+      At(Truck, Depot) ∧ In(Box, Truck). Anything not stated is assumed false.
+    </p>
+
+    <p>
+      Actions are described by schemas with preconditions and effects:
+    </p>
+
+    <pre><code>Action: Fly(p, from, to)
+  Precondition: At(p, from) ∧ Plane(p) ∧ Airport(from) ∧ Airport(to)
+  Effect:       ¬At(p, from) ∧ At(p, to)</code></pre>
+
+    <p>
+      The effect lists what becomes true (the add list) and what becomes false
+      (the delete list). Everything else stays the same, which neatly
+      sidesteps the frame problem of stating everything that does not change.
+    </p>
+
+    <p>
+      This style comes from STRIPS and is standardised in PDDL, the Planning
+      Domain Definition Language used in planning competitions.
+    </p>
+
+    <h2>Forward State-Space Search</h2>
+
+    <p>
+      Forward planning starts from the initial state and applies applicable
+      actions until a goal state is reached. It is straightforward, but the
+      number of applicable actions can be enormous, most of them irrelevant.
+    </p>
+
+    <h2>Backward Search</h2>
+
+    <p>
+      Backward, or regression, planning starts from the goal and considers
+      only actions that achieve part of it. Regressing a goal through an
+      action produces the subgoal that must hold before the action. It focuses
+      on relevant actions, but works with sets of states, which makes
+      heuristics harder to design.
+    </p>
+
+    <h2>Domain-Independent Heuristics</h2>
+
+    <p>
+      The structured representation allows heuristics that work for any
+      planning problem:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Ignore preconditions:</strong> every action is applicable, so the heuristic counts how many actions are needed to achieve all goals.</li>
+      <li><strong>Ignore delete lists:</strong> actions never undo progress, which gives a relaxed problem that is much easier to solve.</li>
+    </ul>
+
+    <p>
+      Planners using relaxed-problem heuristics, such as Fast Forward, made
+      forward search highly effective.
+    </p>
+
+    <p class="muted">
+      The same relaxation trick that gives heuristics for puzzles gives
+      heuristics for any planning domain.
+    </p>
+
+    <h2>Planning Graphs</h2>
+
+    <p>
+      A planning graph alternates levels of facts and actions, approximating
+      which facts could become true after each number of steps. It provides
+      accurate heuristic estimates, and the GraphPlan algorithm extracts plans
+      directly from it.
+    </p>
+
+    <h2>Beyond Classical Planning</h2>
+
+    <p>
+      Real-world planning adds time, resources, uncertainty and hierarchy.
+      Hierarchical task networks decompose high-level tasks into subtasks,
+      much as people plan a trip before booking each step.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Classical planning shows the value of describing actions explicitly.
+      Once preconditions and effects are visible to the planner, it can reason
+      about which actions matter and estimate how far it is from the goal.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

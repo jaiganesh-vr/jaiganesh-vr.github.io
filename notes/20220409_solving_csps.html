@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solving CSPs: Backtracking and Arc Consistency</title>
+  <meta name="description" content="Backtracking search, variable and value ordering heuristics, forward checking and the AC-3 algorithm for constraint propagation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Solving CSPs: Backtracking and Arc Consistency" />
+  <meta property="og:description" content="Backtracking search, variable and value ordering heuristics, forward checking and the AC-3 algorithm for constraint propagation." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220409_solving_csps.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Solving CSPs: Backtracking and Arc Consistency</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">CSP</span>
+    </p>
+
+    <p class="muted">
+      Apr 09, 2022
+    </p>
+
+    <p>
+      Constraint satisfaction problems are solved by combining search with
+      inference. Search assigns values; inference uses the constraints to rule
+      out values before they are tried.
+    </p>
+
+    <h2>Backtracking Search</h2>
+
+    <p>
+      Backtracking search is depth-first search that assigns one variable at a
+      time and backs up as soon as a constraint is violated.
+    </p>
+
+    <pre><code>def backtrack(assignment, csp):
+    if len(assignment) == len(csp.variables):
+        return assignment
+    var = select_unassigned_variable(assignment, csp)
+    for value in order_domain_values(var, assignment, csp):
+        if csp.consistent(var, value, assignment):
+            assignment[var] = value
+            result = backtrack(assignment, csp)
+            if result is not None:
+                return result
+            del assignment[var]
+    return None</code></pre>
+
+    <p>
+      Because CSPs are commutative, the order of assignments does not change
+      the result, so only one variable needs to be considered at each level.
+    </p>
+
+    <h2>Ordering Heuristics</h2>
+
+    <ul class="post-list">
+      <li><strong>Minimum remaining values (MRV):</strong> choose the variable with the fewest legal values left. It fails fast, pruning dead ends early.</li>
+      <li><strong>Degree heuristic:</strong> break ties by choosing the variable involved in the most constraints with unassigned variables.</li>
+      <li><strong>Least constraining value:</strong> try values that rule out the fewest choices for neighbouring variables.</li>
+    </ul>
+
+    <p class="muted">
+      Choose the most constrained variable, then the least constraining value.
+    </p>
+
+    <h2>Forward Checking</h2>
+
+    <p>
+      Whenever a variable is assigned, forward checking removes inconsistent
+      values from the domains of its unassigned neighbours. If any domain
+      becomes empty, the algorithm backtracks immediately.
+    </p>
+
+    <h2>Arc Consistency</h2>
+
+    <p>
+      An arc X → Y is consistent if, for every value of X, there is some value
+      of Y that satisfies the constraint between them. The AC-3 algorithm
+      enforces this across the whole problem:
+    </p>
+
+    <ul class="post-list">
+      <li>Put every arc in a queue.</li>
+      <li>Remove an arc X → Y and delete any value of X with no supporting value in Y.</li>
+      <li>If X's domain changed, add all arcs Z → X back to the queue.</li>
+      <li>Repeat until the queue is empty.</li>
+    </ul>
+
+    <p>
+      AC-3 runs in O(c·d³) for c constraints and domain size d. Running it
+      after each assignment, called maintaining arc consistency, detects
+      failures much earlier than forward checking.
+    </p>
+
+    <h2>Smarter Backtracking</h2>
+
+    <p>
+      Chronological backtracking returns to the most recent decision, even if
+      it had nothing to do with the failure. Conflict-directed backjumping
+      jumps back to a variable actually responsible for the conflict.
+    </p>
+
+    <h2>Problem Structure</h2>
+
+    <p>
+      If the constraint graph is a tree, a CSP can be solved in time linear in
+      the number of variables. Real problems can sometimes be reduced to trees
+      by assigning a small set of variables first, called a cycle cutset.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The power of CSP solvers comes from interleaving search with inference.
+      Every value ruled out by propagation is a whole subtree that search
+      never has to visit.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

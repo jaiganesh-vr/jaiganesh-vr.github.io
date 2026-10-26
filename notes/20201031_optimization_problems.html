@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Optimization Problems in AI</title>
+  <meta name="description" content="From discrete to continuous: objective functions, constraints, gradient methods and the difference between local and global optima." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Optimization Problems in AI" />
+  <meta property="og:description" content="From discrete to continuous: objective functions, constraints, gradient methods and the difference between local and global optima." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20201031_optimization_problems.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Optimization Problems in AI</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Optimization</span>
+    </p>
+
+    <p class="muted">
+      Oct 31, 2020
+    </p>
+
+    <p>
+      Search problems ask for a path to a goal. Optimization problems ask for
+      the best state according to an objective function. Many real AI tasks,
+      from scheduling to training a neural network, are optimization problems
+      at heart.
+    </p>
+
+    <h2>The Components</h2>
+
+    <ul class="post-list">
+      <li><strong>Variables:</strong> what we can choose.</li>
+      <li><strong>Objective function:</strong> what we want to maximise or minimise.</li>
+      <li><strong>Constraints:</strong> conditions any solution must satisfy.</li>
+    </ul>
+
+    <p>
+      For example, placing three airports to minimise the total squared
+      distance from each city to its nearest airport: the variables are six
+      coordinates, and the objective is the sum of squared distances.
+    </p>
+
+    <h2>Local and Global Optima</h2>
+
+    <p>
+      A local optimum is better than all its neighbours. A global optimum is
+      better than every state. Most practical algorithms only guarantee local
+      optima, which is why the shape of the landscape matters so much.
+    </p>
+
+    <p class="muted">
+      Convex problems have no bad local optima. Every local minimum is the
+      global one.
+    </p>
+
+    <p>
+      Convex problems, such as linear and quadratic programming, can be solved
+      efficiently and reliably. Most interesting AI problems are not convex.
+    </p>
+
+    <h2>Continuous Spaces</h2>
+
+    <p>
+      When variables are continuous, there are infinitely many neighbours, so
+      hill climbing in its basic form does not apply. Two common approaches:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Discretise:</strong> move each variable by a small fixed step and treat it as a discrete problem.</li>
+      <li><strong>Use the gradient:</strong> the gradient ∇f points in the direction of steepest increase, so move along it.</li>
+    </ul>
+
+    <p>
+      Gradient ascent updates:
+    </p>
+
+    <p class="muted">
+      x ← x + α ∇f(x)
+    </p>
+
+    <p>
+      where α is the step size. Too small and progress is slow; too large and
+      the search overshoots. Newton's method also uses second derivatives to
+      choose steps more intelligently, at higher cost per step.
+    </p>
+
+    <h2>Constrained Optimization</h2>
+
+    <p>
+      Constraints restrict the feasible region. Linear programming handles
+      linear objectives with linear constraints, and is one of the most widely
+      applied optimization tools in industry. Lagrange multipliers turn
+      equality-constrained problems into unconstrained ones.
+    </p>
+
+    <h2>Combinatorial Optimization</h2>
+
+    <p>
+      Many problems have discrete variables and a huge number of combinations:
+      travelling salesperson, scheduling, packing. Exact methods exist but
+      often take exponential time, so local search, simulated annealing and
+      genetic algorithms are used to find good, if not provably best,
+      solutions.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Optimization is the common thread between classic AI search and modern
+      machine learning. Training a model is, in the end, a very large
+      optimization problem solved by following gradients.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

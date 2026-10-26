@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All-Pairs Shortest Paths</title>
+  <meta name="description" content="Computing shortest distances between every pair of vertices: repeated single-source runs, the Floyd-Warshall algorithm, and Johnson's reweighting trick." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="All-Pairs Shortest Paths" />
+  <meta property="og:description" content="Computing shortest distances between every pair of vertices: repeated single-source runs, the Floyd-Warshall algorithm, and Johnson's reweighting trick." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250823_all_pairs_shortest_paths.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>All-Pairs Shortest Paths</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Graphs</span>
+    </p>
+
+    <p class="muted">
+      Aug 23, 2025
+    </p>
+
+    <p>
+      Sometimes we need the shortest distance between every pair of vertices,
+      for example to build a distance table between all cities on a map. The
+      output alone is a V × V matrix, so the question is how efficiently it
+      can be filled.
+    </p>
+
+    <h2>Running Single-Source Algorithms V Times</h2>
+
+    <p>
+      The obvious approach runs a single-source algorithm from every vertex:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Dijkstra from each vertex:</strong> O(V(V + E) lg V) with a binary heap, if all weights are non-negative.</li>
+      <li><strong>Bellman-Ford from each vertex:</strong> O(V²E), which is O(V⁴) on dense graphs. Too slow.</li>
+    </ul>
+
+    <h2>Floyd-Warshall</h2>
+
+    <p>
+      Floyd-Warshall uses dynamic programming. Number the vertices 1 to n. Let
+      d_k[i][j] be the length of the shortest path from i to j using only
+      vertices 1 to k as intermediate stops. Either the best path avoids
+      vertex k, or it goes through k exactly once:
+    </p>
+
+    <p class="muted">
+      d_k[i][j] = min( d_(k−1)[i][j], d_(k−1)[i][k] + d_(k−1)[k][j] )
+    </p>
+
+    <pre><code>def floyd_warshall(n, weight):
+    INF = float("inf")
+    d = [[0 if i == j else weight.get((i, j), INF) for j in range(n)]
+         for i in range(n)]
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if d[i][k] + d[k][j] &lt; d[i][j]:
+                    d[i][j] = d[i][k] + d[k][j]
+    return d</code></pre>
+
+    <p>
+      Three nested loops give Θ(V³) time, with tiny constants and Θ(V²) space,
+      since the table can be updated in place. It handles negative edges, and
+      a negative value on the diagonal reveals a negative cycle.
+    </p>
+
+    <p class="muted">
+      Allow one more intermediate vertex at a time, and update every pair.
+    </p>
+
+    <h2>Transitive Closure</h2>
+
+    <p>
+      A variation answers a simpler question: can i reach j at all? Replacing
+      min and plus with logical OR and AND gives the transitive closure of a
+      graph in the same Θ(V³) time.
+    </p>
+
+    <h2>Johnson's Algorithm</h2>
+
+    <p>
+      For sparse graphs with negative edges, Johnson's algorithm does better.
+      It reweights every edge to make all weights non-negative without
+      changing which paths are shortest, then runs Dijkstra from each vertex.
+    </p>
+
+    <ul class="post-list">
+      <li>Add a new vertex s with zero-weight edges to every vertex.</li>
+      <li>Run Bellman-Ford from s to get a value h(v) for each vertex.</li>
+      <li>Reweight each edge (u, v) as w(u, v) + h(u) − h(v), which is never negative.</li>
+      <li>Run Dijkstra from every vertex, then undo the reweighting.</li>
+    </ul>
+
+    <p>
+      Every path between the same two vertices shifts by the same amount, so
+      shortest paths are preserved. The total time is O(V² lg V + VE) with a
+      Fibonacci heap.
+    </p>
+
+    <h2>Choosing an Algorithm</h2>
+
+    <ul class="post-list">
+      <li><strong>Dense graphs:</strong> Floyd-Warshall, for its simplicity and small constants.</li>
+      <li><strong>Sparse graphs, non-negative weights:</strong> Dijkstra from every vertex.</li>
+      <li><strong>Sparse graphs, negative weights:</strong> Johnson's algorithm.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      All-pairs shortest paths shows dynamic programming at its cleanest.
+      Floyd-Warshall solves a seemingly complex problem with three loops and a
+      single comparison.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

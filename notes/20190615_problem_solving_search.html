@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Problem Solving as Search</title>
+  <meta name="description" content="How AI formulates problems as states, actions and goals, and why so many tasks reduce to finding a path through a state space." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Problem Solving as Search" />
+  <meta property="og:description" content="How AI formulates problems as states, actions and goals, and why so many tasks reduce to finding a path through a state space." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20190615_problem_solving_search.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Problem Solving as Search</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Search</span>
+    </p>
+
+    <p class="muted">
+      Jun 15, 2019
+    </p>
+
+    <p>
+      Many AI problems share a structure: there is a starting situation, a
+      goal, and a set of actions that change the situation. Finding a sequence
+      of actions that reaches the goal is a search problem.
+    </p>
+
+    <h2>Formulating a Problem</h2>
+
+    <p>
+      A search problem is defined by:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Initial state:</strong> where the agent starts.</li>
+      <li><strong>Actions:</strong> what can be done in each state.</li>
+      <li><strong>Transition model:</strong> the state that results from each action.</li>
+      <li><strong>Goal test:</strong> whether a state satisfies the goal.</li>
+      <li><strong>Path cost:</strong> the cost of a sequence of actions, usually a sum of step costs.</li>
+    </ul>
+
+    <p>
+      A solution is a sequence of actions from the initial state to a goal
+      state. An optimal solution has the lowest path cost.
+    </p>
+
+    <h2>Abstraction</h2>
+
+    <p>
+      Formulation is where most of the work happens. A route-finding problem
+      does not model weather, traffic lights or the radio. Good abstraction
+      removes detail that does not affect the solution, while keeping every
+      abstract action executable in the real world.
+    </p>
+
+    <p class="muted">
+      A good formulation is as simple as possible, but no simpler.
+    </p>
+
+    <h2>Examples</h2>
+
+    <ul class="post-list">
+      <li><strong>The 8-puzzle:</strong> states are tile arrangements, actions slide the blank tile.</li>
+      <li><strong>Route finding:</strong> states are cities, actions are roads, costs are distances.</li>
+      <li><strong>The 8-queens problem:</strong> place queens so that none attack each other.</li>
+    </ul>
+
+    <p>
+      The 8-puzzle has 9!/2 = 181,440 reachable states. The 15-puzzle has
+      around 10 trillion, which shows how quickly state spaces grow.
+    </p>
+
+    <h2>Search Trees and Graphs</h2>
+
+    <p>
+      Search algorithms explore the state space by building a search tree. The
+      root is the initial state; expanding a node generates its children. The
+      frontier is the set of nodes generated but not yet expanded.
+    </p>
+
+    <p>
+      Because many paths can lead to the same state, a tree can repeat states
+      endlessly. Graph search keeps a set of already-explored states and skips
+      them, which avoids redundant work.
+    </p>
+
+    <h2>Measuring Search Algorithms</h2>
+
+    <ul class="post-list">
+      <li><strong>Completeness:</strong> does it always find a solution if one exists?</li>
+      <li><strong>Optimality:</strong> does it find the cheapest solution?</li>
+      <li><strong>Time complexity:</strong> how many nodes does it generate?</li>
+      <li><strong>Space complexity:</strong> how many nodes must it keep in memory?</li>
+    </ul>
+
+    <p>
+      Complexity is expressed in terms of the branching factor b, the depth of
+      the shallowest goal d, and the maximum depth m.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Search is the first general method AI offers: describe the problem
+      precisely, and a generic algorithm can solve it. The challenge is doing
+      so without exploring an astronomically large space.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

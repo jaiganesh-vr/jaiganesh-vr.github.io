@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>First-Order Logic</title>
+  <meta name="description" content="Objects, relations, functions and quantifiers: how first-order logic expresses general knowledge that propositional logic cannot." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="First-Order Logic" />
+  <meta property="og:description" content="Objects, relations, functions and quantifiers: how first-order logic expresses general knowledge that propositional logic cannot." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230114_first_order_logic.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>First-Order Logic</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Logic</span>
+    </p>
+
+    <p class="muted">
+      Jan 14, 2023
+    </p>
+
+    <p>
+      Propositional logic treats the world as a collection of facts. First-
+      order logic sees a world of objects with properties and relations
+      between them. That shift makes it possible to state general rules
+      concisely, such as all humans are mortal.
+    </p>
+
+    <h2>The Building Blocks</h2>
+
+    <ul class="post-list">
+      <li><strong>Constants:</strong> name specific objects, like John or Paris.</li>
+      <li><strong>Predicates:</strong> express properties and relations, like Brother(John, Richard) or Student(Ann).</li>
+      <li><strong>Functions:</strong> map objects to objects, like FatherOf(John).</li>
+      <li><strong>Variables:</strong> stand for objects, like x and y.</li>
+    </ul>
+
+    <p>
+      A term refers to an object. An atomic sentence applies a predicate to
+      terms and is true or false. Complex sentences use the same connectives
+      as propositional logic.
+    </p>
+
+    <h2>Quantifiers</h2>
+
+    <p>
+      Quantifiers are what give first-order logic its expressive power:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Universal, ∀:</strong> ∀x King(x) ⇒ Person(x), "every king is a person".</li>
+      <li><strong>Existential, ∃:</strong> ∃x Crown(x) ∧ OnHead(x, John), "John has a crown on his head".</li>
+    </ul>
+
+    <p>
+      A common mistake is mixing up the connectives. With ∀, the natural
+      connective is ⇒. With ∃, it is ∧.
+    </p>
+
+    <p class="muted">
+      ∀x King(x) ∧ Person(x) says everything is a king and a person, which is
+      not what was meant.
+    </p>
+
+    <h2>Nested Quantifiers and Order</h2>
+
+    <p>
+      The order of quantifiers changes meaning:
+    </p>
+
+    <ul class="post-list">
+      <li>∀x ∃y Loves(x, y): everybody loves somebody.</li>
+      <li>∃y ∀x Loves(x, y): there is someone whom everybody loves.</li>
+    </ul>
+
+    <p>
+      Quantifiers are also connected through negation: ¬∀x P(x) is equivalent
+      to ∃x ¬P(x).
+    </p>
+
+    <h2>Equality</h2>
+
+    <p>
+      The equality symbol states that two terms refer to the same object, for
+      example Father(John) = Henry. It is needed to say things like "Richard
+      has at least two brothers", which requires stating that the two brothers
+      are different objects.
+    </p>
+
+    <h2>Knowledge Engineering</h2>
+
+    <p>
+      Building a knowledge base in first-order logic involves:
+    </p>
+
+    <ul class="post-list">
+      <li>Identifying the task and the questions it must answer.</li>
+      <li>Choosing a vocabulary of predicates, functions and constants.</li>
+      <li>Encoding general knowledge as axioms.</li>
+      <li>Encoding the specific problem instance.</li>
+      <li>Posing queries and debugging the knowledge base.</li>
+    </ul>
+
+    <p>
+      Choosing the vocabulary well, called the ontology, largely determines
+      how easy the rest is.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      First-order logic is expressive enough to describe much of mathematics
+      and a great deal of common knowledge. That expressiveness comes at a
+      cost: inference becomes semi-decidable, as the next note explains.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

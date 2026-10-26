@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intelligent Agents and Environments</title>
+  <meta name="description" content="The agent-environment framework: percepts, actions, performance measures, the PEAS description and the properties that make environments hard." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Intelligent Agents and Environments" />
+  <meta property="og:description" content="The agent-environment framework: percepts, actions, performance measures, the PEAS description and the properties that make environments hard." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20190302_intelligent_agents.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Intelligent Agents and Environments</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Agents</span>
+    </p>
+
+    <p class="muted">
+      Mar 02, 2019
+    </p>
+
+    <p>
+      An agent is anything that perceives its environment through sensors and
+      acts upon it through actuators. A thermostat, a chess program and a
+      self-driving car all fit this definition. The framework is simple, but
+      it gives a common language for very different AI systems.
+    </p>
+
+    <h2>Percepts, Actions and the Agent Function</h2>
+
+    <p>
+      At each moment an agent receives a percept. The full history of what it
+      has perceived is its percept sequence. An agent's behavior is described
+      by its agent function, a mapping from percept sequences to actions. The
+      agent program is the concrete implementation of that function.
+    </p>
+
+    <h2>Performance Measures</h2>
+
+    <p>
+      Rationality is judged by a performance measure that evaluates the
+      sequence of environment states the agent produces. Choosing it carefully
+      matters.
+    </p>
+
+    <p class="muted">
+      Measure what you want in the environment, not how you think the agent
+      should behave.
+    </p>
+
+    <p>
+      A cleaning robot rewarded for dirt picked up can learn to dump dirt and
+      pick it up again. Rewarding a clean floor avoids that.
+    </p>
+
+    <h2>PEAS</h2>
+
+    <p>
+      Designing an agent starts by specifying its task environment:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Performance:</strong> what counts as success.</li>
+      <li><strong>Environment:</strong> the world it operates in.</li>
+      <li><strong>Actuators:</strong> how it can act.</li>
+      <li><strong>Sensors:</strong> how it perceives.</li>
+    </ul>
+
+    <h2>Properties of Environments</h2>
+
+    <ul class="post-list">
+      <li><strong>Fully or partially observable:</strong> can the agent see everything relevant?</li>
+      <li><strong>Deterministic or stochastic:</strong> is the next state fully determined by the action?</li>
+      <li><strong>Episodic or sequential:</strong> do current decisions affect future ones?</li>
+      <li><strong>Static or dynamic:</strong> does the world change while the agent thinks?</li>
+      <li><strong>Discrete or continuous:</strong> are states and actions countable?</li>
+      <li><strong>Single or multi-agent:</strong> are other agents acting too?</li>
+    </ul>
+
+    <p>
+      The hardest case, partially observable, stochastic, sequential, dynamic,
+      continuous and multi-agent, describes everyday driving.
+    </p>
+
+    <h2>Kinds of Agent Programs</h2>
+
+    <ul class="post-list">
+      <li><strong>Simple reflex agents</strong> act on the current percept with condition-action rules.</li>
+      <li><strong>Model-based agents</strong> keep an internal state describing parts of the world they cannot see.</li>
+      <li><strong>Goal-based agents</strong> choose actions that lead toward a goal.</li>
+      <li><strong>Utility-based agents</strong> choose actions that maximise expected happiness, trading off goals.</li>
+      <li><strong>Learning agents</strong> improve all of the above from experience.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The agent framework turns the vague question of building intelligence
+      into specific design choices: what the agent sees, what it can do and
+      how success is measured.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

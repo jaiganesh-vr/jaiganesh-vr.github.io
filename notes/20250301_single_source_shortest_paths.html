@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Single-Source Shortest Paths</title>
+  <meta name="description" content="Finding the cheapest paths from one vertex to all others: relaxation, Bellman-Ford with negative edges, shortest paths in DAGs, and Dijkstra's algorithm." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Single-Source Shortest Paths" />
+  <meta property="og:description" content="Finding the cheapest paths from one vertex to all others: relaxation, Bellman-Ford with negative edges, shortest paths in DAGs, and Dijkstra's algorithm." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250301_single_source_shortest_paths.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Single-Source Shortest Paths</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Graphs</span>
+    </p>
+
+    <p class="muted">
+      Mar 01, 2025
+    </p>
+
+    <p>
+      Navigation apps, network routing and many planning problems need the
+      shortest paths from one starting point to every other vertex in a
+      weighted graph. Several algorithms solve this, depending on what the
+      edge weights look like.
+    </p>
+
+    <h2>Relaxation</h2>
+
+    <p>
+      Every algorithm here keeps an estimate d[v] of the shortest distance to
+      each vertex, starting at infinity, with d[source] = 0. The basic step is
+      relaxing an edge (u, v) with weight w:
+    </p>
+
+    <p class="muted">
+      if d[u] + w &lt; d[v], then d[v] ← d[u] + w
+    </p>
+
+    <p>
+      That is, check whether going through u gives a shorter path to v. The
+      algorithms differ only in the order and number of relaxations.
+    </p>
+
+    <h2>Negative Weights and Cycles</h2>
+
+    <p>
+      Negative edge weights are allowed in some problems, such as currency
+      arbitrage. But if a cycle has negative total weight and is reachable
+      from the source, shortest paths are undefined: going around it again
+      always reduces the cost.
+    </p>
+
+    <h2>Bellman-Ford</h2>
+
+    <p>
+      Bellman-Ford relaxes every edge V − 1 times. Since a shortest path has
+      at most V − 1 edges, that is enough. A final pass checks whether any
+      edge can still be relaxed; if so, there is a negative cycle.
+    </p>
+
+    <p>
+      It runs in O(VE) and handles negative weights.
+    </p>
+
+    <h2>Shortest Paths in a DAG</h2>
+
+    <p>
+      In a directed acyclic graph, relaxing edges in topological order gives
+      correct distances in a single pass, in O(V + E), even with negative
+      weights. This is the basis of critical path analysis in project
+      scheduling.
+    </p>
+
+    <h2>Dijkstra's Algorithm</h2>
+
+    <p>
+      With non-negative weights, Dijkstra's algorithm is much faster. It
+      repeatedly takes the unvisited vertex with the smallest distance
+      estimate, which is then final, and relaxes its outgoing edges.
+    </p>
+
+    <pre><code>import heapq
+
+def dijkstra(graph, source):
+    dist = {source: 0}
+    heap = [(0, source)]
+    while heap:
+        d, u = heapq.heappop(heap)
+        if d &gt; dist[u]:
+            continue                     # stale entry
+        for v, w in graph[u]:
+            if d + w &lt; dist.get(v, float("inf")):
+                dist[v] = d + w
+                heapq.heappush(heap, (d + w, v))
+    return dist</code></pre>
+
+    <p>
+      With a binary heap it runs in O((V + E) lg V).
+    </p>
+
+    <p class="muted">
+      Dijkstra is greedy: once a vertex is the closest unvisited one, no later
+      path can beat it, as long as no edge is negative.
+    </p>
+
+    <p>
+      A single negative edge breaks that guarantee, which is why Bellman-Ford
+      remains necessary.
+    </p>
+
+    <h2>Choosing an Algorithm</h2>
+
+    <ul class="post-list">
+      <li><strong>Non-negative weights:</strong> Dijkstra.</li>
+      <li><strong>Directed acyclic graph:</strong> topological-order relaxation.</li>
+      <li><strong>Negative weights possible:</strong> Bellman-Ford, which also detects negative cycles.</li>
+      <li><strong>Unweighted:</strong> plain breadth-first search.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      All shortest-path algorithms share one operation, relaxation. Their
+      differences are about ordering it cleverly, and the right order depends
+      entirely on what the weights can be.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Theory Basics</title>
+  <meta name="description" content="Strategies, payoffs, dominant strategies and Nash equilibria, with the Prisoner's Dilemma as a running example of rational agents producing poor outcomes." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Game Theory Basics" />
+  <meta property="og:description" content="Strategies, payoffs, dominant strategies and Nash equilibria, with the Prisoner's Dilemma as a running example of rational agents producing poor outcomes." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210710_game_theory.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Game Theory Basics</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Game Theory</span>
+    </p>
+
+    <p class="muted">
+      Jul 10, 2021
+    </p>
+
+    <p>
+      Adversarial search handles turn-taking games with perfect information.
+      Game theory is broader: it studies any situation where several rational
+      agents make decisions whose outcomes depend on each other's choices,
+      often simultaneously.
+    </p>
+
+    <h2>Normal-Form Games</h2>
+
+    <p>
+      A game in normal form specifies:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Players:</strong> the decision-makers.</li>
+      <li><strong>Actions:</strong> the strategies available to each player.</li>
+      <li><strong>Payoffs:</strong> a utility for each player, for every combination of actions.</li>
+    </ul>
+
+    <h2>The Prisoner's Dilemma</h2>
+
+    <p>
+      Two suspects are questioned separately. Each can testify against the
+      other or refuse. If both refuse, each gets 1 year. If both testify, each
+      gets 5 years. If only one testifies, that one goes free and the other
+      gets 10 years.
+    </p>
+
+    <p>
+      Whatever the other suspect does, testifying is better for you: free
+      instead of 1 year, or 5 years instead of 10. Testifying is a dominant
+      strategy, so both testify and each serves 5 years, even though both
+      refusing would have been better for both.
+    </p>
+
+    <p class="muted">
+      Individually rational choices can produce a collectively worse outcome.
+    </p>
+
+    <h2>Dominant Strategies</h2>
+
+    <p>
+      A strategy strictly dominates another if it gives a better payoff
+      regardless of what others do. A rational player never plays a dominated
+      strategy, and iteratively eliminating them can sometimes solve a game.
+    </p>
+
+    <h2>Nash Equilibrium</h2>
+
+    <p>
+      A Nash equilibrium is a combination of strategies where no player can
+      gain by changing their own strategy alone. In the Prisoner's Dilemma,
+      both testifying is the equilibrium.
+    </p>
+
+    <p>
+      Some games have no equilibrium in pure strategies. In
+      rock-paper-scissors any fixed choice can be exploited. The equilibrium
+      is a mixed strategy: play each option with probability 1/3. Nash proved
+      that every finite game has at least one equilibrium in mixed strategies.
+    </p>
+
+    <h2>Pareto Optimality</h2>
+
+    <p>
+      An outcome is Pareto optimal if no other outcome makes someone better
+      off without making someone worse off. The Prisoner's Dilemma equilibrium
+      is not Pareto optimal, which is precisely what makes it a dilemma.
+    </p>
+
+    <h2>Repeated Games</h2>
+
+    <p>
+      When the same game is played many times, cooperation can emerge.
+      Strategies like tit-for-tat, which cooperates first and then copies the
+      opponent's last move, do well because they reward cooperation and punish
+      defection.
+    </p>
+
+    <h2>Mechanism Design</h2>
+
+    <p>
+      The inverse problem is designing the rules of a game so that rational
+      agents produce a desired outcome. Auctions are the classic example: a
+      second-price sealed-bid auction makes bidding your true value the
+      dominant strategy.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Game theory matters for AI whenever several agents share an environment,
+      from trading systems to negotiating software agents. It shows that
+      rationality alone does not guarantee good collective results.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

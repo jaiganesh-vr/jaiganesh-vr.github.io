@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inference in First-Order Logic</title>
+  <meta name="description" content="Unification, generalised modus ponens, forward and backward chaining in first-order logic, resolution, and how Prolog fits in." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Inference in First-Order Logic" />
+  <meta property="og:description" content="Unification, generalised modus ponens, forward and backward chaining in first-order logic, resolution, and how Prolog fits in." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230408_first_order_inference.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Inference in First-Order Logic</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Logic</span>
+    </p>
+
+    <p class="muted">
+      Apr 08, 2023
+    </p>
+
+    <p>
+      Reasoning in first-order logic means handling variables and quantifiers.
+      The central tool that makes it practical is unification, which finds
+      substitutions that make different expressions match.
+    </p>
+
+    <h2>Propositionalisation</h2>
+
+    <p>
+      One approach is to replace universally quantified sentences with all of
+      their ground instances, then use propositional inference. It works in
+      principle, but with function symbols there are infinitely many ground
+      terms, and even without them the number of instances explodes.
+    </p>
+
+    <h2>Unification</h2>
+
+    <p>
+      Unification finds a substitution θ that makes two sentences identical:
+    </p>
+
+    <ul class="post-list">
+      <li>Knows(John, x) and Knows(John, Jane) unify with {x / Jane}.</li>
+      <li>Knows(John, x) and Knows(y, Bill) unify with {x / Bill, y / John}.</li>
+      <li>Knows(John, x) and Knows(x, Elizabeth) fail, because x cannot be both John and Elizabeth. Renaming variables apart fixes this.</li>
+    </ul>
+
+    <p>
+      The most general unifier makes the fewest commitments, keeping later
+      inference as flexible as possible.
+    </p>
+
+    <h2>Generalised Modus Ponens</h2>
+
+    <p>
+      With unification, modus ponens lifts to first-order logic. From King(x)
+      ∧ Greedy(x) ⇒ Evil(x), King(John) and Greedy(John), we infer Evil(John)
+      using the substitution {x / John}.
+    </p>
+
+    <p class="muted">
+      Unification lets one rule apply to every object it matches, instead of
+      one rule per object.
+    </p>
+
+    <h2>Forward and Backward Chaining</h2>
+
+    <p>
+      For first-order definite clauses, both chaining strategies carry over.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Forward chaining</strong> adds every new fact derivable from the current facts until nothing new appears. It is the basis of production systems and deductive databases.</li>
+      <li><strong>Backward chaining</strong> works from a goal, finding rules whose conclusion unifies with it and recursively proving their premises. It is the basis of logic programming.</li>
+    </ul>
+
+    <h2>Logic Programming</h2>
+
+    <p>
+      Prolog is the best-known logic programming language. A program is a set
+      of definite clauses, and running it means posing a query that is
+      answered by depth-first backward chaining.
+    </p>
+
+    <pre><code>parent(tom, bob).
+parent(bob, ann).
+grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+
+?- grandparent(tom, Who).
+Who = ann.</code></pre>
+
+    <p>
+      Prolog trades completeness for efficiency: its depth-first strategy can
+      loop on some programs that have answers.
+    </p>
+
+    <h2>Resolution</h2>
+
+    <p>
+      Resolution extends to first-order logic using unification and clauses in
+      conjunctive normal form, with existential variables replaced by Skolem
+      functions. It is refutation-complete: if a sentence is entailed, a proof
+      will be found.
+    </p>
+
+    <p>
+      But first-order entailment is semi-decidable. If a sentence is not
+      entailed, the procedure may run forever, and no algorithm can always
+      detect that.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      First-order inference is powerful but must be managed carefully. Most
+      practical systems restrict the language, as Prolog and databases do, to
+      keep reasoning efficient.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

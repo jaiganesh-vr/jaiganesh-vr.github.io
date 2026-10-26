@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uncertainty and Probability</title>
+  <meta name="description" content="Why logical agents struggle in the real world, and the probability basics agents use instead: random variables, joint distributions, conditioning and independence." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Uncertainty and Probability" />
+  <meta property="og:description" content="Why logical agents struggle in the real world, and the probability basics agents use instead: random variables, joint distributions, conditioning and independence." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240113_uncertainty_probability.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Uncertainty and Probability</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Jan 13, 2024
+    </p>
+
+    <p>
+      Logical agents assume facts are definitely true or false. Real agents
+      rarely have that luxury. Sensors are noisy, the world is partially
+      observable, and rules have exceptions. Probability theory gives agents a
+      principled way to reason with degrees of belief.
+    </p>
+
+    <h2>Why Logic Falls Short</h2>
+
+    <p>
+      Consider diagnosing a toothache with a rule like Toothache ⇒ Cavity. It
+      is wrong: toothaches can be caused by gum disease, abscesses and many
+      other things. Listing every cause is impractical, and even then we would
+      not know which applies to a particular patient.
+    </p>
+
+    <p>
+      Probability summarises that uncertainty instead of ignoring it.
+    </p>
+
+    <p class="muted">
+      Probability is a way of saying what we believe, and how strongly, given
+      what we know.
+    </p>
+
+    <h2>Random Variables</h2>
+
+    <p>
+      A random variable represents some aspect of the world with a set of
+      possible values. Cavity might be true or false; Weather might be sunny,
+      rain, cloudy or snow. Each assignment of values to all variables is a
+      possible world.
+    </p>
+
+    <h2>The Axioms</h2>
+
+    <ul class="post-list">
+      <li>Every probability is between 0 and 1.</li>
+      <li>The probabilities of all possible worlds sum to 1.</li>
+      <li>P(a ∨ b) = P(a) + P(b) − P(a ∧ b).</li>
+    </ul>
+
+    <p>
+      An agent whose beliefs violate these axioms can be offered a set of bets
+      it will accept and is guaranteed to lose, a result known as the Dutch
+      book argument.
+    </p>
+
+    <h2>Conditional Probability</h2>
+
+    <p>
+      The probability of a given b:
+    </p>
+
+    <p class="muted">
+      P(a | b) = P(a ∧ b) / P(b)
+    </p>
+
+    <p>
+      P(cavity | toothache) is the probability of a cavity once we know the
+      patient has a toothache. Rearranged, this gives the product rule: P(a ∧
+      b) = P(a | b) · P(b).
+    </p>
+
+    <h2>The Full Joint Distribution</h2>
+
+    <p>
+      The full joint distribution assigns a probability to every possible
+      world. Any question can be answered from it by summing the relevant
+      entries, a process called marginalisation.
+    </p>
+
+    <p>
+      The problem is size: with n Boolean variables, the table has 2ⁿ entries.
+      For realistic problems this is impossible to store or estimate.
+    </p>
+
+    <h2>Independence</h2>
+
+    <p>
+      Two variables are independent if knowing one tells you nothing about the
+      other: P(a | b) = P(a). Weather and dental problems are independent, so
+      their joint distribution factors into two smaller tables.
+    </p>
+
+    <p>
+      Conditional independence is weaker and far more common: two variables
+      become independent once a third is known. Toothache and the dentist's
+      probe catching are related, but independent given whether there is a
+      cavity.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Independence and conditional independence are what make probabilistic
+      reasoning tractable. They are the key to Bayes' rule, naive Bayes and
+      Bayesian networks, the subjects of the next notes.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

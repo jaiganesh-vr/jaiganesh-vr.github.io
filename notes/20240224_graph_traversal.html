@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graph Traversal: BFS and DFS</title>
+  <meta name="description" content="Representing graphs, breadth-first search for shortest unweighted paths, depth-first search with discovery and finish times, and topological sorting." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Graph Traversal: BFS and DFS" />
+  <meta property="og:description" content="Representing graphs, breadth-first search for shortest unweighted paths, depth-first search with discovery and finish times, and topological sorting." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240224_graph_traversal.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Graph Traversal: BFS and DFS</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Graphs</span>
+    </p>
+
+    <p class="muted">
+      Feb 24, 2024
+    </p>
+
+    <p>
+      Graphs model networks of every kind: roads, web links, dependencies,
+      social connections. Most graph algorithms start by exploring the graph
+      systematically, using one of two traversals.
+    </p>
+
+    <h2>Representing Graphs</h2>
+
+    <ul class="post-list">
+      <li><strong>Adjacency lists:</strong> for each vertex, a list of its neighbours. Space Θ(V + E), best for sparse graphs.</li>
+      <li><strong>Adjacency matrix:</strong> a V × V table of edges. Space Θ(V²), constant-time edge lookup, best for dense graphs.</li>
+    </ul>
+
+    <p>
+      Most real graphs are sparse, so adjacency lists are the usual choice.
+    </p>
+
+    <h2>Breadth-First Search</h2>
+
+    <p>
+      BFS explores outward from a source in layers: first all vertices at
+      distance 1, then distance 2, and so on, using a queue.
+    </p>
+
+    <pre><code>from collections import deque
+
+def bfs(graph, source):
+    dist = {source: 0}
+    queue = deque([source])
+    while queue:
+        u = queue.popleft()
+        for v in graph[u]:
+            if v not in dist:
+                dist[v] = dist[u] + 1
+                queue.append(v)
+    return dist</code></pre>
+
+    <p>
+      Each vertex is enqueued once and each edge examined once, so BFS runs in
+      O(V + E). It computes shortest paths, in number of edges, from the
+      source to every reachable vertex.
+    </p>
+
+    <h2>Depth-First Search</h2>
+
+    <p>
+      DFS goes as deep as possible before backtracking. It records two
+      timestamps for each vertex: when it is discovered and when it is
+      finished, after all its descendants have been explored. It also runs in
+      O(V + E).
+    </p>
+
+    <p>
+      The timestamps reveal structure. Edges can be classified as tree, back,
+      forward or cross edges, and a directed graph has a cycle exactly when
+      DFS finds a back edge.
+    </p>
+
+    <p class="muted">
+      BFS answers how far. DFS answers how things are connected and ordered.
+    </p>
+
+    <h2>Topological Sort</h2>
+
+    <p>
+      In a directed acyclic graph, a topological sort orders vertices so that
+      every edge points forward. It is how build systems order compilation and
+      how task schedulers respect dependencies.
+    </p>
+
+    <p>
+      The algorithm is a single DFS: list vertices in decreasing order of
+      finish time. A vertex finishes only after everything reachable from it,
+      so it appears before all of them.
+    </p>
+
+    <h2>Strongly Connected Components</h2>
+
+    <p>
+      In a directed graph, a strongly connected component is a maximal set of
+      vertices that can all reach one another. They can be found with two DFS
+      passes: one on the graph to get finish times, and one on the graph with
+      edges reversed, visiting vertices in decreasing finish time. Each tree
+      in the second pass is one component.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      BFS and DFS are building blocks. Shortest paths, spanning trees, cycle
+      detection, scheduling and connectivity all rest on these two ways of
+      walking a graph.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monte Carlo Tree Search</title>
+  <meta name="description" content="How MCTS evaluates moves by simulation instead of evaluation functions, the four phases of the algorithm, and the UCB1 formula behind it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Monte Carlo Tree Search" />
+  <meta property="og:description" content="How MCTS evaluates moves by simulation instead of evaluation functions, the four phases of the algorithm, and the UCB1 formula behind it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20211002_monte_carlo_tree_search.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Monte Carlo Tree Search</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Games</span>
+    </p>
+
+    <p class="muted">
+      Oct 02, 2021
+    </p>
+
+    <p>
+      Alpha-beta search depends on a good evaluation function. For games like
+      Go, writing one by hand proved extremely difficult, and the branching
+      factor of around 250 made deep search impossible. Monte Carlo tree
+      search took a different approach: estimate the value of a position by
+      playing many games from it.
+    </p>
+
+    <h2>The Idea</h2>
+
+    <p>
+      The value of a state is estimated as the average outcome of many
+      simulated games, called playouts or rollouts, that start from it. Moves
+      are chosen randomly or by a cheap policy during playouts.
+    </p>
+
+    <p>
+      Rather than spreading simulations evenly, MCTS builds a search tree
+      asymmetrically, focusing on the most promising moves.
+    </p>
+
+    <h2>The Four Phases</h2>
+
+    <p>
+      Each iteration has four steps:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Selection:</strong> starting at the root, follow a selection policy down the tree until reaching a node with unexplored children.</li>
+      <li><strong>Expansion:</strong> add one or more child nodes.</li>
+      <li><strong>Simulation:</strong> play out a game from the new node to the end.</li>
+      <li><strong>Back-propagation:</strong> update the win and visit counts of every node on the path with the result.</li>
+    </ul>
+
+    <p>
+      After many iterations, the move from the root with the most visits is
+      played.
+    </p>
+
+    <h2>Exploration vs Exploitation</h2>
+
+    <p>
+      Selection must balance two goals: exploit moves that have won often, and
+      explore moves that have been tried rarely and might be better than they
+      look. The standard choice is the UCB1 formula, applied to trees as UCT:
+    </p>
+
+    <p class="muted">
+      UCB1(n) = W(n)/N(n) + C · √( ln N(parent) / N(n) )
+    </p>
+
+    <ul class="post-list">
+      <li>W(n)/N(n) is the win rate, the exploitation term.</li>
+      <li>The square root term grows for rarely visited nodes, the exploration term.</li>
+      <li>C balances the two; √2 is a common theoretical value.</li>
+    </ul>
+
+    <p class="muted">
+      MCTS spends its simulations where the answer is most uncertain and most
+      important.
+    </p>
+
+    <h2>Strengths</h2>
+
+    <ul class="post-list">
+      <li>No evaluation function is needed, only the rules of the game.</li>
+      <li>It is an anytime algorithm: stop it whenever time runs out and use the current best move.</li>
+      <li>It handles large branching factors better than alpha-beta.</li>
+    </ul>
+
+    <h2>With Learning</h2>
+
+    <p>
+      AlphaGo and its successors combined MCTS with deep neural networks: a
+      policy network guides which moves to explore, and a value network
+      replaces or supplements random playouts. Trained by self-play, this
+      combination reached superhuman strength in Go, chess and shogi.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      MCTS replaced hand-crafted knowledge with statistics. Its success,
+      especially combined with learned networks, marked a turning point in how
+      AI approaches complex decision problems.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

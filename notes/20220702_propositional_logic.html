@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propositional Logic</title>
+  <meta name="description" content="The simplest logic for knowledge-based agents: syntax, semantics, truth tables, entailment and the key ideas of validity and satisfiability." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Propositional Logic" />
+  <meta property="og:description" content="The simplest logic for knowledge-based agents: syntax, semantics, truth tables, entailment and the key ideas of validity and satisfiability." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220702_propositional_logic.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Propositional Logic</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Logic</span>
+    </p>
+
+    <p class="muted">
+      Jul 02, 2022
+    </p>
+
+    <p>
+      Knowledge-based agents represent what they know as sentences in a formal
+      language and reason with them to decide what to do. Propositional logic
+      is the simplest such language, and it introduces ideas that carry over
+      to every richer logic.
+    </p>
+
+    <h2>Syntax</h2>
+
+    <p>
+      Atomic sentences are proposition symbols, like P or Raining, each
+      standing for a fact that is either true or false. Complex sentences are
+      built with connectives:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>¬P:</strong> not P.</li>
+      <li><strong>P ∧ Q:</strong> P and Q.</li>
+      <li><strong>P ∨ Q:</strong> P or Q.</li>
+      <li><strong>P ⇒ Q:</strong> if P then Q.</li>
+      <li><strong>P ⇔ Q:</strong> P if and only if Q.</li>
+    </ul>
+
+    <h2>Semantics</h2>
+
+    <p>
+      A model assigns true or false to every proposition symbol. The truth of
+      any sentence in a model is computed from its parts using truth tables.
+    </p>
+
+    <p>
+      The implication P ⇒ Q is false only when P is true and Q is false. It is
+      true whenever P is false, which feels odd at first: "if pigs fly then
+      the moon is cheese" is true. Implication in logic does not claim any
+      causal connection.
+    </p>
+
+    <h2>Entailment</h2>
+
+    <p>
+      A knowledge base KB entails a sentence α, written KB ⊨ α, if α is true
+      in every model in which KB is true.
+    </p>
+
+    <p class="muted">
+      Entailment means: whenever what I know is true, this must also be true.
+    </p>
+
+    <p>
+      The simplest way to check entailment is model checking: enumerate all
+      models, and verify that α holds in each one where KB holds. With n
+      symbols there are 2ⁿ models, so this is exponential, but it is sound and
+      complete.
+    </p>
+
+    <h2>Validity and Satisfiability</h2>
+
+    <ul class="post-list">
+      <li>A sentence is <strong>valid</strong> if it is true in all models, like P ∨ ¬P. Valid sentences are also called tautologies.</li>
+      <li>A sentence is <strong>satisfiable</strong> if it is true in at least one model.</li>
+      <li>A sentence is <strong>unsatisfiable</strong> if it is true in no model.</li>
+    </ul>
+
+    <p>
+      These connect directly to entailment: KB ⊨ α exactly when KB ∧ ¬α is
+      unsatisfiable. This is proof by contradiction, and it is the basis of
+      resolution theorem proving.
+    </p>
+
+    <h2>The Wumpus World</h2>
+
+    <p>
+      The classic teaching example is a cave with pits and a monster. The
+      agent perceives a breeze near pits and a stench near the monster, and
+      uses sentences like B₁,₁ ⇔ (P₁,₂ ∨ P₂,₁) to infer which squares are safe
+      without ever visiting them.
+    </p>
+
+    <h2>Limits</h2>
+
+    <p>
+      Propositional logic cannot express general rules compactly. Saying that
+      every square with a breeze has a neighbouring pit requires a separate
+      sentence for every square. That limitation motivates first-order logic.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Propositional logic gives agents a precise way to know things and to
+      derive new facts with certainty. Its ideas of models and entailment are
+      the foundation for all logical reasoning in AI.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Q-Learning</title>
+  <meta name="description" content="Learning optimal behavior from trial and error without a model of the environment: action values, the Q-learning update and exploration." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Q-Learning" />
+  <meta property="og:description" content="Learning optimal behavior from trial and error without a model of the environment: action values, the Q-learning update and exploration." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260606_q_learning.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Q-Learning</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Reinforcement Learning</span>
+    </p>
+
+    <p class="muted">
+      Jun 06, 2026
+    </p>
+
+    <p>
+      Value iteration needs a model: the transition probabilities and rewards
+      of every action. Often no such model exists. A robot does not know in
+      advance how its wheels slip; a game-playing agent does not know its
+      opponent. Reinforcement learning learns good behavior directly from
+      experience, and Q-learning is its classic algorithm.
+    </p>
+
+    <h2>Action Values</h2>
+
+    <p>
+      Instead of the utility of a state, Q-learning learns Q(s, a), the
+      expected total discounted reward of taking action a in state s and
+      acting optimally afterwards.
+    </p>
+
+    <p>
+      The advantage is that choosing actions no longer needs a model. The best
+      action in s is simply the one with the highest Q(s, a).
+    </p>
+
+    <h2>The Update</h2>
+
+    <p>
+      After taking action a in state s, receiving reward r and arriving in s',
+      the agent updates:
+    </p>
+
+    <p class="muted">
+      Q(s, a) ← Q(s, a) + α [ r + γ maxₐ' Q(s', a') − Q(s, a) ]
+    </p>
+
+    <ul class="post-list">
+      <li>r + γ max Q(s', a') is the target: what the experience suggests the value should be.</li>
+      <li>The bracket is the temporal-difference error, the gap between target and current estimate.</li>
+      <li>α is the learning rate, controlling how far each update moves.</li>
+    </ul>
+
+    <pre><code>import random
+
+def q_learning_step(Q, s, actions, env, alpha=0.1, gamma=0.99, epsilon=0.1):
+    if random.random() &lt; epsilon:
+        a = random.choice(actions)                           # explore
+    else:
+        a = max(actions, key=lambda act: Q.get((s, act), 0.0))  # exploit
+    s2, r, done = env.step(a)
+    best_next = 0.0 if done else max(Q.get((s2, a2), 0.0) for a2 in actions)
+    old = Q.get((s, a), 0.0)
+    Q[(s, a)] = old + alpha * (r + gamma * best_next - old)
+    return s2, done</code></pre>
+
+    <p class="muted">
+      Q-learning nudges each estimate toward the reward it saw plus the best
+      value it expects next.
+    </p>
+
+    <h2>Exploration</h2>
+
+    <p>
+      An agent that always takes the action with the highest current Q may
+      never discover better options. The simplest fix is ε-greedy: with small
+      probability ε, take a random action. Decreasing ε over time shifts from
+      exploring to exploiting.
+    </p>
+
+    <h2>Off-Policy Learning</h2>
+
+    <p>
+      Q-learning learns the value of the optimal policy, even while following
+      an exploratory one, because its target uses the max over next actions
+      rather than the action actually taken. This is called off-policy
+      learning. SARSA, a close relative, uses the action actually taken, and
+      so learns the value of the policy being followed.
+    </p>
+
+    <p>
+      Given enough exploration and a suitably decreasing learning rate,
+      tabular Q-learning converges to the optimal action values.
+    </p>
+
+    <h2>The Scaling Problem</h2>
+
+    <p>
+      A table with one entry per state-action pair works for small problems.
+      For backgammon, chess or anything with images as input, the table is
+      impossibly large, and the agent must generalise from states it has seen
+      to states it has not.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Q-learning is learning by doing in its purest form: no model, just
+      experience and a simple update rule. Making it work at scale requires
+      function approximation, the subject of the next note.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

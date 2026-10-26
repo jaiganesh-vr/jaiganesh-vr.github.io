@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constraint Satisfaction Problems</title>
+  <meta name="description" content="Representing problems as variables, domains and constraints, with map colouring and Sudoku as examples, and why this structure makes search far more efficient." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Constraint Satisfaction Problems" />
+  <meta property="og:description" content="Representing problems as variables, domains and constraints, with map colouring and Sudoku as examples, and why this structure makes search far more efficient." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220115_constraint_satisfaction.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Constraint Satisfaction Problems</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">CSP</span>
+    </p>
+
+    <p class="muted">
+      Jan 15, 2022
+    </p>
+
+    <p>
+      In standard search, states are black boxes: the algorithm only knows how
+      to generate successors and test for goals. Constraint satisfaction
+      problems open the box. States have a factored structure, and that
+      structure enables powerful general-purpose techniques.
+    </p>
+
+    <h2>The Formulation</h2>
+
+    <p>
+      A CSP consists of:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Variables:</strong> X₁, …, Xₙ.</li>
+      <li><strong>Domains:</strong> the set of allowed values for each variable.</li>
+      <li><strong>Constraints:</strong> relations specifying allowed combinations of values.</li>
+    </ul>
+
+    <p>
+      A solution is a complete assignment, a value for every variable, that
+      satisfies all constraints.
+    </p>
+
+    <h2>Example: Map Colouring</h2>
+
+    <p>
+      Colour each region of Australia red, green or blue so that no
+      neighbouring regions share a colour.
+    </p>
+
+    <ul class="post-list">
+      <li>Variables: WA, NT, SA, Q, NSW, V, T.</li>
+      <li>Domains: {red, green, blue} for each.</li>
+      <li>Constraints: WA ≠ NT, WA ≠ SA, NT ≠ SA, and so on for each border.</li>
+    </ul>
+
+    <p>
+      The constraint graph has a node per variable and an edge per binary
+      constraint, which makes the structure of the problem visible.
+    </p>
+
+    <h2>Kinds of Constraints</h2>
+
+    <ul class="post-list">
+      <li><strong>Unary:</strong> restrict one variable, such as SA ≠ green.</li>
+      <li><strong>Binary:</strong> relate two variables, such as SA ≠ WA.</li>
+      <li><strong>Global:</strong> involve many variables, such as Alldiff, which requires all of them to be different.</li>
+      <li><strong>Preferences:</strong> soft constraints that should be satisfied if possible, turning the problem into constraint optimization.</li>
+    </ul>
+
+    <h2>More Examples</h2>
+
+    <ul class="post-list">
+      <li><strong>Sudoku:</strong> 81 variables, domains 1 to 9, Alldiff constraints on each row, column and box.</li>
+      <li><strong>Scheduling:</strong> tasks are variables, start times are values, constraints express precedence and resource limits.</li>
+      <li><strong>Timetabling:</strong> classes, rooms and time slots.</li>
+    </ul>
+
+    <p class="muted">
+      Many real problems are naturally described by what must be true, not by
+      how to find it.
+    </p>
+
+    <h2>Why CSPs Help</h2>
+
+    <p>
+      Because the algorithm understands the constraints, it can do much better
+      than blind search:
+    </p>
+
+    <ul class="post-list">
+      <li>It can detect that a partial assignment already violates a constraint and stop exploring it.</li>
+      <li>It can propagate constraints, shrinking domains of other variables before searching.</li>
+      <li>It can use general heuristics that work across all CSPs.</li>
+    </ul>
+
+    <p>
+      Ruling out a single colour for one region in map colouring can eliminate
+      huge numbers of complete assignments at once.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Constraint satisfaction is a declarative way to think about problems:
+      state the variables and rules, and let general algorithms find
+      solutions. The next note looks at how those algorithms work.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

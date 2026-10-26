@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Approximate Inference by Sampling</title>
+  <meta name="description" content="When exact inference is too expensive: direct sampling, rejection sampling, likelihood weighting and Markov chain Monte Carlo methods like Gibbs sampling." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Approximate Inference by Sampling" />
+  <meta property="og:description" content="When exact inference is too expensive: direct sampling, rejection sampling, likelihood weighting and Markov chain Monte Carlo methods like Gibbs sampling." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250111_approximate_inference.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Approximate Inference by Sampling</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Jan 11, 2025
+    </p>
+
+    <p>
+      Exact inference in Bayesian networks is NP-hard in general. For large
+      networks, approximate inference estimates probabilities by generating
+      samples, and the estimates improve as more samples are drawn.
+    </p>
+
+    <h2>Direct Sampling</h2>
+
+    <p>
+      The simplest method samples each variable in topological order, parents
+      before children, drawing from its conditional distribution given the
+      parents' sampled values. Each run produces one possible world, drawn
+      with exactly the probability the network assigns to it.
+    </p>
+
+    <p>
+      To estimate P(Rain = true), count the fraction of samples where it is
+      true. By the law of large numbers, the estimate converges to the true
+      probability.
+    </p>
+
+    <h2>Rejection Sampling</h2>
+
+    <p>
+      To estimate a conditional probability, such as P(Rain | WetGrass),
+      generate samples and discard those inconsistent with the evidence.
+    </p>
+
+    <p>
+      It is simple and correct, but wasteful. If the evidence is rare, almost
+      every sample is rejected, and the number of usable samples drops
+      exponentially with the number of evidence variables.
+    </p>
+
+    <h2>Likelihood Weighting</h2>
+
+    <p>
+      Likelihood weighting fixes the evidence variables to their observed
+      values and samples only the others. Each sample is weighted by the
+      likelihood of the evidence given its sampled parents.
+    </p>
+
+    <ul class="post-list">
+      <li>Every sample is used, none rejected.</li>
+      <li>Weighted counts give consistent estimates.</li>
+      <li>Performance degrades when evidence appears late in the ordering, because the sampled values ignore it.</li>
+    </ul>
+
+    <p class="muted">
+      Rejection sampling throws away mismatches. Likelihood weighting never
+      creates them.
+    </p>
+
+    <h2>Markov Chain Monte Carlo</h2>
+
+    <p>
+      MCMC takes a different approach. It starts from an arbitrary state
+      consistent with the evidence and repeatedly makes small random changes,
+      forming a Markov chain whose long-run distribution is the posterior.
+    </p>
+
+    <p>
+      Gibbs sampling is the most common form:
+    </p>
+
+    <ul class="post-list">
+      <li>Pick a non-evidence variable.</li>
+      <li>Resample its value from its distribution given its Markov blanket: its parents, children and children's other parents.</li>
+      <li>Repeat many times, recording the states visited.</li>
+    </ul>
+
+    <p>
+      The fraction of time spent in each state approximates its posterior
+      probability. Early samples, before the chain settles, are discarded as
+      burn-in.
+    </p>
+
+    <h2>Choosing a Method</h2>
+
+    <ul class="post-list">
+      <li><strong>Likelihood weighting:</strong> easy to implement, good when evidence is near the top of the network.</li>
+      <li><strong>Gibbs sampling:</strong> effective for large networks and evidence anywhere, but can mix slowly when variables are strongly correlated.</li>
+    </ul>
+
+    <p>
+      These ideas reach far beyond Bayesian networks. MCMC is a workhorse of
+      Bayesian statistics, physics and modern probabilistic programming.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Sampling turns intractable sums into repeated simulation. It trades
+      exactness for scalability, and gives answers whose precision can be
+      improved simply by running longer.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

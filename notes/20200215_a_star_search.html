@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A* Search</title>
+  <meta name="description" content="The most widely used informed search algorithm: how A* combines path cost and heuristic estimates, why it is optimal, and where it struggles." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="A* Search" />
+  <meta property="og:description" content="The most widely used informed search algorithm: how A* combines path cost and heuristic estimates, why it is optimal, and where it struggles." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20200215_a_star_search.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>A* Search</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Search</span>
+    </p>
+
+    <p class="muted">
+      Feb 15, 2020
+    </p>
+
+    <p>
+      A* is the best-known informed search algorithm and still the standard
+      choice for pathfinding in games, robotics and route planning. It
+      combines the cost already paid with an estimate of the cost remaining.
+    </p>
+
+    <h2>The Evaluation Function</h2>
+
+    <p>
+      A* expands the node with the lowest value of:
+    </p>
+
+    <p class="muted">
+      f(n) = g(n) + h(n)
+    </p>
+
+    <ul class="post-list">
+      <li><strong>g(n):</strong> the actual cost of the path from the start to n.</li>
+      <li><strong>h(n):</strong> the heuristic estimate of the cost from n to the goal.</li>
+    </ul>
+
+    <p>
+      So f(n) estimates the total cost of the cheapest solution through n.
+    </p>
+
+    <h2>Comparison With Other Strategies</h2>
+
+    <ul class="post-list">
+      <li>Uniform-cost search uses only g(n). It is optimal but explores in every direction.</li>
+      <li>Greedy best-first search uses only h(n). It heads straight for the goal but can be badly misled and is not optimal.</li>
+      <li>A* balances both: it moves toward the goal while accounting for cost so far.</li>
+    </ul>
+
+    <h2>The Algorithm</h2>
+
+    <pre><code>import heapq
+
+def a_star(start, goal, neighbours, h):
+    frontier = [(h(start), 0, start)]
+    best_g = {start: 0}
+    while frontier:
+        f, g, node = heapq.heappop(frontier)
+        if node == goal:
+            return g
+        for nxt, cost in neighbours(node):
+            new_g = g + cost
+            if new_g &lt; best_g.get(nxt, float("inf")):
+                best_g[nxt] = new_g
+                heapq.heappush(frontier, (new_g + h(nxt), new_g, nxt))
+    return None</code></pre>
+
+    <h2>Optimality</h2>
+
+    <p>
+      With an admissible heuristic, A* tree search is optimal. With a
+      consistent heuristic, A* graph search is optimal, and the f values along
+      any path never decrease, so the first time a goal is expanded its path
+      is the cheapest.
+    </p>
+
+    <p>
+      A* is also optimally efficient: among algorithms that extend paths from
+      the start using the same heuristic, no other is guaranteed to expand
+      fewer nodes.
+    </p>
+
+    <p class="muted">
+      A* explores every node with f(n) below the optimal cost, and no others
+      it can avoid.
+    </p>
+
+    <h2>The Catch: Memory</h2>
+
+    <p>
+      A* keeps every generated node in memory. On large problems it runs out
+      of space long before it runs out of time. Memory-bounded variants
+      address this:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>IDA*:</strong> iterative deepening using an f-cost limit instead of a depth limit.</li>
+      <li><strong>SMA*:</strong> uses all available memory and drops the worst nodes when full.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      A* shows how much a good estimate is worth. The algorithm is simple; its
+      performance depends almost entirely on the quality of the heuristic it
+      is given.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

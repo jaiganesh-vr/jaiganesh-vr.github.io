@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Function Approximation and Deep Q-Networks</title>
+  <meta name="description" content="How reinforcement learning scales beyond tables: approximating Q-values with neural networks, and the tricks that made Deep Q-Networks stable." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Function Approximation and Deep Q-Networks" />
+  <meta property="og:description" content="How reinforcement learning scales beyond tables: approximating Q-values with neural networks, and the tricks that made Deep Q-Networks stable." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20261003_deep_q_networks.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Function Approximation and Deep Q-Networks</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Reinforcement Learning</span>
+    </p>
+
+    <p class="muted">
+      Oct 03, 2026
+    </p>
+
+    <p>
+      Tabular reinforcement learning stores one value per state-action pair.
+      Real problems have far too many states for that, and an agent must
+      generalise: a situation it has never seen should be valued like similar
+      situations it has. Function approximation provides that generalisation.
+    </p>
+
+    <h2>Approximating Q</h2>
+
+    <p>
+      Instead of a table, Q-values are computed by a parameterised function,
+      Q(s, a; θ). Early approaches used linear functions of hand-designed
+      features. Learning adjusts θ to reduce the temporal-difference error,
+      much like supervised learning toward a moving target.
+    </p>
+
+    <p>
+      The payoff is huge: an approximator with a few thousand parameters can
+      represent values for an astronomically large state space.
+    </p>
+
+    <h2>Deep Q-Networks</h2>
+
+    <p>
+      DQN, introduced around 2013 to 2015, used a convolutional neural network
+      to approximate Q directly from raw screen pixels. A single architecture
+      and set of hyperparameters learned to play dozens of Atari games, many
+      at human level or better.
+    </p>
+
+    <p class="muted">
+      The network learned its own features from pixels, instead of relying on
+      features designed by hand.
+    </p>
+
+    <h2>Why Naive Combination Fails</h2>
+
+    <p>
+      Combining Q-learning with a neural network is unstable out of the box:
+    </p>
+
+    <ul class="post-list">
+      <li>Consecutive experiences are highly correlated, while neural network training assumes roughly independent samples.</li>
+      <li>The target depends on the same network being trained, so every update moves the target too.</li>
+    </ul>
+
+    <p>
+      The combination of function approximation, bootstrapping from estimates,
+      and off-policy learning is known as the deadly triad, because it can
+      make values diverge.
+    </p>
+
+    <h2>The Stabilising Tricks</h2>
+
+    <ul class="post-list">
+      <li><strong>Experience replay:</strong> store transitions in a buffer and train on random mini-batches from it. This breaks correlations and reuses each experience many times.</li>
+      <li><strong>Target network:</strong> compute targets with a separate copy of the network that is updated only periodically, so the target stays still between updates.</li>
+      <li><strong>Reward clipping and careful preprocessing:</strong> keep the scale of learning signals consistent across games.</li>
+    </ul>
+
+    <h2>Improvements That Followed</h2>
+
+    <ul class="post-list">
+      <li><strong>Double DQN:</strong> reduces overestimation by separating action selection from evaluation in the target.</li>
+      <li><strong>Dueling networks:</strong> estimate state value and action advantages separately.</li>
+      <li><strong>Prioritised replay:</strong> sample surprising transitions more often.</li>
+    </ul>
+
+    <h2>Beyond Value-Based Methods</h2>
+
+    <p>
+      Policy gradient and actor-critic methods learn the policy directly and
+      handle continuous actions more naturally. Reinforcement learning from
+      feedback, used to fine-tune modern language models, builds on these same
+      foundations.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Deep Q-Networks connected classical reinforcement learning to deep
+      learning. The ideas in these notes, from search and MDPs to Q-learning,
+      are still visible inside the learning systems built today.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binary Search Trees</title>
+  <meta name="description" content="The ordered dictionary data structure: the BST property, search, insertion, deletion, traversal, and why tree height is everything." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Binary Search Trees" />
+  <meta property="og:description" content="The ordered dictionary data structure: the BST property, search, insertion, deletion, traversal, and why tree height is everything." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220226_binary_search_trees.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Binary Search Trees</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Data Structures</span>
+    </p>
+
+    <p class="muted">
+      Feb 26, 2022
+    </p>
+
+    <p>
+      Hash tables give fast lookup but no order. Binary search trees keep keys
+      ordered, supporting search, minimum, maximum, successor and range
+      queries, all in time proportional to the height of the tree.
+    </p>
+
+    <h2>The BST Property</h2>
+
+    <p>
+      Each node holds a key and pointers to a left and right child. For every
+      node x:
+    </p>
+
+    <ul class="post-list">
+      <li>Keys in x's left subtree are ≤ x.key.</li>
+      <li>Keys in x's right subtree are ≥ x.key.</li>
+    </ul>
+
+    <p>
+      An inorder traversal, left subtree, then node, then right subtree,
+      visits the keys in sorted order in Θ(n) time.
+    </p>
+
+    <h2>Searching and Inserting</h2>
+
+    <p>
+      Search starts at the root and goes left or right depending on the
+      comparison, just like binary search.
+    </p>
+
+    <pre><code>class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+
+def search(node, key):
+    while node is not None and key != node.key:
+        node = node.left if key &lt; node.key else node.right
+    return node
+
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    if key &lt; root.key:
+        root.left = insert(root.left, key)
+    else:
+        root.right = insert(root.right, key)
+    return root</code></pre>
+
+    <p>
+      Both follow a single path down the tree, so they take O(h) time, where h
+      is the height.
+    </p>
+
+    <h2>Minimum, Maximum and Successor</h2>
+
+    <p>
+      The minimum is found by following left pointers to the end; the maximum
+      by following right pointers. The successor of a node is the minimum of
+      its right subtree, or, if it has none, the lowest ancestor whose left
+      child is also an ancestor.
+    </p>
+
+    <h2>Deletion</h2>
+
+    <p>
+      Deleting node z has three cases:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>No children:</strong> remove it.</li>
+      <li><strong>One child:</strong> replace z with its child.</li>
+      <li><strong>Two children:</strong> find z's successor y, the minimum of its right subtree, and move y into z's position.</li>
+    </ul>
+
+    <p>
+      The two-child case is the subtle one, but it still runs in O(h).
+    </p>
+
+    <h2>Height Is Everything</h2>
+
+    <p class="muted">
+      Every operation is O(h). The whole question is how tall the tree gets.
+    </p>
+
+    <p>
+      If keys are inserted in random order, the expected height is O(lg n),
+      and every operation is fast. If they are inserted in sorted order, each
+      new key becomes the right child of the previous one, and the tree
+      degenerates into a linked list of height n.
+    </p>
+
+    <p>
+      Real inputs are often partly sorted, so plain BSTs are risky. Balanced
+      trees, such as red-black trees and AVL trees, rebalance on insertion and
+      deletion to guarantee height O(lg n).
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The binary search tree is simple and versatile, but its performance
+      depends on its shape. Balanced variants keep the same interface while
+      removing that risk, which is the subject of the next note.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

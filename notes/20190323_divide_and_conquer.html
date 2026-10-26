@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Divide and Conquer</title>
+  <meta name="description" content="Break a problem into smaller copies of itself, solve them recursively, and combine the results. Merge sort as the canonical example." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Divide and Conquer" />
+  <meta property="og:description" content="Break a problem into smaller copies of itself, solve them recursively, and combine the results. Merge sort as the canonical example." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20190323_divide_and_conquer.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Divide and Conquer</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Design Techniques</span>
+    </p>
+
+    <p class="muted">
+      Mar 23, 2019
+    </p>
+
+    <p>
+      Divide and conquer is one of the most powerful algorithm design
+      techniques. Many of the fastest known algorithms, from sorting to
+      multiplying matrices, follow its pattern.
+    </p>
+
+    <h2>The Three Steps</h2>
+
+    <ul class="post-list">
+      <li><strong>Divide:</strong> split the problem into smaller subproblems of the same kind.</li>
+      <li><strong>Conquer:</strong> solve the subproblems recursively. If they are small enough, solve them directly.</li>
+      <li><strong>Combine:</strong> merge the subproblem solutions into a solution for the original problem.</li>
+    </ul>
+
+    <h2>Merge Sort</h2>
+
+    <p>
+      Merge sort divides an array into two halves, sorts each half
+      recursively, then merges the two sorted halves.
+    </p>
+
+    <pre><code>def merge_sort(a):
+    if len(a) &lt;= 1:
+        return a
+    mid = len(a) // 2
+    left, right = merge_sort(a[:mid]), merge_sort(a[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    out, i, j = [], 0, 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:
+            out.append(left[i]); i += 1
+        else:
+            out.append(right[j]); j += 1
+    return out + left[i:] + right[j:]</code></pre>
+
+    <p>
+      The merge step does the real work. Because both halves are already
+      sorted, it repeatedly takes the smaller front element, in linear time.
+    </p>
+
+    <h2>Analysing It</h2>
+
+    <p>
+      Divide-and-conquer algorithms are analysed with recurrences. Merge sort
+      makes two recursive calls on halves and spends linear time merging:
+    </p>
+
+    <p class="muted">
+      T(n) = 2T(n/2) + Θ(n)
+    </p>
+
+    <p>
+      The recursion tree has lg n levels, and each level does Θ(n) total work,
+      so T(n) = Θ(n lg n). That beats insertion sort's Θ(n²) worst case by a
+      wide margin for large inputs.
+    </p>
+
+    <p class="muted">
+      The work is spread evenly across levels, and there are only
+      logarithmically many levels.
+    </p>
+
+    <h2>Another Example: Maximum Subarray</h2>
+
+    <p>
+      Given an array of numbers, find the contiguous subarray with the largest
+      sum. Divide and conquer splits the array in half; the best subarray is
+      either entirely in the left half, entirely in the right half, or crosses
+      the midpoint. The crossing case is found in linear time by extending
+      outward from the middle. The result is again Θ(n lg n).
+    </p>
+
+    <h2>When It Helps</h2>
+
+    <ul class="post-list">
+      <li>Subproblems should be independent. If they overlap heavily, dynamic programming is better.</li>
+      <li>The combine step should be cheap relative to the savings from splitting.</li>
+      <li>Recursion adds overhead, so practical implementations often switch to a simple method for small inputs.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Divide and conquer turns big problems into many small ones that are easy
+      to solve. Its running time comes down to a recurrence, which the master
+      method in the next note solves for most common cases.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inference in Propositional Logic</title>
+  <meta name="description" content="From truth tables to theorem proving: inference rules, resolution, CNF, forward and backward chaining, and modern SAT solvers." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Inference in Propositional Logic" />
+  <meta property="og:description" content="From truth tables to theorem proving: inference rules, resolution, CNF, forward and backward chaining, and modern SAT solvers." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220924_propositional_inference.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Inference in Propositional Logic</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Logic</span>
+    </p>
+
+    <p class="muted">
+      Sep 24, 2022
+    </p>
+
+    <p>
+      Model checking enumerates every possible world, which quickly becomes
+      infeasible. Theorem proving instead applies inference rules directly to
+      sentences, deriving new sentences without considering models at all.
+    </p>
+
+    <h2>Soundness and Completeness</h2>
+
+    <ul class="post-list">
+      <li>An inference procedure is <strong>sound</strong> if everything it derives is actually entailed.</li>
+      <li>It is <strong>complete</strong> if it can derive everything that is entailed.</li>
+    </ul>
+
+    <p>
+      Soundness is essential; an unsound procedure can prove falsehoods.
+    </p>
+
+    <h2>Basic Inference Rules</h2>
+
+    <ul class="post-list">
+      <li><strong>Modus ponens:</strong> from P ⇒ Q and P, infer Q.</li>
+      <li><strong>And-elimination:</strong> from P ∧ Q, infer P.</li>
+      <li><strong>Logical equivalences:</strong> such as De Morgan's laws and contraposition, which can be applied in either direction.</li>
+    </ul>
+
+    <h2>Resolution</h2>
+
+    <p>
+      Resolution is a single inference rule that is complete for propositional
+      logic when used in refutation. It works on clauses, disjunctions of
+      literals:
+    </p>
+
+    <p class="muted">
+      From (A ∨ B) and (¬B ∨ C), infer (A ∨ C)
+    </p>
+
+    <p>
+      The complementary literals B and ¬B cancel out.
+    </p>
+
+    <p>
+      To prove KB ⊨ α, convert KB ∧ ¬α into conjunctive normal form, a
+      conjunction of clauses, and apply resolution repeatedly. If the empty
+      clause appears, the set is unsatisfiable and α is proved.
+    </p>
+
+    <p class="muted">
+      Resolution proves things by showing that their negation leads to a
+      contradiction.
+    </p>
+
+    <h2>Horn Clauses and Chaining</h2>
+
+    <p>
+      Many knowledge bases use Horn clauses, which have at most one positive
+      literal, like (A ∧ B) ⇒ C. For these, inference is much more efficient:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Forward chaining:</strong> start from known facts, fire every rule whose premises are satisfied, add conclusions, and repeat. It is data-driven and runs in linear time.</li>
+      <li><strong>Backward chaining:</strong> start from the query and work backward, looking for rules that conclude it and trying to prove their premises. It is goal-driven and only touches relevant facts.</li>
+    </ul>
+
+    <p>
+      Forward chaining suits agents updating beliefs from new percepts.
+      Backward chaining suits answering specific questions.
+    </p>
+
+    <h2>SAT Solvers</h2>
+
+    <p>
+      Checking satisfiability of a general formula is NP-complete, yet modern
+      SAT solvers routinely handle problems with millions of variables. They
+      build on the DPLL algorithm, a backtracking search with:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Unit propagation:</strong> if a clause has only one unassigned literal, it must be true.</li>
+      <li><strong>Pure symbols:</strong> a symbol appearing with only one sign can be set to satisfy all its clauses.</li>
+      <li><strong>Clause learning:</strong> conflicts produce new clauses that prevent repeating the same mistake.</li>
+    </ul>
+
+    <p>
+      Local search methods like WalkSAT also work well on many satisfiable
+      instances.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Logical inference turns a knowledge base into a source of new
+      conclusions. The progress of SAT solvers shows that worst-case hardness
+      does not always mean practical hardness.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

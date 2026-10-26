@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Strassen&#x27;s Algorithm for Matrix Multiplication</title>
+  <meta name="description" content="How to multiply n × n matrices faster than n³ by using seven recursive multiplications instead of eight." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Strassen's Algorithm for Matrix Multiplication" />
+  <meta property="og:description" content="How to multiply n × n matrices faster than n³ by using seven recursive multiplications instead of eight." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20191019_strassen_algorithm.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Strassen&#x27;s Algorithm for Matrix Multiplication</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Divide and Conquer</span>
+    </p>
+
+    <p class="muted">
+      Oct 19, 2019
+    </p>
+
+    <p>
+      Multiplying two n × n matrices the straightforward way takes Θ(n³)
+      operations: each of n² entries is a dot product of length n. For a long
+      time this was assumed to be optimal. In 1969, Volker Strassen showed it
+      is not.
+    </p>
+
+    <h2>Simple Divide and Conquer</h2>
+
+    <p>
+      Split each matrix into four n/2 × n/2 blocks:
+    </p>
+
+    <pre><code>| C11 C12 |   | A11 A12 |   | B11 B12 |
+| C21 C22 | = | A21 A22 | × | B21 B22 |
+
+C11 = A11·B11 + A12·B21      C12 = A11·B12 + A12·B22
+C21 = A21·B11 + A22·B21      C22 = A21·B12 + A22·B22</code></pre>
+
+    <p>
+      That needs eight multiplications of half-size matrices plus some
+      additions, giving T(n) = 8T(n/2) + Θ(n²). By the master method, that is
+      still Θ(n³). Dividing alone does not help.
+    </p>
+
+    <h2>Strassen's Insight</h2>
+
+    <p>
+      Strassen found a way to compute the four blocks of C using only seven
+      multiplications, at the cost of more additions:
+    </p>
+
+    <pre><code>M1 = (A11 + A22)(B11 + B22)
+M2 = (A21 + A22) B11
+M3 = A11 (B12 − B22)
+M4 = A22 (B21 − B11)
+M5 = (A11 + A12) B22
+M6 = (A21 − A11)(B11 + B12)
+M7 = (A12 − A22)(B21 + B22)
+
+C11 = M1 + M4 − M5 + M7
+C12 = M3 + M5
+C21 = M2 + M4
+C22 = M1 − M2 + M3 + M6</code></pre>
+
+    <p>
+      You can check each block by expanding the products; the unwanted terms
+      cancel exactly.
+    </p>
+
+    <h2>The Payoff</h2>
+
+    <p>
+      The recurrence becomes:
+    </p>
+
+    <p class="muted">
+      T(n) = 7T(n/2) + Θ(n²)
+    </p>
+
+    <p>
+      Case 1 of the master method gives T(n) = Θ(n^(lg 7)) ≈ Θ(n^2.81).
+    </p>
+
+    <p class="muted">
+      Trading one multiplication for many additions pays off because additions
+      are cheap and the saving repeats at every level.
+    </p>
+
+    <p>
+      Saving a single multiplication at the top would be trivial. The gain
+      comes from applying the trick recursively at every level of the
+      recursion.
+    </p>
+
+    <h2>In Practice</h2>
+
+    <ul class="post-list">
+      <li>Constant factors are larger than the naive method, so Strassen only wins above a crossover size, typically a few hundred.</li>
+      <li>Implementations switch to ordinary multiplication for small blocks.</li>
+      <li>It is less numerically stable, which matters in floating-point scientific code.</li>
+      <li>It needs extra memory for intermediate matrices.</li>
+    </ul>
+
+    <h2>Beyond Strassen</h2>
+
+    <p>
+      Strassen's result started a long line of research. Later algorithms have
+      pushed the theoretical exponent down to around 2.37, though their
+      constants are so large they are not used in practice. Whether matrices
+      can be multiplied in close to n² time remains an open question.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Strassen's algorithm is a reminder that obvious bounds are not always
+      real ones. A clever algebraic identity, applied recursively, broke an
+      assumption that had seemed self-evident.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

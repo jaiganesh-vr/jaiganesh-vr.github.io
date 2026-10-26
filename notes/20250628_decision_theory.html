@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decision Theory and Utility</title>
+  <meta name="description" content="Combining probability with preferences: utility functions, the principle of maximum expected utility, risk attitudes and the value of information." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Decision Theory and Utility" />
+  <meta property="og:description" content="Combining probability with preferences: utility functions, the principle of maximum expected utility, risk attitudes and the value of information." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250628_decision_theory.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Decision Theory and Utility</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Decisions</span>
+    </p>
+
+    <p class="muted">
+      Jun 28, 2025
+    </p>
+
+    <p>
+      Probability tells an agent what to believe. It does not say what to do.
+      Decision theory combines beliefs with preferences, giving a principled
+      way to choose actions under uncertainty.
+    </p>
+
+    <h2>Utility</h2>
+
+    <p>
+      A utility function assigns a number to each state, expressing how
+      desirable it is to the agent. Only the ordering and relative differences
+      matter: multiplying all utilities by a positive constant, or adding a
+      constant, does not change any decision.
+    </p>
+
+    <h2>Maximum Expected Utility</h2>
+
+    <p>
+      The expected utility of an action is the average utility of its
+      outcomes, weighted by their probabilities:
+    </p>
+
+    <p class="muted">
+      EU(a) = Σ P(s' | a) · U(s')
+    </p>
+
+    <p>
+      A rational agent chooses the action with maximum expected utility. This
+      single principle defines rational behavior under uncertainty.
+    </p>
+
+    <p class="muted">
+      Decision theory = probability theory + utility theory.
+    </p>
+
+    <h2>Why Utilities Exist</h2>
+
+    <p>
+      The axioms of utility theory state basic requirements for rational
+      preferences, such as transitivity: if you prefer A to B and B to C, you
+      must prefer A to C. Otherwise you could be led around a cycle, paying a
+      little at each step. It can be proved that any agent whose preferences
+      satisfy these axioms behaves as if maximising some utility function.
+    </p>
+
+    <h2>Money Is Not Utility</h2>
+
+    <p>
+      People do not value money linearly. Most would take a certain 1 million
+      over a coin flip for 2.5 million, even though the gamble's expected
+      monetary value is higher. The utility of money is roughly logarithmic:
+      each extra dollar matters less the more you have.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Risk-averse:</strong> prefers a sure thing to a gamble with the same expected value.</li>
+      <li><strong>Risk-neutral:</strong> indifferent between them.</li>
+      <li><strong>Risk-seeking:</strong> prefers the gamble.</li>
+    </ul>
+
+    <h2>Multi-Attribute Utility</h2>
+
+    <p>
+      Real decisions involve many attributes: cost, safety, time, comfort.
+      Multi-attribute utility theory combines them, often as a weighted sum
+      when attributes are independent in the agent's preferences. Sometimes
+      one option dominates another on every attribute, and the decision is
+      easy.
+    </p>
+
+    <h2>Value of Information</h2>
+
+    <p>
+      Gathering information has costs, so an agent must decide when it is
+      worth it. The value of perfect information is the difference between the
+      expected utility of deciding after learning something and the expected
+      utility of deciding now.
+    </p>
+
+    <ul class="post-list">
+      <li>Information is valuable only if it might change the decision.</li>
+      <li>Its value is never negative for a rational agent, in expectation.</li>
+    </ul>
+
+    <p>
+      A doctor should order a test only if its result could change the
+      treatment, and its expected benefit exceeds its cost.
+    </p>
+
+    <h2>Decision Networks</h2>
+
+    <p>
+      Decision networks extend Bayesian networks with decision nodes and
+      utility nodes, so that complex decisions can be represented and solved
+      with the same graphical tools.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Maximum expected utility is the definition of a rational agent made
+      precise. The challenge in practice is specifying utilities that truly
+      reflect what we want, a problem that remains central in AI today.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

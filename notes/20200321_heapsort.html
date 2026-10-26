@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heapsort</title>
+  <meta name="description" content="The binary heap data structure, the max-heap property, building a heap in linear time, and sorting in place in O(n lg n)." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Heapsort" />
+  <meta property="og:description" content="The binary heap data structure, the max-heap property, building a heap in linear time, and sorting in place in O(n lg n)." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20200321_heapsort.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Heapsort</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Sorting</span>
+    </p>
+
+    <p class="muted">
+      Mar 21, 2020
+    </p>
+
+    <p>
+      Heapsort combines the best of two sorting algorithms: like merge sort it
+      runs in O(n lg n) time, and like insertion sort it sorts in place. It is
+      built on the binary heap, a data structure that is useful well beyond
+      sorting.
+    </p>
+
+    <h2>The Binary Heap</h2>
+
+    <p>
+      A binary heap is an array viewed as a nearly complete binary tree. With
+      zero-based indexing, the node at index i has children at 2i + 1 and 2i +
+      2, and its parent at (i − 1) // 2. No pointers are needed.
+    </p>
+
+    <p>
+      In a max-heap, every node is at least as large as its children. So the
+      largest element is always at the root, index 0.
+    </p>
+
+    <h2>Max-Heapify</h2>
+
+    <p>
+      The core operation restores the heap property at node i, assuming its
+      subtrees are already heaps. It swaps the node with its larger child
+      until it is larger than both.
+    </p>
+
+    <pre><code>def sift_down(a, i, n):
+    while True:
+        largest, l, r = i, 2 * i + 1, 2 * i + 2
+        if l &lt; n and a[l] &gt; a[largest]:
+            largest = l
+        if r &lt; n and a[r] &gt; a[largest]:
+            largest = r
+        if largest == i:
+            return
+        a[i], a[largest] = a[largest], a[i]
+        i = largest
+
+def heapsort(a):
+    n = len(a)
+    for i in range(n // 2 - 1, -1, -1):   # build max-heap
+        sift_down(a, i, n)
+    for end in range(n - 1, 0, -1):       # move max to the end
+        a[0], a[end] = a[end], a[0]
+        sift_down(a, 0, end)</code></pre>
+
+    <p>
+      Sift-down runs in O(lg n), the height of the tree.
+    </p>
+
+    <h2>Building a Heap in Linear Time</h2>
+
+    <p>
+      Building a heap calls sift-down on every non-leaf node, from the bottom
+      up. A naive bound is O(n lg n), but most nodes are near the bottom where
+      sift-down is cheap. Summing the actual costs gives O(n).
+    </p>
+
+    <p class="muted">
+      Half the nodes are leaves and need no work; the expensive nodes near the
+      root are few.
+    </p>
+
+    <h2>Sorting</h2>
+
+    <p>
+      Once the array is a max-heap, the largest element is at the front. Swap
+      it with the last element, shrink the heap by one, and sift-down the new
+      root. Repeating this n − 1 times leaves the array sorted in ascending
+      order. Total time: O(n lg n).
+    </p>
+
+    <h2>Properties</h2>
+
+    <ul class="post-list">
+      <li><strong>In place:</strong> only a constant amount of extra memory.</li>
+      <li><strong>Worst case O(n lg n):</strong> unlike quicksort, no bad inputs.</li>
+      <li><strong>Not stable:</strong> equal elements may change relative order.</li>
+      <li><strong>Cache unfriendly:</strong> jumps around the array, so in practice it is often slower than a good quicksort.</li>
+    </ul>
+
+    <h2>Priority Queues</h2>
+
+    <p>
+      The heap's most common use is as a priority queue, supporting insert,
+      maximum and extract-max in O(lg n). Priority queues schedule jobs, drive
+      event simulations, and power Dijkstra's and Prim's graph algorithms.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Heapsort is elegant because the data structure does all the work. The
+      heap keeps the largest element at hand, and sorting is just asking for
+      it repeatedly.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

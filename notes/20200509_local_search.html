@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Search: Hill Climbing and Simulated Annealing</title>
+  <meta name="description" content="When the path doesn't matter and only the final state does, local search keeps one current state and improves it. Hill climbing, its traps, and simulated annealing." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Local Search: Hill Climbing and Simulated Annealing" />
+  <meta property="og:description" content="When the path doesn't matter and only the final state does, local search keeps one current state and improves it. Hill climbing, its traps, and simulated annealing." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20200509_local_search.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Local Search: Hill Climbing and Simulated Annealing</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Optimization</span>
+    </p>
+
+    <p class="muted">
+      May 09, 2020
+    </p>
+
+    <p>
+      In many problems the path to a solution is irrelevant. For the 8-queens
+      problem, scheduling or circuit layout, only the final configuration
+      matters. Local search algorithms keep a single current state and try to
+      improve it, instead of exploring paths systematically.
+    </p>
+
+    <h2>Why Local Search</h2>
+
+    <ul class="post-list">
+      <li>It uses very little memory, often constant.</li>
+      <li>It finds reasonable solutions in huge or continuous spaces where systematic search is hopeless.</li>
+      <li>It naturally solves optimization problems, where the goal is the best state according to an objective function.</li>
+    </ul>
+
+    <p>
+      The state space can be pictured as a landscape: location is the state,
+      elevation is the objective value. Local search tries to find the highest
+      peak.
+    </p>
+
+    <h2>Hill Climbing</h2>
+
+    <p>
+      Hill climbing moves to the neighbouring state with the best value, and
+      stops when no neighbour is better. It is simple, fast and greedy.
+    </p>
+
+    <p>
+      It gets stuck in three ways:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Local maxima:</strong> a peak lower than the highest peak.</li>
+      <li><strong>Ridges:</strong> sequences of local maxima that are hard to navigate with single moves.</li>
+      <li><strong>Plateaus:</strong> flat regions where no neighbour is better.</li>
+    </ul>
+
+    <p>
+      On randomly generated 8-queens states, steepest-ascent hill climbing
+      solves only about 14 percent of instances, though it is very fast when
+      it does.
+    </p>
+
+    <h2>Escaping Local Optima</h2>
+
+    <ul class="post-list">
+      <li><strong>Sideways moves:</strong> allow moves to equal-valued neighbours to cross plateaus, with a limit.</li>
+      <li><strong>Random restarts:</strong> run hill climbing from many random starting points and keep the best result. Given enough restarts, it finds a solution with probability approaching 1.</li>
+      <li><strong>Stochastic hill climbing:</strong> choose randomly among uphill moves.</li>
+    </ul>
+
+    <h2>Simulated Annealing</h2>
+
+    <p>
+      Simulated annealing borrows from metallurgy, where metals are heated and
+      slowly cooled to reach a low-energy crystal structure.
+    </p>
+
+    <p>
+      At each step it picks a random neighbour. If the move improves the
+      state, it is accepted. If not, it is still accepted with probability:
+    </p>
+
+    <p class="muted">
+      P = e^(ΔE / T)
+    </p>
+
+    <p>
+      where ΔE is the change in value (negative for a worse move) and T is the
+      temperature. Early on, T is high and bad moves are often accepted,
+      letting the search escape local optima. T is lowered gradually, so the
+      search becomes increasingly greedy.
+    </p>
+
+    <p>
+      If the temperature decreases slowly enough, simulated annealing finds a
+      global optimum with probability approaching 1.
+    </p>
+
+    <h2>Local Beam Search</h2>
+
+    <p>
+      Instead of one state, local beam search keeps k states and selects the
+      best k among all their successors, sharing information between parallel
+      searches.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Local search trades guarantees for scale. It cannot prove it found the
+      best answer, but it can find a good one in spaces far too large to
+      search exhaustively.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

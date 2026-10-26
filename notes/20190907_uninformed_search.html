@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uninformed Search Strategies</title>
+  <meta name="description" content="Breadth-first, uniform-cost, depth-first and iterative deepening search: how each explores a state space and what it costs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Uninformed Search Strategies" />
+  <meta property="og:description" content="Breadth-first, uniform-cost, depth-first and iterative deepening search: how each explores a state space and what it costs." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20190907_uninformed_search.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Uninformed Search Strategies</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Search</span>
+    </p>
+
+    <p class="muted">
+      Sep 07, 2019
+    </p>
+
+    <p>
+      Uninformed, or blind, search strategies know nothing about the problem
+      beyond its definition. They cannot tell whether one state is closer to
+      the goal than another. They differ only in the order they expand nodes.
+    </p>
+
+    <h2>Breadth-First Search</h2>
+
+    <p>
+      Breadth-first search expands the shallowest unexpanded node first, using
+      a FIFO queue as the frontier.
+    </p>
+
+    <ul class="post-list">
+      <li>Complete when the branching factor is finite.</li>
+      <li>Optimal when all step costs are equal.</li>
+      <li>Time and space O(b^d).</li>
+    </ul>
+
+    <p>
+      Memory is the real problem. With a branching factor of 10, searching to
+      depth 12 would need terabytes. BFS is practical only for small problems.
+    </p>
+
+    <h2>Uniform-Cost Search</h2>
+
+    <p>
+      Uniform-cost search expands the node with the lowest path cost g(n),
+      using a priority queue. It is optimal for any positive step costs, and
+      it is essentially Dijkstra's algorithm applied to search.
+    </p>
+
+    <h2>Depth-First Search</h2>
+
+    <p>
+      Depth-first search expands the deepest node first, using a LIFO stack.
+    </p>
+
+    <ul class="post-list">
+      <li>Not complete in infinite spaces, since it can descend forever.</li>
+      <li>Not optimal.</li>
+      <li>Space only O(b·m), linear in depth.</li>
+    </ul>
+
+    <p>
+      That modest memory use is its great advantage.
+    </p>
+
+    <p class="muted">
+      BFS finds the shortest path but needs exponential memory. DFS needs
+      little memory but may never return.
+    </p>
+
+    <h2>Depth-Limited and Iterative Deepening</h2>
+
+    <p>
+      Depth-limited search is DFS with a cutoff depth. Iterative deepening
+      runs depth-limited search with limits 0, 1, 2 and so on until a goal
+      appears.
+    </p>
+
+    <p>
+      It looks wasteful, because shallow levels are searched many times. But
+      in a tree most nodes are at the deepest level, so the repeated work is
+      small. Iterative deepening combines BFS's completeness and optimality
+      for unit costs with DFS's linear memory. It is the preferred uninformed
+      method when the search space is large and the solution depth is unknown.
+    </p>
+
+    <h2>Bidirectional Search</h2>
+
+    <p>
+      Running one search forward from the start and another backward from the
+      goal, and stopping when they meet, reduces the cost from b^d to roughly
+      2·b^(d/2). It requires being able to compute predecessors of states,
+      which is not always possible.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Uninformed search is the baseline. Its exponential cost is exactly why
+      the next step, guiding search with knowledge about the problem, matters
+      so much.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adversarial Search and Minimax</title>
+  <meta name="description" content="Searching when an opponent is trying to beat you: game trees, utility, and the minimax algorithm for two-player zero-sum games." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Adversarial Search and Minimax" />
+  <meta property="og:description" content="Searching when an opponent is trying to beat you: game trees, utility, and the minimax algorithm for two-player zero-sum games." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210123_minimax.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Adversarial Search and Minimax</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Games</span>
+    </p>
+
+    <p class="muted">
+      Jan 23, 2021
+    </p>
+
+    <p>
+      In ordinary search, the agent controls every action. In games, an
+      opponent chooses half the moves and is actively working against you.
+      Adversarial search handles that by assuming the opponent plays as well
+      as possible.
+    </p>
+
+    <h2>Defining a Game</h2>
+
+    <p>
+      A two-player game is defined by:
+    </p>
+
+    <ul class="post-list">
+      <li>The initial state and whose turn it is.</li>
+      <li>The legal actions in each state.</li>
+      <li>A transition model and a terminal test that detects the end of the game.</li>
+      <li>A utility function giving the final payoff, such as +1, 0 or −1.</li>
+    </ul>
+
+    <p>
+      In zero-sum games like chess, one player's gain is exactly the other's
+      loss.
+    </p>
+
+    <h2>The Game Tree</h2>
+
+    <p>
+      The two players are called MAX and MIN. MAX moves first and wants the
+      highest utility; MIN wants the lowest. The game tree alternates MAX and
+      MIN levels, with utilities at the leaves.
+    </p>
+
+    <h2>Minimax</h2>
+
+    <p>
+      The minimax value of a node is the utility of the outcome if both
+      players play optimally from that point:
+    </p>
+
+    <ul class="post-list">
+      <li>At a terminal node, its utility.</li>
+      <li>At a MAX node, the maximum of its children's values.</li>
+      <li>At a MIN node, the minimum of its children's values.</li>
+    </ul>
+
+    <pre><code>def minimax(state, maximizing):
+    if state.is_terminal():
+        return state.utility()
+    values = (minimax(child, not maximizing) for child in state.children())
+    return max(values) if maximizing else min(values)</code></pre>
+
+    <p>
+      MAX picks the move leading to the child with the highest minimax value.
+    </p>
+
+    <p class="muted">
+      Minimax assumes the worst case: the opponent will always make the move
+      that is best for them.
+    </p>
+
+    <h2>Complexity</h2>
+
+    <p>
+      Minimax explores the full game tree, so its time is O(b^m) for branching
+      factor b and maximum depth m. Chess has an average branching factor of
+      about 35 and games of around 80 plies, which makes full search
+      impossible.
+    </p>
+
+    <h2>Imperfect Real-Time Decisions</h2>
+
+    <p>
+      Real programs stop the search at a depth limit and apply an evaluation
+      function, an estimate of how good a position is. In chess, a classic
+      evaluation is a weighted sum of features like material, mobility and
+      king safety.
+    </p>
+
+    <p>
+      Cutting off search introduces the horizon effect: a bad outcome just
+      beyond the depth limit is invisible, so a program may make delaying
+      moves that only postpone it.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Minimax is a clean definition of optimal play. The practical work in
+      game-playing AI is about approximating it: searching less of the tree,
+      and judging positions well where the search stops.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

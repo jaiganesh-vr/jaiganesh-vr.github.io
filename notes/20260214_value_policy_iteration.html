@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Value Iteration and Policy Iteration</title>
+  <meta name="description" content="Two dynamic programming algorithms for solving MDPs when the model is known, how each converges, and when to prefer one over the other." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Value Iteration and Policy Iteration" />
+  <meta property="og:description" content="Two dynamic programming algorithms for solving MDPs when the model is known, how each converges, and when to prefer one over the other." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260214_value_policy_iteration.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Value Iteration and Policy Iteration</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Decisions</span>
+    </p>
+
+    <p class="muted">
+      Feb 14, 2026
+    </p>
+
+    <p>
+      When the transition model and rewards of an MDP are known, the optimal
+      policy can be computed by dynamic programming. The two classic
+      algorithms, value iteration and policy iteration, attack the Bellman
+      equation from different directions.
+    </p>
+
+    <h2>Value Iteration</h2>
+
+    <p>
+      The Bellman equations for all states form a system of nonlinear
+      equations, because of the max. Value iteration solves them iteratively:
+    </p>
+
+    <ul class="post-list">
+      <li>Start with arbitrary utilities, for example all zero.</li>
+      <li>Update every state using the Bellman equation with the current estimates.</li>
+      <li>Repeat until the utilities stop changing.</li>
+    </ul>
+
+    <pre><code>def value_iteration(states, actions, P, R, gamma, eps=1e-6):
+    U = {s: 0.0 for s in states}
+    while True:
+        delta = 0.0
+        for s in states:
+            best = max(
+                (sum(p * (R(s, a, s2) + gamma * U[s2]) for s2, p in P(s, a))
+                 for a in actions(s)),
+                default=0.0)
+            delta = max(delta, abs(best - U[s]))
+            U[s] = best
+        if delta &lt; eps:
+            return U</code></pre>
+
+    <h2>Why It Converges</h2>
+
+    <p>
+      The Bellman update is a contraction: each application brings any two
+      utility estimates closer together by at least a factor of γ. So value
+      iteration converges to the unique solution from any starting point, and
+      the error shrinks geometrically.
+    </p>
+
+    <p class="muted">
+      Every sweep pulls the estimates toward the true utilities by a factor of
+      γ.
+    </p>
+
+    <p>
+      The optimal policy often stabilises long before the utilities finish
+      converging, which motivates policy iteration.
+    </p>
+
+    <h2>Policy Iteration</h2>
+
+    <p>
+      Policy iteration alternates two steps:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Policy evaluation:</strong> compute the utility of every state under the current policy.</li>
+      <li><strong>Policy improvement:</strong> in every state, switch to the action that is best according to those utilities.</li>
+    </ul>
+
+    <p>
+      It stops when the improvement step changes nothing; the policy is then
+      optimal.
+    </p>
+
+    <p>
+      Policy evaluation is easier than solving the full Bellman equation,
+      because with a fixed policy there is no max. The equations are linear
+      and can be solved exactly in O(n³) for n states, or approximately with a
+      few iterations of simple updates.
+    </p>
+
+    <h2>Comparing the Two</h2>
+
+    <ul class="post-list">
+      <li><strong>Value iteration:</strong> cheap iterations, but may need many of them.</li>
+      <li><strong>Policy iteration:</strong> expensive iterations, but typically converges in very few.</li>
+      <li><strong>Modified policy iteration:</strong> evaluates each policy only approximately, often giving the best of both.</li>
+    </ul>
+
+    <h2>The Limits</h2>
+
+    <p>
+      Both algorithms require a known model and touch every state in every
+      sweep. For large or unknown environments, neither is feasible directly.
+      Asynchronous updates, which focus on important states, help with scale.
+      Learning from experience, without a model, is the job of reinforcement
+      learning.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Value and policy iteration show that optimal behavior in an MDP can be
+      computed exactly, given enough time and a perfect model. Reinforcement
+      learning keeps their ideas while dropping both of those assumptions.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

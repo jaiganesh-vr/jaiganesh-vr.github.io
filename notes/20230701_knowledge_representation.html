@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Representation</title>
+  <meta name="description" content="How AI systems organise knowledge about the world: ontologies, categories and objects, events, semantic networks, description logics and default reasoning." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Knowledge Representation" />
+  <meta property="og:description" content="How AI systems organise knowledge about the world: ontologies, categories and objects, events, semantic networks, description logics and default reasoning." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230701_knowledge_representation.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Knowledge Representation</h1>
+
+    <p class="muted">
+      <span class="pill">Artificial Intelligence</span>
+      <span class="pill">Knowledge</span>
+    </p>
+
+    <p class="muted">
+      Jul 01, 2023
+    </p>
+
+    <p>
+      Logic provides a language. Knowledge representation is about deciding
+      what to say in it: which concepts to define, how to organise them, and
+      how to capture the messy, general knowledge that intelligent behavior
+      relies on.
+    </p>
+
+    <h2>Ontologies</h2>
+
+    <p>
+      An ontology is a structured vocabulary of concepts and their
+      relationships. An upper ontology captures the most general concepts:
+      objects, events, time, space, substances, mental states. Domain
+      ontologies add concepts for specific fields, like medicine or law.
+    </p>
+
+    <h2>Categories and Objects</h2>
+
+    <p>
+      Much reasoning happens at the level of categories rather than individual
+      objects. Knowing something is a basketball tells you it is round and
+      bounces.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Membership:</strong> BB₉ ∈ Basketballs.</li>
+      <li><strong>Subclass:</strong> Basketballs ⊂ Balls.</li>
+      <li><strong>Inheritance:</strong> properties of a category apply to its members and subcategories.</li>
+    </ul>
+
+    <p>
+      These form taxonomies, hierarchies that organise vast amounts of
+      knowledge compactly. Biology's classification of species is one; product
+      catalogues are another.
+    </p>
+
+    <h2>Events and Time</h2>
+
+    <p>
+      Reasoning about change requires representing actions and their effects
+      over time. The event calculus represents events and fluents, facts that
+      change, with predicates like Happens(e, t) and HoldsAt(f, t). This
+      allows reasoning about what is true at any moment.
+    </p>
+
+    <h2>Semantic Networks</h2>
+
+    <p>
+      Semantic networks draw knowledge as graphs: nodes for objects and
+      categories, labelled links for relations like IsA and HasPart. They make
+      inheritance easy to visualise and compute. Modern knowledge graphs,
+      which power search engine fact panels, are descendants of this idea.
+    </p>
+
+    <p class="muted">
+      A knowledge graph is a semantic network at web scale.
+    </p>
+
+    <h2>Description Logics</h2>
+
+    <p>
+      Description logics are carefully restricted logics for defining and
+      reasoning about categories. They trade expressiveness for guaranteed
+      efficient inference, answering questions like whether one category is a
+      subset of another. The Web Ontology Language, OWL, is based on them.
+    </p>
+
+    <h2>Default Reasoning</h2>
+
+    <p>
+      Much common knowledge has exceptions. Birds fly, except penguins and
+      ostriches. Classical logic is monotonic: adding facts never removes
+      conclusions. Default reasoning is non-monotonic: learning that Tweety is
+      a penguin should retract the conclusion that Tweety flies.
+    </p>
+
+    <p>
+      Approaches include default logic, circumscription and truth maintenance
+      systems, which track why each belief is held so that it can be revised.
+    </p>
+
+    <h2>The Knowledge Bottleneck</h2>
+
+    <p>
+      Encoding knowledge by hand turned out to be slow and brittle. That
+      difficulty is one reason the field shifted toward learning knowledge
+      from data, though structured representations remain important wherever
+      precision and explanation matter.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Knowledge representation asks what an intelligent system needs to know
+      and how to organise it. Those questions remain relevant even when the
+      knowledge is learned rather than written.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

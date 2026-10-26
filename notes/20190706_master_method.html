@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Master Method for Solving Recurrences</title>
+  <meta name="description" content="A cookbook for solving divide-and-conquer recurrences of the form T(n) = aT(n/b) + f(n), with its three cases and worked examples." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Master Method for Solving Recurrences" />
+  <meta property="og:description" content="A cookbook for solving divide-and-conquer recurrences of the form T(n) = aT(n/b) + f(n), with its three cases and worked examples." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20190706_master_method.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Master Method for Solving Recurrences</h1>
+
+    <p class="muted">
+      <span class="pill">Algorithms</span>
+      <span class="pill">Analysis</span>
+    </p>
+
+    <p class="muted">
+      Jul 06, 2019
+    </p>
+
+    <p>
+      Divide-and-conquer algorithms produce recurrences describing their
+      running time. The master method solves a large class of them almost
+      mechanically, without drawing recursion trees each time.
+    </p>
+
+    <h2>The Form</h2>
+
+    <p>
+      The master method applies to recurrences of the form:
+    </p>
+
+    <p class="muted">
+      T(n) = a·T(n/b) + f(n)
+    </p>
+
+    <p>
+      where a ≥ 1 and b &gt; 1 are constants. The algorithm splits a problem
+      of size n into a subproblems of size n/b, and spends f(n) time dividing
+      and combining.
+    </p>
+
+    <h2>The Key Comparison</h2>
+
+    <p>
+      Everything depends on comparing f(n) with n^(log_b a). That quantity is
+      the total work at the leaves of the recursion tree: there are a^(log_b
+      n) = n^(log_b a) leaves.
+    </p>
+
+    <p class="muted">
+      The question is which dominates: the work at the leaves, or the work at
+      the root.
+    </p>
+
+    <h2>The Three Cases</h2>
+
+    <ul class="post-list">
+      <li><strong>Case 1:</strong> if f(n) = O(n^(log_b a − ε)) for some ε &gt; 0, the leaves dominate, and T(n) = Θ(n^(log_b a)).</li>
+      <li><strong>Case 2:</strong> if f(n) = Θ(n^(log_b a)), the work is spread evenly over the levels, and T(n) = Θ(n^(log_b a) · lg n).</li>
+      <li><strong>Case 3:</strong> if f(n) = Ω(n^(log_b a + ε)) for some ε &gt; 0, and a·f(n/b) ≤ c·f(n) for some c &lt; 1, the root dominates, and T(n) = Θ(f(n)).</li>
+    </ul>
+
+    <p>
+      The extra condition in case 3, called the regularity condition, holds
+      for most functions encountered in practice.
+    </p>
+
+    <h2>Worked Examples</h2>
+
+    <ul class="post-list">
+      <li><strong>Merge sort:</strong> T(n) = 2T(n/2) + n. Here n^(log₂ 2) = n, which matches f(n). Case 2 gives Θ(n lg n).</li>
+      <li><strong>Binary search:</strong> T(n) = T(n/2) + 1. Here n^(log₂ 1) = n⁰ = 1, which matches f(n). Case 2 gives Θ(lg n).</li>
+      <li><strong>T(n) = 9T(n/3) + n:</strong> n^(log₃ 9) = n², which grows polynomially faster than n. Case 1 gives Θ(n²).</li>
+      <li><strong>T(n) = 3T(n/4) + n lg n:</strong> n^(log₄ 3) ≈ n^0.79, smaller than n lg n, and regularity holds. Case 3 gives Θ(n lg n).</li>
+      <li><strong>Strassen's algorithm:</strong> T(n) = 7T(n/2) + n². n^(log₂ 7) ≈ n^2.81 dominates. Case 1 gives Θ(n^(lg 7)).</li>
+    </ul>
+
+    <h2>Where It Does Not Apply</h2>
+
+    <p>
+      The cases leave gaps. T(n) = 2T(n/2) + n lg n has f(n) larger than n,
+      but not polynomially larger, so neither case 2 nor case 3 applies. Its
+      solution is Θ(n lg² n), found with a recursion tree or an extended
+      version of the theorem.
+    </p>
+
+    <p>
+      Recurrences with unequal subproblem sizes, like T(n) = T(n/3) + T(2n/3)
+      + n, also fall outside the method. The substitution method, guessing a
+      bound and proving it by induction, works for these.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The master method compresses a recursion tree into a single comparison.
+      Most divide-and-conquer algorithms can be analysed in a line once you
+      know which of the three cases applies.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>
