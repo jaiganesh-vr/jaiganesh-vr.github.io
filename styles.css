@@ -494,3 +494,21 @@ menu {
     text-align: left;
   }
 }
+
+/* ===== Code Blocks ===== */
+pre {
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+pre code {
+  font-family: inherit;
+  white-space: pre;
+}

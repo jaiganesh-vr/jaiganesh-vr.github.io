@@ -3,7 +3,7 @@
   // 1. Posts dated within the last NEW_DAYS get a "New" pill automatically
   // 2. data-limit="5" shows the first 5 posts and a toggle to reveal the rest
 
-  const NEW_DAYS = 30;
+  const NEW_DAYS = 10;
 
   function markNew(list) {
     const cutoff = Date.now() - NEW_DAYS * 24 * 60 * 60 * 1000;

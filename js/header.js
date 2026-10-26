@@ -13,7 +13,7 @@
   let section = '';
   if (page === '' || page === 'index.html' || page.startsWith('blog/')) {
     section = 'blog';
-  } else if (/^(learn|books|projects|research)(\.html|\/)/.test(page)) {
+  } else if (/^(learn|books|projects|research|notes)(\.html|\/)/.test(page)) {
     section = 'learn';
   } else if (/^life(\.html|\/)/.test(page)) {
     section = 'life';

@@ -9,6 +9,7 @@
     books: 'books.html',
     projects: 'projects.html',
     research: 'research.html',
+    notes: 'learn.html',
   };
 
   function addProgressBar() {
@@ -51,16 +52,22 @@
     const listingUrl = new URL('../' + LISTINGS[folder], here);
     const listing = await fetchPage(listingUrl);
 
-    // Unique post links in the listing's order
-    const urls = [];
-    listing.querySelectorAll('main a[href]').forEach(a => {
-      const url = new URL(a.getAttribute('href'), listingUrl);
-      url.hash = '';
-      if (url.pathname.includes('/' + folder + '/') && !urls.includes(url.href)) urls.push(url.href);
-    });
-
     // GitHub Pages serves /blog/post.html at /blog/post too
     const key = url => url.split('#')[0].replace(/\.html$/, '');
+    const resolve = a => new URL(a.getAttribute('href'), listingUrl).href;
+
+    // Stay within this post's own list, e.g. one topic on the Notes page
+    const own = Array.from(listing.querySelectorAll('main a[href]')).find(a => key(resolve(a)) === key(here.href));
+    if (!own) return;
+    const scope = own.closest('.posts') || listing.querySelector('main');
+
+    // Unique post links in the listing's order
+    const urls = [];
+    scope.querySelectorAll('a[href]').forEach(a => {
+      const url = key(resolve(a)) + '.html';
+      if (url.includes('/' + folder + '/') && !urls.includes(url)) urls.push(url);
+    });
+
     const i = urls.map(key).indexOf(key(here.href));
     if (i === -1) return;
 
