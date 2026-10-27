@@ -95,9 +95,9 @@
     return name;
   }
 
-  // Runs as soon as it loads, so include this script right after the quote
-  // markup: each animation sets its start state before the first paint.
-  (async () => {
+  // Include this script right after the quote markup: the quote is hidden
+  // before the first paint, then plays once it scrolls into view.
+  (() => {
     const box = document.querySelector('.reading-quote');
     if (!box) return;
     const q = box.querySelector('.quote-text');
@@ -111,9 +111,22 @@
 
     // Hold the quote at its final height so nothing around it moves
     q.style.minHeight = q.offsetHeight + 'px';
-    await play[name](q, text, box);
-    if (source) source.classList.remove('rq-hidden');
-    q.style.minHeight = '';
+    q.style.visibility = 'hidden';
+
+    async function start() {
+      q.style.visibility = '';
+      await play[name](q, text, box);
+      if (source) source.classList.remove('rq-hidden');
+      q.style.minHeight = '';
+    }
+
+    if (!('IntersectionObserver' in window)) return start();
+    const io = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      start();
+    }, { threshold: 0.5 });
+    io.observe(q);
   })();
 
 })();
