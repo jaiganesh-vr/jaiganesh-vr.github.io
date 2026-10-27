@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autopilot RC: Self-Driving RC Car</title>
+  <meta name="description" content="An autonomous agent that drives a miniature RC car: a neural network steers from the camera, classifiers detect stop signs and traffic lights, and an ultrasonic sensor prevents collisions." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Autopilot RC: Self-Driving RC Car" />
+  <meta property="og:description" content="An autonomous agent that drives a miniature RC car: a neural network steers from the camera, classifiers detect stop signs and traffic lights, and an ultrasonic sensor prevents collisions." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/projects/20261027_autopilotrc.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Autopilot RC: An Autonomous Miniature Car</h1>
+
+    <p class="muted">
+      <span class="pill">Computer Vision</span>
+      <span class="pill">Neural Networks</span>
+      <span class="pill">Robotics</span>
+    </p>
+    <p class="muted">
+      Oct 27, 2026
+    </p>
+
+    <p>
+      Autopilot RC is an autonomous agent that drives a miniature radio-controlled car.
+      A neural network steers the car along the track from its camera image, shape-based
+      classifiers detect stop signs and traffic lights and estimate their distance, and
+      an ultrasonic sensor stops the car before it collides with obstacles.
+    </p>
+
+    <p>
+      The goal of this project was to build a complete self-driving loop on cheap
+      hardware: sense the world from the car, decide on a computer, and act through the
+      car's own remote. Along the way it also needed a way to develop and test the
+      driving logic without the car on the table, which led to a full simulator.
+    </p>
+
+    <p class="repo">
+      Click
+      <a href="https://github.com/jaiganesh-vr/autopilot-rc" target="_blank">
+        Autopilot RC
+      </a>
+      for the code repository
+    </p>
+
+    <p class="muted">
+      It is built with Python and OpenCV, running across a Raspberry Pi, a computer, and an Arduino.
+    </p>
+
+    <h2>Highlights</h2>
+
+    <ul class="post-list">
+      <li>
+        <strong>Learned steering</strong> — A small neural network (OpenCV MLP,
+        38400 → 32 → 4) reads the lower half of the grayscale frame and predicts forward,
+        left, or right. It learns from you driving the track with the arrow keys.
+      </li>
+      <li>
+        <strong>Sign and light detection</strong> — Haar cascade classifiers find stop
+        signs and traffic lights in the frame. A traffic light's colour comes from which
+        lamp is brightest.
+      </li>
+      <li>
+        <strong>Distance from a single camera</strong> — The distance to a sign or light
+        is estimated from how low it sits in the image, using the camera's calibrated
+        height, tilt, and lens.
+      </li>
+      <li>
+        <strong>Collision safety</strong> — An ultrasonic sensor on the car overrides
+        everything else and stops the car when an obstacle is closer than 30 cm.
+      </li>
+      <li>
+        <strong>Fail-safe controller</strong> — The Arduino stops the car if commands
+        stop arriving for 500 ms, so a crashed program or dropped link never leaves the
+        car driving blind.
+      </li>
+      <li>
+        <strong>Hardware-free simulator</strong> — A fake Arduino, a scripted sensor, and
+        ray-traced dashcam videos with exact ground truth let the whole computer side run,
+        train, and be tested without any devices.
+      </li>
+    </ul>
+
+    <h2>Architecture</h2>
+
+    <p>
+      Three devices work together. The car only senses, the computer does all the
+      thinking, and the Arduino presses the RC remote's buttons. A Raspberry Pi on the
+      car streams camera frames (320x240 at 10 fps) and ultrasonic distance readings to
+      the computer over Wi-Fi. The computer decides what the car should do and sends a
+      one-byte drive command to the Arduino over USB. The Arduino turns that command into
+      button presses on the remote, which drives the car over radio.
+    </p>
+
+    <p>
+      On each frame, the computer decides in this order: <br>
+      <br>
+      1. If the ultrasonic sensor reads under 30 cm, stop. <br>
+      2. If a stop sign is detected under 25 cm away, stop for 5 s, then ignore stop
+      signs for 5 s so the car can drive past. <br>
+      3. If a red traffic light is detected under 30 cm away, stop until it is no
+      longer red. <br>
+      4. Otherwise, steer forward, left, or right, as the neural network predicts. <br>
+    </p>
+
+    <h2>Tech Stack</h2>
+
+    <p> • <strong>Computer</strong> — Python 3.9+, OpenCV (contrib build for <em>cv2.ml</em> and Haar cascades), NumPy, pyserial, pygame </p>
+    <p> • <strong>Raspberry Pi</strong> — Raspberry Pi OS Bookworm, picamera2, gpiozero, HC-SR04 ultrasonic sensor </p>
+    <p> • <strong>Arduino</strong> — A sketch that maps serial commands to the remote's right, left, forward, and reverse buttons </p>
+    <p> • <strong>Simulator</strong> — Ray-traced video renderer, fake Arduino on a virtual serial port, scripted sensor, ffmpeg </p>
+    <p> • <strong>Tooling</strong> — pytest, environment-variable configuration with the <em>AUTOPILOT_RC_</em> prefix </p>
+
+    <h2>Getting Started</h2>
+
+    <p>
+      On the computer, create a virtual environment and install the requirements. On the
+      Pi, clone the repository and install <em>picamera2</em> and <em>gpiozero</em> from apt,
+      then wire the HC-SR04 trigger to GPIO 23 and echo to GPIO 24 through a voltage
+      divider. Upload the Arduino sketch from the Arduino IDE. Then, from the repository root:
+    </p>
+
+    <p>
+      1. <strong>Test the controls</strong> — <em>python -m autopilot_rc.control_test</em>,
+      then drive with the arrow keys. <br>
+      2. <strong>Collect data</strong> — <em>python -m autopilot_rc.collect</em> on the
+      computer and <em>python3 -m pi.stream_client</em> on the Pi. Drive several laps,
+      and keep some recordings aside for testing. <br>
+      3. <strong>Train</strong> — <em>python -m autopilot_rc.train</em>, then optionally
+      <em>python -m autopilot_rc.evaluate</em>. <br>
+      4. <strong>Drive</strong> — <em>python -m autopilot_rc.driver</em> on the computer,
+      then start the stream and ultrasonic clients on the Pi. <br>
+    </p>
+
+    <p>
+      To try it without any hardware, run the simulator instead:
+    </p>
+
+    <p>python -m simulator.simulate drive</p>
+
+    <h2>The Simulator</h2>
+
+    <p>
+      The simulator replaces each device with a stand-in. The Pi camera becomes a video,
+      image sequence, or webcam; the ultrasonic sensor follows a script of
+      <em>distance:seconds</em> steps; and a fake Arduino on a virtual serial port applies
+      the sketch's own rules, including the 500 ms safety stop and rejection of invalid
+      commands. Each run reports what the programs did and how long the car spent in
+      each state.
+    </p>
+
+    <p>
+      A renderer ray-traces a low-mounted toy-car dashcam on a miniature track. Every
+      setting, from camera height and lens to track shape and speed, lives in a JSON
+      config, and the same config always produces the same frames. Each video comes with
+      a ground truth file giving the car's position, heading, speed, and distance to
+      objects on every frame.
+    </p>
+
+    <p>
+      Because the ground truth heading labels every frame as left, right, or forward, the
+      steering network can be trained on rendered videos with no one driving. Mirroring
+      the images doubles the data, since a mirrored left curve is a right curve. Five test
+      roads the model has never seen are kept separate to measure how well it generalises.
+    </p>
+
+    <h2>Design Decisions</h2>
+
+    <ul class="post-list">
+      <li>
+        <strong>The car only senses</strong> — All the computation runs on the computer,
+        so the Pi stays a simple streamer and the model can be larger than the car could
+        run on its own.
+      </li>
+      <li>
+        <strong>Drive through the remote, not the car</strong> — The Arduino presses the
+        existing remote's buttons, so the car itself needs no modification beyond the
+        sensors.
+      </li>
+      <li>
+        <strong>Fixed priority rules around the network</strong> — Safety checks run
+        before the steering network on every frame, so obstacles, stop signs, and red
+        lights always win over a steering prediction.
+      </li>
+      <li>
+        <strong>Ignore stop signs after stopping</strong> — After a 5 s stop, stop signs
+        are ignored for 5 s; otherwise the car would stop again for the same sign forever.
+      </li>
+      <li>
+        <strong>Keep test roads different from training</strong> — Re-rendering a
+        training scenario gives identical frames, which proves nothing, so test scenarios
+        use new roads.
+      </li>
+      <li>
+        <strong>Every setting is overridable</strong> — Any value in the config can be set
+        through an <em>AUTOPILOT_RC_</em> environment variable, such as running without an
+        Arduino or using a webcam instead of the Pi camera.
+      </li>
+    </ul>
+
+    <h2>Testing</h2>
+
+    <p>
+      The test suite runs the computer side with no hardware, covering the serial link,
+      the steering network, the driving rules, sign and light detection, and the full
+      pipeline. Video tests train and score the network on rendered scenarios. The full
+      suite takes about 2 minutes, or about 35 s without the video tests.
+    </p>
+
+    <p>
+      Not covered by the tests are the Pi's hardware code and the Arduino sketch, which
+      need the real devices. The simulator's camera also uses a wider lens than the real
+      Pi camera, so models trained on rendered videos are for the simulator only.
+    </p>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      Building Autopilot RC showed that a self-driving system is far more than its
+      steering model: dividing work between devices, layering safety rules above the
+      learned behaviour, failing safe when links drop, and, above all, having a simulator
+      that makes the system testable without the hardware.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you’ll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>
