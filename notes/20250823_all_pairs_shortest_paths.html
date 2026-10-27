@@ -63,7 +63,7 @@
       d_k[i][j] = min( d_(k−1)[i][j], d_(k−1)[i][k] + d_(k−1)[k][j] )
     </p>
 
-    <pre><code>def floyd_warshall(n, weight):
+    <pre><code class="language-python">def floyd_warshall(n, weight):
     INF = float("inf")
     d = [[0 if i == j else weight.get((i, j), INF) for j in range(n)]
          for i in range(n)]

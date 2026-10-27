@@ -78,7 +78,7 @@
       <li>At a MIN node, the minimum of its children's values.</li>
     </ul>
 
-    <pre><code>def minimax(state, maximizing):
+    <pre><code class="language-python">def minimax(state, maximizing):
     if state.is_terminal():
         return state.utility()
     values = (minimax(child, not maximizing) for child in state.children())

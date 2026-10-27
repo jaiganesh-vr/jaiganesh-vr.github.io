@@ -513,6 +513,56 @@ pre code {
   white-space: pre;
 }
 
+/* ===== Syntax Highlighting (highlight.js, loaded by js/post.js) ===== */
+:root {
+  --code-keyword: #c792ea;
+  --code-string: #c3e88d;
+  --code-number: #f78c6c;
+  --code-comment: #7a7a7a;
+  --code-function: #82aaff;
+  --code-builtin: #ffcb6b;
+}
+
+[data-theme="light"] {
+  --code-keyword: #8a2be2;
+  --code-string: #2e7d32;
+  --code-number: #c2410c;
+  --code-comment: #6b6b6b;
+  --code-function: #0b63c5;
+  --code-builtin: #9a6700;
+}
+
+.hljs-keyword,
+.hljs-literal,
+.hljs-meta {
+  color: var(--code-keyword);
+}
+
+.hljs-string,
+.hljs-symbol {
+  color: var(--code-string);
+}
+
+.hljs-number {
+  color: var(--code-number);
+}
+
+.hljs-comment {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+.hljs-title,
+.hljs-title.function_ {
+  color: var(--code-function);
+}
+
+.hljs-built_in,
+.hljs-title.class_,
+.hljs-variable {
+  color: var(--code-builtin);
+}
+
 /* ===== Reading Highlight (js/quote.js) ===== */
 :root {
   --quote-marker: rgba(124, 192, 255, 0.28);

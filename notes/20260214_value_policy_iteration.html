@@ -52,7 +52,7 @@
       <li>Repeat until the utilities stop changing.</li>
     </ul>
 
-    <pre><code>def value_iteration(states, actions, P, R, gamma, eps=1e-6):
+    <pre><code class="language-python">def value_iteration(states, actions, P, R, gamma, eps=1e-6):
     U = {s: 0.0 for s in states}
     while True:
         delta = 0.0

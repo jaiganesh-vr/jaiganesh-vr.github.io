@@ -2,6 +2,7 @@
   // Post page helpers:
   // 1. Reading progress bar fixed to the top
   // 2. Older/newer links at the end, taken from the section's listing page
+  // 3. Syntax highlighting for <code class="language-*"> blocks
 
   // Listing page for each post folder; links there are ordered newest first
   const LISTINGS = {
@@ -99,8 +100,37 @@
     }
   }
 
+  const HLJS = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/';
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  // Only pages with tagged code blocks pay for the library; colours live in styles.css
+  async function highlightCode() {
+    const blocks = document.querySelectorAll('pre code[class*="language-"]');
+    if (!blocks.length) return;
+
+    await loadScript(HLJS + 'highlight.min.js');
+    // The core bundle covers common languages; fetch any others the page uses
+    const langs = new Set();
+    blocks.forEach(b => langs.add(b.className.match(/language-(\w+)/)[1]));
+    await Promise.all([...langs]
+      .filter(lang => !hljs.getLanguage(lang))
+      .map(lang => loadScript(HLJS + 'languages/' + lang + '.min.js').catch(() => {})));
+
+    blocks.forEach(b => hljs.highlightElement(b));
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     addProgressBar();
+    highlightCode().catch(() => { /* offline: leave code plain */ });
     addPostNav().catch(() => { /* e.g. opened from file://, where fetch is blocked */ });
   });
 

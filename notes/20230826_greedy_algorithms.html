@@ -68,7 +68,7 @@
       repeat with the activities that start after it.
     </p>
 
-    <pre><code>def select_activities(activities):
+    <pre><code class="language-python">def select_activities(activities):
     chosen, last_finish = [], float("-inf")
     for start, finish in sorted(activities, key=lambda a: a[1]):
         if start &gt;= last_finish:

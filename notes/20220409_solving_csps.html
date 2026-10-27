@@ -45,7 +45,7 @@
       time and backs up as soon as a constraint is violated.
     </p>
 
-    <pre><code>def backtrack(assignment, csp):
+    <pre><code class="language-python">def backtrack(assignment, csp):
     if len(assignment) == len(csp.variables):
         return assignment
     var = select_unassigned_variable(assignment, csp)
