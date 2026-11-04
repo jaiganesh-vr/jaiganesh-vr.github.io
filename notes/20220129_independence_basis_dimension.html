@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Independence, Basis and Dimension</title>
+  <meta name="description" content="What it means for vectors to be independent, how a basis gives every vector a unique address, and why the dimension of a space is well defined." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Independence, Basis and Dimension" />
+  <meta property="og:description" content="What it means for vectors to be independent, how a basis gives every vector a unique address, and why the dimension of a space is well defined." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220129_independence_basis_dimension.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Independence, Basis and Dimension</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Linear Algebra</span>
+    </p>
+
+    <p class="muted">
+      Jan 29, 2022
+    </p>
+
+    <p>
+      How big is a space? The answer needs three linked ideas. Independence
+      says when vectors are not redundant, a basis is a set that covers a
+      space with no redundancy, and dimension is the number of vectors a basis
+      needs.
+    </p>
+
+    <h2>Subspaces</h2>
+
+    <p>
+      A subspace is a set of vectors closed under addition and scaling. In
+      three dimensions, these are the origin, lines through the origin, planes
+      through the origin and the whole space. A plane that misses the origin
+      is not a subspace, since it does not contain the zero vector.
+    </p>
+
+    <h2>Independence</h2>
+
+    <p>
+      Vectors v₁, …, vₖ are independent if the only combination that gives
+      zero is the trivial one:
+    </p>
+
+    <p class="muted">
+      c₁v₁ + c₂v₂ + … + cₖvₖ = 0 only when every cᵢ = 0
+    </p>
+
+    <p>
+      Otherwise, at least one vector can be written in terms of the others, so
+      it adds nothing new.
+    </p>
+
+    <p>
+      The vectors (1, 2, 3), (4, 5, 6) and (7, 8, 9) look unrelated, but they
+      are dependent:
+    </p>
+
+    <p class="muted">
+      (1, 2, 3) − 2 · (4, 5, 6) + (7, 8, 9) = (0, 0, 0)
+    </p>
+
+    <p>
+      All three lie in the same plane. Stacking vectors as the columns of A
+      turns the definition into a question about null spaces. The columns are
+      independent exactly when Ax = 0 has only the solution x = 0. Elimination
+      answers this, since that requires a pivot in every column.
+    </p>
+
+    <h2>Spanning</h2>
+
+    <p>
+      Vectors span a space if every vector in it can be written as a
+      combination of them. Independence limits how many vectors can be in a
+      set, while spanning requires enough of them. Adding vectors can break
+      independence but never spanning. Removing them can break spanning but
+      never independence.
+    </p>
+
+    <h2>Basis</h2>
+
+    <p>
+      A basis is a set that does both: independent and spanning.
+    </p>
+
+    <p class="muted">
+      Spanning means every vector has an address. Independence means it has
+      only one.
+    </p>
+
+    <p>
+      To see why it is unique, suppose a vector has two expressions in terms
+      of a basis. Subtracting them gives a combination equal to zero, so by
+      independence every difference in coefficients is zero. Those unique
+      coefficients are the vector's coordinates in that basis.
+    </p>
+
+    <p>
+      A space has many bases. In the plane, (1, 0) and (0, 1) form one, and
+      (1, 1) and (1, −1) form another. In the second basis, the vector (3, 1)
+      has coordinates (2, 1), since 2 · (1, 1) + 1 · (1, −1) = (3, 1).
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def is_independent(vectors):
+    A = np.column_stack(vectors)
+    return np.linalg.matrix_rank(A) == A.shape[1]
+
+print(is_independent([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))   # False
+print(is_independent([[1, 2, 3], [4, 5, 6], [7, 8, 10]]))  # True
+
+# Coordinates of a vector in another basis solve B c = v
+B = np.column_stack([[1, 1], [1, -1]])
+print(np.linalg.solve(B, [3, 1]))                          # [2. 1.]</code></pre>
+
+    <h2>Dimension</h2>
+
+    <p>
+      Bases of the same space can differ in every vector, yet they always
+      contain the same number of vectors. This is what allows the dimension to
+      be defined as that number.
+    </p>
+
+    <p>
+      The reason is a counting argument. If one basis had m vectors and
+      another had n &gt; m, each of the n vectors could be written using the
+      m. That writes n vectors as the columns of an m × n coefficient matrix,
+      which has more columns than rows, and so has a nonzero null space. This
+      produces a dependence among the n vectors, which contradicts their being
+      a basis.
+    </p>
+
+    <p>
+      Three useful consequences follow in ℝⁿ:
+    </p>
+
+    <ul class="post-list">
+      <li>Any more than n vectors must be dependent.</li>
+      <li>Fewer than n vectors cannot span.</li>
+      <li>Exactly n vectors are independent if and only if they span, so checking one property is enough.</li>
+    </ul>
+
+    <h2>Beyond Lists of Numbers</h2>
+
+    <p>
+      Nothing here requires vectors to be columns of numbers. Polynomials of
+      degree at most 2 form a space, with basis 1, x and x², so its dimension
+      is 3. And 2 × 2 matrices form a space of dimension 4. Some spaces have
+      no finite basis, such as the space of all polynomials. Fourier series
+      work in spaces of this kind, writing functions as infinite combinations.
+    </p>
+
+    <h2>Dimensions of Matrix Subspaces</h2>
+
+    <p>
+      Elimination reads off the dimensions tied to a matrix. The pivot columns
+      of the original A are a basis for its column space, and the number of
+      pivots r is its dimension. The special solutions to Ax = 0, one per free
+      variable, are a basis for the null space, whose dimension is n − r.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Dimension makes precise an intuition about degrees of freedom, and
+      proving it is well defined takes only a small argument about null
+      spaces. Bases come in many forms, and the most convenient of them are
+      those whose vectors are perpendicular.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

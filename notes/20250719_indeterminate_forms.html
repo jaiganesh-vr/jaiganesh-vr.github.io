@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indeterminate Forms and L'Hôpital's Rule</title>
+  <meta name="description" content="Limits like 0/0 and 1^∞: what makes them indeterminate, L'Hôpital's rule and its misuses, turning other forms into ratios, and comparing growth rates." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Indeterminate Forms and L'Hôpital's Rule" />
+  <meta property="og:description" content="Limits like 0/0 and 1^∞: what makes them indeterminate, L'Hôpital's rule and its misuses, turning other forms into ratios, and comparing growth rates." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250719_indeterminate_forms.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Indeterminate Forms and L'Hôpital's Rule</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Jul 19, 2025
+    </p>
+
+    <p>
+      What is 0/0 as a limit? It might be anything, and that is the point.
+      When numerator and denominator race toward zero, the answer depends on
+      which gets there faster. Limits like this are called indeterminate, and
+      a small set of tools handles nearly all of them.
+    </p>
+
+    <h2>Why They Are Indeterminate</h2>
+
+    <p>
+      All three of these have the form 0/0 as x goes to 0, yet each has a
+      different value:
+    </p>
+
+    <ul class="post-list">
+      <li>x² / x goes to 0.</li>
+      <li>x / x goes to 1.</li>
+      <li>x / x² grows without bound in size.</li>
+    </ul>
+
+    <p>
+      So the form tells us nothing about the value. The full list of
+      indeterminate forms is:
+    </p>
+
+    <p class="muted">
+      0/0, ∞/∞, 0 · ∞, ∞ − ∞, 1^∞, 0⁰, ∞⁰
+    </p>
+
+    <p>
+      Some limits look like these and are not. A limit of the form 0^∞ goes to
+      0, and ∞ + ∞ goes to ∞. Checking the form before reaching for a rule
+      avoids many errors.
+    </p>
+
+    <h2>L'Hôpital's Rule</h2>
+
+    <p>
+      If f and g both tend to 0, or both tend to ±∞, then:
+    </p>
+
+    <p class="muted">
+      lim f(x) / g(x) = lim f′(x) / g′(x)
+    </p>
+
+    <p>
+      as long as the right side exists. Near a point where both vanish, each
+      is approximated by its tangent line, f(x) ≈ f′(a)(x − a) and g(x) ≈
+      g′(a)(x − a). The factors of (x − a) cancel, which leaves the ratio of
+      derivatives.
+    </p>
+
+    <p class="muted">
+      Near the limit, the ratio of two functions is the ratio of how fast they
+      change.
+    </p>
+
+    <p>
+      Note that you differentiate the top and bottom separately. It is not the
+      quotient rule.
+    </p>
+
+    <h2>Examples</h2>
+
+    <p>
+      Apply the rule, repeating as needed:
+    </p>
+
+    <p class="muted">
+      lim (x → 0) sin x / x = lim cos x / 1 = 1
+    </p>
+
+    <p class="muted">
+      lim (x → 0) (1 − cos x) / x² = lim sin x / 2x = lim cos x / 2 = 1/2
+    </p>
+
+    <p class="muted">
+      lim (x → ∞) x² / eˣ = lim 2x / eˣ = lim 2 / eˣ = 0
+    </p>
+
+    <h2>Reshaping Other Forms</h2>
+
+    <p>
+      The rule needs a ratio, so convert first.
+    </p>
+
+    <p>
+      <strong>Product forms, 0 · ∞:</strong> move one factor to the
+      denominator. For x ln x as x goes to 0 from the right:
+    </p>
+
+    <p class="muted">
+      lim ln x / (1/x) = lim (1/x) / (−1/x²) = lim (−x) = 0
+    </p>
+
+    <p>
+      <strong>Difference forms, ∞ − ∞:</strong> combine over a common
+      denominator.
+    </p>
+
+    <p>
+      <strong>Exponent forms, 1^∞, 0⁰ and ∞⁰:</strong> take the logarithm.
+      Compute the limit of ln y, then exponentiate. For y = xˣ as x goes to 0
+      from the right, ln y = x ln x tends to 0, as just shown, so y tends to
+      e⁰ = 1.
+    </p>
+
+    <p>
+      The same approach gives the famous limit for e. With y = (1 + 1/n)ⁿ, we
+      have ln y = n ln(1 + 1/n), which tends to 1, so y tends to e. A base
+      shrinking toward 1 and an exponent growing without limit balance exactly
+      at this number.
+    </p>
+
+    <h2>A Ranking of Growth</h2>
+
+    <p>
+      Repeated use of the rule establishes a ranking as x goes to ∞, for any
+      constants p &gt; 0 and a &gt; 1:
+    </p>
+
+    <p class="muted">
+      ln x ≪ xᵖ ≪ aˣ ≪ x!
+    </p>
+
+    <p>
+      Any exponential eventually overtakes any power, and any power eventually
+      overtakes the logarithm. This is why the ranking is so useful in the
+      analysis of algorithms: an O(n log n) method beats an O(n²) one at
+      scale. Here, the factorial is only defined at integers, but the ordering
+      holds along them.
+    </p>
+
+    <h2>Misuses</h2>
+
+    <ul class="post-list">
+      <li><strong>Not actually indeterminate:</strong> at x = 0, (x² + 1) / (x + 1) is just 1. Applying the rule anyway gives 2x / 1, which is 0, and that is wrong.</li>
+      <li><strong>The limit of the ratio of derivatives may not exist:</strong> (x + sin x) / x tends to 1 as x goes to ∞, but the ratio of derivatives, 1 + cos x, oscillates. The rule does not then say anything about the original limit.</li>
+      <li><strong>Circularity:</strong> using the rule for sin x / x is circular in a strict development, since the derivative of sin x is itself derived using that limit.</li>
+    </ul>
+
+    <h2>Numerical Trouble</h2>
+
+    <p>
+      Indeterminate forms are also a practical hazard, since computers
+      evaluate them with finite precision. As x shrinks, 1 − cos x loses all
+      of its accuracy, because cos x rounds to exactly 1:
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+for x in (1e-2, 1e-5, 1e-8, 1e-10):
+    naive = (1 - np.cos(x)) / x**2
+    stable = 2 * np.sin(x / 2)**2 / x**2
+    print(f"{x:.0e}  {naive:.10f}  {stable:.10f}")</code></pre>
+
+    <p>
+      The stable form uses the identity 1 − cos x = 2 sin²(x/2), which avoids
+      subtracting two nearly equal numbers. Library functions such as expm1
+      and log1p exist for this same reason, and they are frequently used in
+      machine learning code.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Indeterminate forms are not undefined answers, but incomplete questions.
+      The value depends on the rates of the two competing quantities, and it
+      comes out once those rates are compared. The same kind of limit makes it
+      possible to integrate over regions that are infinitely long.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taylor's Series</title>
+  <meta name="description" content="Representing functions as infinite polynomials: where the coefficients come from, radius of convergence, the remainder, standard series, and how to manipulate them." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Taylor's Series" />
+  <meta property="og:description" content="Representing functions as infinite polynomials: where the coefficients come from, radius of convergence, the remainder, standard series, and how to manipulate them." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260328_taylors_series.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Taylor's Series</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Mar 28, 2026
+    </p>
+
+    <p>
+      Polynomials are the simplest functions there are, requiring only
+      addition and multiplication. Taylor's series show that many other
+      functions, including eˣ, sin x and ln x, are polynomials of infinite
+      degree in disguise.
+    </p>
+
+    <h2>Finding the Coefficients</h2>
+
+    <p>
+      Suppose f can be written as a power series around 0:
+    </p>
+
+    <p class="muted">
+      f(x) = a₀ + a₁x + a₂x² + a₃x³ + …
+    </p>
+
+    <p>
+      Setting x = 0 gives a₀ = f(0). Differentiating once and setting x = 0
+      gives a₁ = f′(0). Differentiating twice gives 2a₂ = f″(0). In general,
+      differentiating n times brings out a factor of n! on aₙ. So the
+      coefficients are determined by the derivatives at a single point:
+    </p>
+
+    <p class="muted">
+      aₙ = f⁽ⁿ⁾(0) / n!
+    </p>
+
+    <p>
+      This gives the Taylor series around a point a, whose special case at 0
+      is often called a Maclaurin series:
+    </p>
+
+    <p class="muted">
+      f(x) = Σₙ f⁽ⁿ⁾(a) / n! · (x − a)ⁿ
+    </p>
+
+    <p class="muted">
+      All the information about the function is contained in its derivatives
+      at a single point, when the series converges to it.
+    </p>
+
+    <h2>The Standard Series</h2>
+
+    <p>
+      A few series around 0 are worth knowing by heart:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Exponential:</strong> eˣ = 1 + x + x²/2! + x³/3! + …</li>
+      <li><strong>Sine:</strong> sin x = x − x³/3! + x⁵/5! − …</li>
+      <li><strong>Cosine:</strong> cos x = 1 − x²/2! + x⁴/4! − …</li>
+      <li><strong>Geometric:</strong> 1 / (1 − x) = 1 + x + x² + x³ + …, for |x| &lt; 1.</li>
+      <li><strong>Logarithm:</strong> ln(1 + x) = x − x²/2 + x³/3 − …, for −1 &lt; x ≤ 1.</li>
+    </ul>
+
+    <p>
+      Substituting x = iθ into the exponential series and separating the real
+      and imaginary parts gives Euler's formula, e^(iθ) = cos θ + i sin θ,
+      which unifies the first three of these.
+    </p>
+
+    <h2>Radius of Convergence</h2>
+
+    <p>
+      A power series converges on an interval centred at a, of radius R, and
+      diverges beyond it. The ratio test finds R, by comparing successive
+      terms:
+    </p>
+
+    <p class="muted">
+      R = lim |aₙ / aₙ₊₁|
+    </p>
+
+    <p>
+      For eˣ the ratio is n + 1, so R is infinite. For the geometric series, R
+      = 1.
+    </p>
+
+    <p>
+      Why does 1 / (1 + x²), a function that is perfectly smooth on the real
+      line, have a series that stops working at |x| = 1? The reason lies in
+      the complex plane, where the function blows up at x = ±i. Those points
+      are distance 1 from the origin, and they limit the radius.
+    </p>
+
+    <h2>The Remainder</h2>
+
+    <p>
+      Stopping after degree n leaves an error, and Lagrange's form of it looks
+      much like the next term, with the derivative evaluated at some unknown
+      point c between a and x:
+    </p>
+
+    <p class="muted">
+      Rₙ(x) = f⁽ⁿ⁺¹⁾(c) / (n + 1)! · (x − a)ⁿ⁺¹
+    </p>
+
+    <p>
+      This is a generalisation of the mean value theorem, which is the case n
+      = 0. A bound on the derivative gives a bound on the error. For eˣ on [0,
+      1], the error from stopping at degree n is at most e / (n + 1)!, so only
+      a handful of terms give high accuracy.
+    </p>
+
+    <pre><code class="language-python">import math
+
+def exp_taylor(x, n):
+    return sum(x**k / math.factorial(k) for k in range(n + 1))
+
+def log1p_taylor(x, n):
+    return sum((-1)**(k + 1) * x**k / k for k in range(1, n + 1))
+
+for n in (2, 5, 10, 15):
+    error = abs(exp_taylor(1, n) - math.e)
+    bound = math.e / math.factorial(n + 1)
+    print(n, f"{error:.2e}", f"{bound:.2e}")
+
+# ln 2 at the edge of the interval converges slowly
+for n in (10, 1000):
+    print(n, f"{abs(log1p_taylor(1, n) - math.log(2)):.2e}")</code></pre>
+
+    <p>
+      The speed varies widely. Each term of eˣ shrinks factorially, whereas ln
+      2 from the logarithm series gains about one correct digit each time the
+      number of terms goes up tenfold.
+    </p>
+
+    <h2>Working With Series</h2>
+
+    <p>
+      There is rarely any need to differentiate many times. Inside its radius,
+      a series can be manipulated term by term:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Substitute:</strong> e^(−x²) = 1 − x² + x⁴/2! − …, which provides a way of integrating this function.</li>
+      <li><strong>Differentiate:</strong> differentiating the sine series term by term gives the cosine series.</li>
+      <li><strong>Integrate:</strong> integrating 1 / (1 + x²) = 1 − x² + x⁴ − … gives arctan x = x − x³/3 + x⁵/5 − ….</li>
+      <li><strong>Multiply:</strong> multiply series like polynomials, keeping only the terms needed.</li>
+    </ul>
+
+    <p>
+      Setting x = 1 in the arctan series gives a famous formula: π/4 = 1 − 1/3
+      + 1/5 − 1/7 + …. It converges too slowly to be practical, but it is a
+      striking link between odd numbers and circles.
+    </p>
+
+    <h2>Limits and Approximations</h2>
+
+    <p>
+      Series make many limits immediate. (1 − cos x) / x² is (x²/2 − x⁴/24 +
+      …) / x², which tends to 1/2, with no need for L'Hôpital's rule. They
+      also justify small-angle approximations like sin x ≈ x, which is
+      accurate to about 0.2% at x = 0.1 radians and improves quickly for
+      smaller angles.
+    </p>
+
+    <h2>A Warning</h2>
+
+    <p>
+      Convergence of a Taylor series does not guarantee that it converges to
+      the function. The standard counterexample is:
+    </p>
+
+    <p class="muted">
+      f(x) = e^(−1/x²), with f(0) = 0
+    </p>
+
+    <p>
+      It is smooth, and every derivative at 0 is zero. Its Taylor series is
+      identically zero, yet the function is not. Functions that do equal their
+      Taylor series nearby are called analytic. Most of the functions we meet
+      in applications are analytic, but the condition is not automatic.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Taylor's series turn functions into a list of numbers, and let hard
+      operations become arithmetic on those numbers. Much of numerical
+      computing relies on this idea: replace a difficult function with a
+      polynomial that is close enough.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

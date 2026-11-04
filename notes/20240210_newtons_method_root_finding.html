@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Newton's Method for Finding Roots</title>
+  <meta name="description" content="Solving f(x) = 0 by following tangent lines: the formula, why accuracy doubles at each step, and the ways it can diverge, cycle or slow down." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Newton's Method for Finding Roots" />
+  <meta property="og:description" content="Solving f(x) = 0 by following tangent lines: the formula, why accuracy doubles at each step, and the ways it can diverge, cycle or slow down." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240210_newtons_method_root_finding.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Newton's Method for Finding Roots</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Feb 10, 2024
+    </p>
+
+    <p>
+      Most equations have no solution you can write in closed form. Newton's
+      method finds one numerically in a few steps, by repeatedly replacing a
+      curve with its tangent line.
+    </p>
+
+    <h2>The Idea</h2>
+
+    <p>
+      We want a root of f, a value where f(x) = 0. Start with a guess x₀. The
+      tangent line at that point is:
+    </p>
+
+    <p class="muted">
+      y = f(x₀) + f′(x₀)(x − x₀)
+    </p>
+
+    <p>
+      Solving for where this line crosses zero gives a better guess. Repeating
+      this gives the method:
+    </p>
+
+    <p class="muted">
+      xₙ₊₁ = xₙ − f(xₙ) / f′(xₙ)
+    </p>
+
+    <p class="muted">
+      A curve is hard to solve, but a line is easy. So replace the curve with
+      its tangent, solve, and repeat.
+    </p>
+
+    <h2>Example: Square Roots</h2>
+
+    <p>
+      To find √2, solve f(x) = x² − 2 = 0. Substituting into the formula gives
+      a neat result:
+    </p>
+
+    <p class="muted">
+      xₙ₊₁ = ½ (xₙ + 2 / xₙ)
+    </p>
+
+    <p>
+      This is averaging a guess with 2 divided by that guess. Starting from x₀
+      = 1 gives:
+    </p>
+
+    <ul class="post-list">
+      <li>x₁ = 1.5</li>
+      <li>x₂ = 1.41666…</li>
+      <li>x₃ = 1.41421568…</li>
+      <li>x₄ = 1.41421356237…</li>
+    </ul>
+
+    <p>
+      The true value is 1.41421356237…. Four steps give eleven correct decimal
+      places.
+    </p>
+
+    <pre><code class="language-python">def newton(f, df, x, steps=6):
+    for n in range(steps):
+        x = x - f(x) / df(x)
+        print(n + 1, x, abs(f(x)))
+    return x
+
+newton(lambda x: x**2 - 2, lambda x: 2 * x, 1.0)</code></pre>
+
+    <h2>Why It Is So Fast</h2>
+
+    <p>
+      Let eₙ = xₙ − r be the error at step n, where r is the root. Near r, a
+      Taylor expansion of f shows that:
+    </p>
+
+    <p class="muted">
+      eₙ₊₁ ≈ ( f″(r) / 2f′(r) ) · eₙ²
+    </p>
+
+    <p>
+      The new error is proportional to the square of the old one. An error of
+      10⁻³ becomes about 10⁻⁶ and then 10⁻¹². So the number of correct digits
+      roughly doubles with every step. This is quadratic convergence.
+      Bisection, by comparison, gains only about one digit in every three or
+      four steps.
+    </p>
+
+    <h2>How It Fails</h2>
+
+    <p>
+      The formula above shows when trouble comes. The speed depends on a good
+      start and on f′ staying away from zero.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Flat spots:</strong> if f′(xₙ) is near zero, the tangent is nearly horizontal and the next guess shoots far away.</li>
+      <li><strong>Cycles:</strong> for f(x) = x³ − 2x + 2, starting at 0 gives 1, then 0, and it repeats forever.</li>
+      <li><strong>Divergence:</strong> for f(x) = x^(1/3), the formula becomes xₙ₊₁ = −2xₙ. Each step moves further from the root at 0, whatever the start.</li>
+      <li><strong>Wrong root:</strong> with several roots, which one is found can depend very sensitively on the starting point.</li>
+      <li><strong>Multiple roots:</strong> for f(x) = x², where f′ is also zero at the root, the formula gives xₙ₊₁ = xₙ / 2. It still works but the convergence is only linear.</li>
+    </ul>
+
+    <h2>Using It Reliably</h2>
+
+    <p>
+      Good solvers protect the fast local method from those failures.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Bracketing:</strong> keep an interval where f changes sign, and fall back to bisection if a Newton step leaves it. Brent's method is a common example.</li>
+      <li><strong>Damping:</strong> take only part of the Newton step if the full step does not reduce |f|.</li>
+      <li><strong>Secant method:</strong> replace f′ by a slope through the last two points, when the derivative is not available. It costs less per step, and it converges only a little more slowly, with an order of about 1.618.</li>
+      <li><strong>Stopping:</strong> stop when both the step and |f(x)| are small, since a tiny value of f alone may not mean x is close to the root.</li>
+    </ul>
+
+    <h2>Everywhere in Computing</h2>
+
+    <p>
+      Hardware and math libraries use versions of it to compute square roots
+      and even division. Solving for 1/a means finding a root of f(x) = 1/x −
+      a, and Newton's method gives xₙ₊₁ = xₙ(2 − a xₙ), which requires only
+      multiplication. So division can be done with no division at all.
+    </p>
+
+    <p>
+      The idea also extends to systems of equations, with the Jacobian in
+      place of f′. Each step becomes a linear solve.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Newton's method shows how far you can get by trusting a local linear
+      approximation and correcting it often. Why that local information is
+      reliable is a question about how a derivative relates to a function's
+      overall change.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The First Fundamental Theorem of Calculus</title>
+  <meta name="description" content="Why areas can be computed from antiderivatives: Riemann sums, the evaluation formula, a short proof by the mean value theorem, and when it cannot be applied." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The First Fundamental Theorem of Calculus" />
+  <meta property="og:description" content="Why areas can be computed from antiderivatives: Riemann sums, the evaluation formula, a short proof by the mean value theorem, and when it cannot be applied." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240727_first_fundamental_theorem.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The First Fundamental Theorem of Calculus</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Jul 27, 2024
+    </p>
+
+    <p>
+      Area under a curve is defined by an infinite limit of tiny rectangles,
+      which looks like it would be hopeless to compute. Yet for many
+      functions, you need only two values of an antiderivative. This
+      surprising connection between the two halves of calculus is the first
+      fundamental theorem.
+    </p>
+
+    <p>
+      Textbooks differ in which part of the theorem they call first. Here, the
+      first theorem is the evaluation formula, and the second theorem is the
+      derivative of an integral.
+    </p>
+
+    <h2>The Definite Integral</h2>
+
+    <p>
+      Divide [a, b] into n pieces of width Δx. Choose a point cᵢ in each
+      piece, and add the areas of the rectangles:
+    </p>
+
+    <p class="muted">
+      ∫ₐᵇ f(x) dx = lim (n → ∞) Σ f(cᵢ) Δx
+    </p>
+
+    <p>
+      This counts area below the x-axis as negative. So it measures net signed
+      area. For example, the integral of sin x over [0, 2π] is zero.
+    </p>
+
+    <h2>The Theorem</h2>
+
+    <p>
+      If f is continuous on [a, b] and F is any antiderivative of f, so that
+      F′ = f, then:
+    </p>
+
+    <p class="muted">
+      ∫ₐᵇ f(x) dx = F(b) − F(a)
+    </p>
+
+    <p class="muted">
+      A limit of infinitely many terms collapses to two values.
+    </p>
+
+    <p>
+      Which antiderivative you choose does not matter, because adding a
+      constant C cancels in the subtraction.
+    </p>
+
+    <p>
+      For example, F(x) = x³/3 is an antiderivative of x²:
+    </p>
+
+    <p class="muted">
+      ∫₀¹ x² dx = 1/3 − 0 = 1/3
+    </p>
+
+    <p>
+      And F(x) = −cos x is an antiderivative of sin x:
+    </p>
+
+    <p class="muted">
+      ∫₀^π sin x dx = −cos π + cos 0 = 2
+    </p>
+
+    <p>
+      So the area under one arch of the sine wave is exactly 2, a fact that is
+      not at all obvious from its picture.
+    </p>
+
+    <h2>A Short Proof</h2>
+
+    <p>
+      The mean value theorem provides an elegant argument. Cut [a, b] at
+      points x₀, x₁, …, xₙ. The total change in F is the sum of the changes on
+      each piece:
+    </p>
+
+    <p class="muted">
+      F(b) − F(a) = Σ [ F(xᵢ) − F(xᵢ₋₁) ]
+    </p>
+
+    <p>
+      The mean value theorem says each difference equals F′(cᵢ) Δxᵢ for some
+      cᵢ in that piece. Since F′ = f:
+    </p>
+
+    <p class="muted">
+      F(b) − F(a) = Σ f(cᵢ) Δxᵢ
+    </p>
+
+    <p>
+      This is a Riemann sum, with special sample points. The left side does
+      not depend on n, and the right side goes to the integral. So they are
+      equal.
+    </p>
+
+    <h2>Accumulated Change</h2>
+
+    <p>
+      Another reading is that adding up a rate of change gives total change:
+    </p>
+
+    <p class="muted">
+      ∫ₐᵇ F′(x) dx = F(b) − F(a)
+    </p>
+
+    <p>
+      Integrate velocity to get displacement, not distance, because backward
+      motion counts as negative. Integrating a flow rate gives the total
+      amount accumulated.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def midpoint(f, a, b, n):
+    dx = (b - a) / n
+    return (f(a + dx * (np.arange(n) + 0.5)) * dx).sum()
+
+for n in (10, 100, 1000):
+    print(n, midpoint(np.sin, 0, np.pi, n))   # approaches 2
+
+print(-np.cos(np.pi) + np.cos(0))             # exactly 2.0</code></pre>
+
+    <h2>Where It Can't Be Applied</h2>
+
+    <ul class="post-list">
+      <li><strong>f must be continuous:</strong> the formula applied blindly to 1/x² on [−1, 1] gives −1 − 1 = −2, which is impossible since the integrand is positive everywhere. The integrand blows up at 0, so the theorem does not apply.</li>
+      <li><strong>F must exist in a usable form:</strong> e^(−x²) has an antiderivative, but none that can be written in terms of elementary functions. So the theorem does not help with computing it, and numerical methods or series are needed.</li>
+    </ul>
+
+    <h2>Rules of the Definite Integral</h2>
+
+    <p>
+      The theorem makes the following immediate:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Reversal:</strong> the integral from b to a is minus the integral from a to b.</li>
+      <li><strong>Splitting:</strong> the integral from a to b plus the integral from b to c is the integral from a to c.</li>
+      <li><strong>Linearity:</strong> ∫ (af + bg) = a∫f + b∫g.</li>
+      <li><strong>Change of variables:</strong> with u = g(x), the integral of f(g(x)) g′(x) from a to b equals the integral of f(u) from g(a) to g(b).</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Differentiation and integration look like unrelated problems, one about
+      slopes and the other about areas. The first fundamental theorem says
+      that integration is really undoing differentiation. The second theorem
+      completes the picture by looking at it from the other direction.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

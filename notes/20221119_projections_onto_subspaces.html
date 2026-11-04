@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projections Onto Subspaces</title>
+  <meta name="description" content="The closest point in a subspace, the normal equations, the projection matrix and its properties, and how fitting a line is the same calculation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Projections Onto Subspaces" />
+  <meta property="og:description" content="The closest point in a subspace, the normal equations, the projection matrix and its properties, and how fitting a line is the same calculation." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20221119_projections_onto_subspaces.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Projections Onto Subspaces</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Linear Algebra</span>
+    </p>
+
+    <p class="muted">
+      Nov 19, 2022
+    </p>
+
+    <p>
+      When Ax = b has no solution, because b lies outside the column space of
+      A, the sensible question is what comes closest. The answer is a
+      projection, and the calculation is exactly what underlies least squares.
+    </p>
+
+    <h2>The Geometry</h2>
+
+    <p>
+      Let the columns of A be a basis for a subspace. We want the point p =
+      Ax̂ in that subspace that is closest to b. The closest point is where
+      the error e = b − p is perpendicular to the subspace. Any other point is
+      further away, by Pythagoras.
+    </p>
+
+    <h2>The Normal Equations</h2>
+
+    <p>
+      Being perpendicular to the subspace means being perpendicular to each
+      column of A:
+    </p>
+
+    <p class="muted">
+      Aᵀ(b − Ax̂) = 0
+    </p>
+
+    <p>
+      Rearranging this gives the normal equations:
+    </p>
+
+    <p class="muted">
+      AᵀA x̂ = Aᵀb
+    </p>
+
+    <p>
+      Independent columns make AᵀA invertible, so:
+    </p>
+
+    <p class="muted">
+      x̂ = (AᵀA)⁻¹ Aᵀb and p = A (AᵀA)⁻¹ Aᵀ b
+    </p>
+
+    <h2>The Projection Matrix</h2>
+
+    <p>
+      The matrix that takes b to p is:
+    </p>
+
+    <p class="muted">
+      P = A (AᵀA)⁻¹ Aᵀ
+    </p>
+
+    <p>
+      It depends only on the subspace, not on the particular basis chosen.
+      Note that the formula cannot be simplified by splitting up (AᵀA)⁻¹,
+      because A is not square in general. Two properties characterise
+      projection matrices:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Symmetric:</strong> Pᵀ = P.</li>
+      <li><strong>Idempotent:</strong> P² = P, since projecting something already in the subspace leaves it where it is.</li>
+    </ul>
+
+    <p class="muted">
+      Project once and you are in the subspace. Project again and nothing
+      moves.
+    </p>
+
+    <p>
+      The matrix I − P is also a projection, onto the orthogonal complement.
+      So every vector splits cleanly in two: b = Pb + (I − P)b, with a part in
+      the column space and a part in the left null space.
+    </p>
+
+    <p>
+      If the columns are orthonormal, the formula collapses to P = QQᵀ, and
+      then p = Σ (qᵢᵀb) qᵢ, with each direction handled independently. This is
+      one of the main reasons for computing a QR factorisation.
+    </p>
+
+    <h2>Fitting a Line</h2>
+
+    <p>
+      Find the best line y = C + Dt through the points (0, 6), (1, 0) and (2,
+      0). Forcing the line through all of the points gives three equations in
+      two unknowns:
+    </p>
+
+    <p class="muted">
+      [[1, 0], [1, 1], [1, 2]] · (C, D) = (6, 0, 0)
+    </p>
+
+    <p>
+      There is no exact solution. The normal equations are:
+    </p>
+
+    <p class="muted">
+      3C + 3D = 6 and 3C + 5D = 0
+    </p>
+
+    <p>
+      Solving gives C = 5 and D = −3, so the best line is y = 5 − 3t. Its
+      values at the three times are p = (5, 2, −1), and the errors are e = (1,
+      −2, 1). The error is perpendicular to both columns, as it should be: 1 −
+      2 + 1 = 0 and 0 − 2 + 2 = 0.
+    </p>
+
+    <p>
+      Minimising the sum of squared errors with calculus gives the same
+      equations. So the algebra, the geometry and the calculus are all
+      describing one calculation.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+A = np.array([[1.0, 0.0], [1.0, 1.0], [1.0, 2.0]])
+b = np.array([6.0, 0.0, 0.0])
+
+x_hat = np.linalg.solve(A.T @ A, A.T @ b)
+P = A @ np.linalg.inv(A.T @ A) @ A.T
+e = b - P @ b
+
+print(x_hat)                          # [ 5. -3.]
+print(e.round(10))                    # [ 1. -2.  1.]
+print((A.T @ e).round(10))            # [0. 0.]: perpendicular to the columns
+print(np.allclose(P @ P, P))          # True
+print(round(np.trace(P), 10))         # 2.0: the dimension of the subspace</code></pre>
+
+    <h2>Practical Notes</h2>
+
+    <ul class="post-list">
+      <li><strong>Do not form AᵀA in practice:</strong> this squares the condition number. Library routines like numpy.linalg.lstsq use QR or the SVD.</li>
+      <li><strong>Do not form P either:</strong> the matrix is m × m and usually dense, while computing p directly takes far less work.</li>
+      <li><strong>Eigenvalues:</strong> vectors in the subspace have eigenvalue 1 and vectors perpendicular to it have eigenvalue 0. So the trace of P equals the dimension of the subspace.</li>
+      <li><strong>Outliers:</strong> squaring makes large errors dominate, so a single bad point can noticeably tilt the fit.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Projection takes an equation that cannot be solved and replaces it with
+      the nearest one that can. Many statistics and signal processing
+      procedures come down to choosing a subspace and dropping a perpendicular
+      onto it.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Mean Value Theorem</title>
+  <meta name="description" content="The theorem connecting average and instantaneous rates of change, Rolle's theorem, why its conditions matter, and what the rest of calculus gets from it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Mean Value Theorem" />
+  <meta property="og:description" content="The theorem connecting average and instantaneous rates of change, Rolle's theorem, why its conditions matter, and what the rest of calculus gets from it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240420_mean_value_theorem.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Mean Value Theorem</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Apr 20, 2024
+    </p>
+
+    <p>
+      Most facts in calculus that feel obvious, such as "a function with
+      positive derivative is increasing", actually need proof. Nearly all of
+      them rest on one theorem linking a function's overall change to its
+      derivative at some point.
+    </p>
+
+    <h2>The Statement</h2>
+
+    <p>
+      If f is continuous on [a, b] and differentiable on (a, b), then there is
+      some c strictly between a and b where:
+    </p>
+
+    <p class="muted">
+      f′(c) = ( f(b) − f(a) ) / (b − a)
+    </p>
+
+    <p>
+      The right side is the slope of the chord between the endpoints. So
+      somewhere the tangent is parallel to that chord.
+    </p>
+
+    <p class="muted">
+      If you drive 100 km in one hour, then at some moment your speedometer
+      read exactly 100 km/h.
+    </p>
+
+    <p>
+      For example, f(x) = x² on [0, 2] has chord slope (4 − 0) / 2 = 2. Since
+      f′(x) = 2x, the promised point is c = 1.
+    </p>
+
+    <h2>Rolle's Theorem</h2>
+
+    <p>
+      Start with the special case where f(a) = f(b). The theorem then says
+      there is a point where f′(c) = 0. A continuous function on a closed
+      interval attains a maximum and a minimum. If both of these are at the
+      endpoints, then the function is constant, and f′ is zero everywhere.
+      Otherwise an extremum lies in the interior, and the derivative there is
+      zero.
+    </p>
+
+    <p>
+      The general theorem follows by tilting. Subtract the chord from f:
+    </p>
+
+    <p class="muted">
+      g(x) = f(x) − f(a) − [ (f(b) − f(a)) / (b − a) ] · (x − a)
+    </p>
+
+    <p>
+      Then g(a) = g(b) = 0, and Rolle's theorem gives a point where g′(c) = 0.
+      This is exactly the statement we want.
+    </p>
+
+    <h2>Why the Conditions Matter</h2>
+
+    <ul class="post-list">
+      <li><strong>Differentiability:</strong> |x| on [−1, 1] has chord slope 0, but f′ is never 0. It is ±1 everywhere and undefined at the corner.</li>
+      <li><strong>Continuity:</strong> a function that jumps can have a chord of any slope, with a derivative that does not match it anywhere.</li>
+    </ul>
+
+    <p>
+      The theorem also says nothing about where c is or how many such points
+      there are, only that at least one exists. That is sufficient for
+      everything that follows.
+    </p>
+
+    <pre><code class="language-python">def find_c(f, df, a, b, tol=1e-10):
+    """Bisection on f'(x) minus the chord slope, assuming a sign change."""
+    slope = (f(b) - f(a)) / (b - a)
+    lo, hi = a, b
+    while hi - lo &gt; tol:
+        mid = (lo + hi) / 2
+        if (df(lo) - slope) * (df(mid) - slope) &lt;= 0:
+            hi = mid
+        else:
+            lo = mid
+    return (lo + hi) / 2
+
+print(round(find_c(lambda x: x**2, lambda x: 2 * x, 0, 2), 6))         # 1.0
+print(round(find_c(lambda x: x**3, lambda x: 3 * x**2, 0, 3), 6))      # 1.732051</code></pre>
+
+    <h2>What It Gives Us</h2>
+
+    <p>
+      Rearranged, the theorem reads f(b) − f(a) = f′(c)(b − a). That connects
+      derivative information to function values, which is how each of these
+      follows:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Sign of the derivative:</strong> if f′ &gt; 0 throughout an interval, then f(b) − f(a) &gt; 0 whenever b &gt; a, so f is increasing.</li>
+      <li><strong>Constant functions:</strong> if f′ = 0 everywhere on an interval, then f(b) = f(a) for every a and b, so f is constant.</li>
+      <li><strong>Antiderivatives:</strong> if F′ = G′, then F − G has derivative zero, so F and G differ by a constant. That is why the "+ C" in integration is the whole story.</li>
+    </ul>
+
+    <h2>Bounds Without Calculation</h2>
+
+    <p>
+      The theorem also turns a bound on f′ into a bound on f, even when c is
+      unknown. Since |cos c| ≤ 1, we get:
+    </p>
+
+    <p class="muted">
+      |sin b − sin a| ≤ |b − a|
+    </p>
+
+    <p>
+      The same method gives a quick estimate of √101. With f(x) = √x on [100,
+      101], we have:
+    </p>
+
+    <p class="muted">
+      √101 − 10 = 1 / (2√c), with 100 &lt; c &lt; 101
+    </p>
+
+    <p>
+      Since 10 &lt; √c &lt; 11, this places √101 between 10 + 1/22 and 10 +
+      1/20, or between 10.045 and 10.05. The true value is about 10.0499.
+    </p>
+
+    <p>
+      The general form of this, |f(b) − f(a)| ≤ L |b − a|, is Lipschitz
+      continuity. It is used across numerical analysis and machine learning to
+      reason about how far a function can move for a given input change.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The mean value theorem rarely gets used to compute anything directly,
+      because it does not locate c. Its job is to convert knowledge about
+      derivatives into knowledge about functions. Its largest payoff is the
+      fundamental theorem of calculus.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

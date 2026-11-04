@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Factorization Into A = LU</title>
+  <meta name="description" content="Elimination recorded as a factorisation: why the multipliers fill in L so neatly, row exchanges, and how LU lets you solve for many right-hand sides cheaply." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Factorization Into A = LU" />
+  <meta property="og:description" content="Elimination recorded as a factorisation: why the multipliers fill in L so neatly, row exchanges, and how LU lets you solve for many right-hand sides cheaply." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210918_lu_factorization.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Factorization Into A = LU</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Linear Algebra</span>
+    </p>
+
+    <p class="muted">
+      Sep 18, 2021
+    </p>
+
+    <p>
+      Elimination produces an upper triangular matrix U, and the multipliers
+      it uses along the way are usually discarded. Keeping them turns the
+      method into a factorisation of A into two triangular matrices.
+    </p>
+
+    <h2>From Elimination to LU</h2>
+
+    <p>
+      Elimination applies a sequence of matrices to A:
+    </p>
+
+    <p class="muted">
+      E₃₂ E₃₁ E₂₁ A = U
+    </p>
+
+    <p>
+      Moving them to the other side means inverting them and reversing their
+      order:
+    </p>
+
+    <p class="muted">
+      A = E₂₁⁻¹ E₃₁⁻¹ E₃₂⁻¹ U = L U
+    </p>
+
+    <p>
+      Each inverse is easy, since undoing "subtract 3 times row 1" means
+      adding 3 times row 1, which only flips the sign of one entry.
+    </p>
+
+    <h2>Why L Is So Clean</h2>
+
+    <p>
+      The product in the forward direction, E, is messy, while the product of
+      the inverses, L, is not. Take the elimination steps on our example,
+      where the multipliers were 3 and 2:
+    </p>
+
+    <p class="muted">
+      E = E₃₂E₂₁ = [[1, 0, 0], [−3, 1, 0], [6, −2, 1]]
+    </p>
+
+    <p class="muted">
+      L = E⁻¹ = [[1, 0, 0], [3, 1, 0], [0, 2, 1]]
+    </p>
+
+    <p>
+      E has an entry of 6, because row 1 affects row 2, which then affects row
+      3. In L, the multipliers simply sit in their own positions, with no
+      interaction between them.
+    </p>
+
+    <p class="muted">
+      L is the record of elimination: each multiplier is written down where it
+      was used.
+    </p>
+
+    <p>
+      For our matrix, this gives:
+    </p>
+
+    <p class="muted">
+      [[1, 2, 1], [3, 8, 1], [0, 4, 1]] = [[1, 0, 0], [3, 1, 0], [0, 2, 1]] ·
+      [[1, 2, 1], [0, 2, −2], [0, 0, 5]]
+    </p>
+
+    <h2>Computing It</h2>
+
+    <p>
+      Since L has ones on its diagonal, only the entries below the diagonal
+      need storing. They fit in the zeros that elimination creates, so the
+      factorisation can overwrite A in place:
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def lu(A):
+    """Doolittle LU without pivoting. Returns unit lower L and upper U."""
+    A = A.astype(float)
+    n = len(A)
+    for k in range(n - 1):
+        A[k + 1:, k] /= A[k, k]                                  # multipliers
+        A[k + 1:, k + 1:] -= np.outer(A[k + 1:, k], A[k, k + 1:])
+    return np.tril(A, -1) + np.eye(n), np.triu(A)
+
+A = np.array([[1, 2, 1], [3, 8, 1], [0, 4, 1]])
+L, U = lu(A)
+print(L)
+print(U)
+print(np.allclose(L @ U, A))   # True</code></pre>
+
+    <h2>Why It Is Worth Having</h2>
+
+    <p>
+      The factorisation separates the work on A from the work on b. Solving Ax
+      = b splits into two triangular solves:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Forward substitution:</strong> solve Lc = b for c.</li>
+      <li><strong>Back substitution:</strong> solve Ux = c for x.</li>
+    </ul>
+
+    <p>
+      The factorisation costs about n³/3 operations, but each new right-hand
+      side costs only about n². With a 1,000 × 1,000 matrix and 100 right-hand
+      sides, redoing elimination every time would take about 33 billion
+      operations for the elimination alone. Factorising once takes about 330
+      million, plus about 100 million for all the triangular solves.
+    </p>
+
+    <p>
+      The same reasoning is why computing A⁻¹ is rarely needed. A stored LU
+      does everything an inverse would, at lower cost and with better
+      accuracy.
+    </p>
+
+    <h2>Row Exchanges</h2>
+
+    <p>
+      If a zero or very small pivot turns up, rows must be exchanged. All the
+      exchanges can be collected in a permutation matrix P, which reorders the
+      rows of A in advance:
+    </p>
+
+    <p class="muted">
+      P A = L U
+    </p>
+
+    <p>
+      Every invertible matrix has this form, and it is what standard library
+      routines compute. Without exchanges, some invertible matrices have no LU
+      at all. [[0, 1], [1, 0]] is one, since its first pivot is zero.
+    </p>
+
+    <h2>The LDU Form</h2>
+
+    <p>
+      U has the pivots on its diagonal, whereas L has ones. Dividing the
+      pivots out of U restores the symmetry between the two factors:
+    </p>
+
+    <p class="muted">
+      A = L D U, where U now has ones on its diagonal
+    </p>
+
+    <p>
+      For a symmetric matrix, the factorisation simplifies to A = L D Lᵀ,
+      which needs only half of the storage and work.
+    </p>
+
+    <h2>Structure Is Preserved</h2>
+
+    <p>
+      A band matrix, whose nonzero entries are close to the diagonal, keeps
+      its bandwidth in L and U. For a tridiagonal system, the cost falls from
+      n³/3 to about n. This is why large sparse systems, such as those from
+      physical simulations, can be solved at all. The inverse of such a matrix
+      is generally full, which is another reason to keep the factors.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      LU is elimination with a memory. It is a small change in viewpoint with
+      a large practical payoff, and it also makes visible the row operations
+      that have been taking place all along.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

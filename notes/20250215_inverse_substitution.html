@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inverse Substitution</title>
+  <meta name="description" content="Integrating by setting x equal to a function of a new variable: the three trigonometric cases, returning to x, and handling definite limits." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Inverse Substitution" />
+  <meta property="og:description" content="Integrating by setting x equal to a function of a new variable: the three trigonometric cases, returning to x, and handling definite limits." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250215_inverse_substitution.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Inverse Substitution</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Feb 15, 2025
+    </p>
+
+    <p>
+      Ordinary substitution spots an inner function, u = g(x), and replaces it
+      with a simple variable. Inverse substitution works the other way around.
+      It replaces x with a function of a new variable, which seems to make
+      things more complicated but can remove a square root entirely.
+    </p>
+
+    <h2>The Method</h2>
+
+    <p>
+      Set x = g(u), so dx = g′(u) du. Rewrite everything in terms of u, then
+      integrate:
+    </p>
+
+    <p class="muted">
+      ∫ f(x) dx = ∫ f(g(u)) g′(u) du
+    </p>
+
+    <p>
+      g needs to be invertible on the relevant interval, so that the answer
+      can be converted back to x. It is also where these substitutions get
+      their name, since the new variable is an inverse function of x: u =
+      g⁻¹(x).
+    </p>
+
+    <h2>The Three Trigonometric Cases</h2>
+
+    <p>
+      Each one uses a Pythagorean identity to change a sum or difference of
+      squares into a perfect square:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>√(a² − x²):</strong> let x = a sin θ, so a² − x² = a² cos² θ.</li>
+      <li><strong>√(a² + x²):</strong> let x = a tan θ, so a² + x² = a² sec² θ.</li>
+      <li><strong>√(x² − a²):</strong> let x = a sec θ, so x² − a² = a² tan² θ.</li>
+    </ul>
+
+    <p class="muted">
+      Choose the substitution whose identity makes the square root disappear.
+    </p>
+
+    <h2>Example: The Area of a Circle</h2>
+
+    <p>
+      A quarter of a circle of radius a has area:
+    </p>
+
+    <p class="muted">
+      ∫₀ᵃ √(a² − x²) dx
+    </p>
+
+    <p>
+      Let x = a sin θ, so dx = a cos θ dθ and √(a² − x²) = a cos θ. The limits
+      change too: x = 0 becomes θ = 0, and x = a becomes θ = π/2. Therefore:
+    </p>
+
+    <p class="muted">
+      ∫₀^(π/2) a² cos² θ dθ = a² · π/4
+    </p>
+
+    <p>
+      The average of cos² over a quarter turn is 1/2, which gives the last
+      step. Multiplying by four yields πa², the area of a circle.
+    </p>
+
+    <h2>Example: A Familiar Result</h2>
+
+    <p>
+      This method also explains an integral that is usually just memorised.
+      For 1 / (1 + x²), let x = tan θ, so dx = sec² θ dθ. The denominator
+      becomes sec² θ, and everything cancels:
+    </p>
+
+    <p class="muted">
+      ∫ dx / (1 + x²) = ∫ dθ = θ + C = arctan x + C
+    </p>
+
+    <h2>Getting Back to x</h2>
+
+    <p>
+      An indefinite integral has to return to x. A right triangle does the
+      conversion. In the next example, x = tan θ means the opposite side is x
+      and the adjacent side is 1, so the hypotenuse is √(1 + x²).
+    </p>
+
+    <p>
+      Take:
+    </p>
+
+    <p class="muted">
+      ∫ dx / ( x² √(1 + x²) )
+    </p>
+
+    <p>
+      Let x = tan θ. Then dx = sec² θ dθ and √(1 + x²) = sec θ:
+    </p>
+
+    <p class="muted">
+      ∫ sec² θ dθ / (tan² θ · sec θ) = ∫ cos θ / sin² θ dθ = −1 / sin θ + C
+    </p>
+
+    <p>
+      From the triangle, sin θ = x / √(1 + x²). So the result is:
+    </p>
+
+    <p class="muted">
+      −√(1 + x²) / x + C
+    </p>
+
+    <h2>Checking the Results</h2>
+
+    <p>
+      For a definite integral, convert the limits instead of returning to x.
+      Numerical integration is a quick way to catch sign errors or a wrong
+      triangle:
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def midpoint(f, a, b, n=1_000_000):
+    dx = (b - a) / n
+    return (f(a + dx * (np.arange(n) + 0.5)) * dx).sum()
+
+print(midpoint(lambda x: np.sqrt(1 - x**2), 0, 1), np.pi / 4)
+
+f = lambda x: 1 / (x**2 * np.sqrt(1 + x**2))
+F = lambda x: -np.sqrt(1 + x**2) / x
+print(midpoint(f, 1, 2), F(2) - F(1))</code></pre>
+
+    <h2>Completing the Square</h2>
+
+    <p>
+      A general quadratic can be brought into one of these forms. For example:
+    </p>
+
+    <p class="muted">
+      x² + 4x + 5 = (x + 2)² + 1
+    </p>
+
+    <p>
+      Substitute u = x + 2 first, and then u = tan θ, so that:
+    </p>
+
+    <p class="muted">
+      ∫ dx / (x² + 4x + 5) = arctan(x + 2) + C
+    </p>
+
+    <h2>A Few Cautions</h2>
+
+    <ul class="post-list">
+      <li><strong>Sign of the square root:</strong> √(cos² θ) = |cos θ|. It is positive for θ in [−π/2, π/2], which is the range that the substitution x = a sin θ should use.</li>
+      <li><strong>Keep the differential:</strong> forgetting to replace dx by g′(u) du is the most common mistake.</li>
+      <li><strong>Simple substitution first:</strong> ∫ x √(1 − x²) dx looks like a trigonometric problem, but u = 1 − x² is much quicker.</li>
+      <li><strong>Not always elementary:</strong> even after substituting, some integrals have no closed form.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Inverse substitution makes the integrand look more complicated in order
+      to reveal structure. Like a good change of coordinates, the point is to
+      move to a variable in which the problem is simple. Letting a separate
+      variable do the work is also a useful way of describing curves.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

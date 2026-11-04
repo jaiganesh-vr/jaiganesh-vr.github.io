@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elimination With Matrices</title>
+  <meta name="description" content="Solving Ax = b by elimination: pivots, back substitution, how each step is a matrix multiplication, and when the method breaks down." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Elimination With Matrices" />
+  <meta property="og:description" content="Solving Ax = b by elimination: pivots, back substitution, how each step is a matrix multiplication, and when the method breaks down." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210522_elimination_with_matrices.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Elimination With Matrices</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Linear Algebra</span>
+    </p>
+
+    <p class="muted">
+      May 22, 2021
+    </p>
+
+    <p>
+      Elimination is the method nearly every linear solver is built on. It is
+      the school technique of subtracting one equation from another, carried
+      out systematically, and writing it with matrices shows why it works and
+      what it costs.
+    </p>
+
+    <h2>The Goal</h2>
+
+    <p>
+      We want to solve Ax = b. A triangular system is easy, because the last
+      equation has one unknown, the one above it has two, and so on.
+      Elimination turns A into an upper triangular matrix U, without changing
+      the solutions.
+    </p>
+
+    <h2>A Worked Example</h2>
+
+    <p>
+      Take this system:
+    </p>
+
+    <p class="muted">
+      x + 2y + z = 2
+    </p>
+
+    <p class="muted">
+      3x + 8y + z = 12
+    </p>
+
+    <p class="muted">
+      4y + z = 2
+    </p>
+
+    <p>
+      Written as a matrix, with b attached as an extra column:
+    </p>
+
+    <p class="muted">
+      [ 1 2 1 | 2 ], [ 3 8 1 | 12 ], [ 0 4 1 | 2 ]
+    </p>
+
+    <p>
+      The first pivot is the 1 in the top left corner. Subtracting 3 times row
+      1 from row 2 clears the entry below it, and row 3 already has a zero
+      there:
+    </p>
+
+    <p class="muted">
+      [ 1 2 1 | 2 ], [ 0 2 −2 | 6 ], [ 0 4 1 | 2 ]
+    </p>
+
+    <p>
+      The next pivot is the 2 in row 2. Subtracting 2 times row 2 from row 3
+      finishes the job:
+    </p>
+
+    <p class="muted">
+      [ 1 2 1 | 2 ], [ 0 2 −2 | 6 ], [ 0 0 5 | −10 ]
+    </p>
+
+    <p>
+      The pivots are 1, 2 and 5. The number subtracted at each step, here 3
+      and 2, is called the multiplier, and it equals the entry to clear
+      divided by the pivot.
+    </p>
+
+    <h2>Back Substitution</h2>
+
+    <p>
+      Now solve from the bottom up:
+    </p>
+
+    <ul class="post-list">
+      <li>5z = −10, so z = −2.</li>
+      <li>2y − 2z = 6, so y = 1.</li>
+      <li>x + 2y + z = 2, so x = 2.</li>
+    </ul>
+
+    <h2>Each Step Is a Matrix</h2>
+
+    <p>
+      A row operation is itself a matrix multiplication. Subtracting 3 times
+      row 1 from row 2 is multiplication on the left by an identity matrix
+      with one extra entry:
+    </p>
+
+    <p class="muted">
+      E₂₁ = [[1, 0, 0], [−3, 1, 0], [0, 0, 1]]
+    </p>
+
+    <p>
+      The whole process is then one product:
+    </p>
+
+    <p class="muted">
+      E₃₂ E₂₁ A = U
+    </p>
+
+    <p class="muted">
+      Elimination is a sequence of simple matrices applied to A from the left.
+    </p>
+
+    <p>
+      Multiplying on the left acts on rows, while multiplying on the right
+      acts on columns. Keeping this straight makes the rest of matrix algebra
+      much easier to follow.
+    </p>
+
+    <h2>When It Breaks Down</h2>
+
+    <p>
+      A pivot must be nonzero, because we divide by it. There are two kinds of
+      trouble:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Temporary:</strong> a zero appears in the pivot position, but there is a nonzero entry below it. Exchanging the rows fixes this.</li>
+      <li><strong>Permanent:</strong> there is no nonzero entry available. The matrix is singular, and there are either no solutions or infinitely many.</li>
+    </ul>
+
+    <p>
+      Exchanges also matter for accuracy. A very small pivot produces huge
+      multipliers that magnify rounding errors, so practical solvers choose
+      the largest available entry in the column as the pivot. This is known as
+      partial pivoting.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def solve(A, b):
+    A = A.astype(float)
+    b = b.astype(float)
+    n = len(A)
+    for k in range(n):
+        # Partial pivoting: bring up the largest entry in this column
+        p = k + np.argmax(np.abs(A[k:, k]))
+        if A[p, k] == 0:
+            raise ValueError("matrix is singular")
+        A[[k, p]], b[[k, p]] = A[[p, k]], b[[p, k]]
+        for i in range(k + 1, n):
+            m = A[i, k] / A[k, k]
+            A[i, k:] -= m * A[k, k:]
+            b[i] -= m * b[k]
+    x = np.zeros(n)
+    for i in range(n - 1, -1, -1):
+        x[i] = (b[i] - A[i, i + 1:] @ x[i + 1:]) / A[i, i]
+    return x
+
+A = np.array([[1, 2, 1], [3, 8, 1], [0, 4, 1]])
+b = np.array([2, 12, 2])
+print(solve(A, b))   # [ 2.  1. -2.]</code></pre>
+
+    <h2>The Cost</h2>
+
+    <p>
+      Clearing the first column of an n × n matrix takes about n² operations.
+      The remaining columns work on smaller and smaller matrices, and the sum
+      comes to about n³/3 operations. Back substitution takes only about n²/2
+      operations. So nearly all of the work is in the elimination, and
+      doubling the size of a system makes it about eight times as expensive.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Elimination looks like bookkeeping, yet each step is a matrix, and the
+      multipliers that seem to be thrown away along the way are worth keeping.
+      Saving them gives one of the most useful factorisations in numerical
+      computing.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parametric Equations</title>
+  <meta name="description" content="Describing curves with a third variable: the circle and cycloid, slopes and second derivatives, arc length, and enclosed area." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Parametric Equations" />
+  <meta property="og:description" content="Describing curves with a third variable: the circle and cycloid, slopes and second derivatives, arc length, and enclosed area." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250510_parametric_equations.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Parametric Equations</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      May 10, 2025
+    </p>
+
+    <p>
+      A graph y = f(x) cannot describe a full circle, since it gives only one
+      y for each x. Writing x and y separately as functions of a third
+      variable removes that limit, and also captures something a graph cannot:
+      how a point moves along the curve over time.
+    </p>
+
+    <h2>The Idea</h2>
+
+    <p>
+      A parametric curve gives both coordinates in terms of a parameter t:
+    </p>
+
+    <p class="muted">
+      x = x(t), y = y(t)
+    </p>
+
+    <p>
+      The standard example is the unit circle, where each value of t gives a
+      point, and as t runs from 0 to 2π, it goes once around anticlockwise:
+    </p>
+
+    <p class="muted">
+      x = cos t, y = sin t
+    </p>
+
+    <p>
+      You can often eliminate t to get an equation in x and y. Here, cos² t +
+      sin² t = 1 gives x² + y² = 1. This recovers the shape but loses the
+      motion. The same circle comes from x = sin 2t, y = cos 2t, which runs
+      twice as fast, clockwise, from a different starting point.
+    </p>
+
+    <p class="muted">
+      The equation says where the curve is. The parametrisation also says how
+      it gets traversed.
+    </p>
+
+    <h2>Slope</h2>
+
+    <p>
+      By the chain rule, dy/dt = (dy/dx)(dx/dt). So if dx/dt is not zero:
+    </p>
+
+    <p class="muted">
+      dy/dx = (dy/dt) / (dx/dt)
+    </p>
+
+    <p>
+      For the circle, dy/dx = cos t / (−sin t) = −cot t. Tangents are
+      horizontal when dy/dt = 0 and vertical when dx/dt = 0. If both are zero,
+      the point may be a cusp.
+    </p>
+
+    <p>
+      The second derivative needs care, since dy/dx itself is a function of t:
+    </p>
+
+    <p class="muted">
+      d²y/dx² = [ d/dt (dy/dx) ] / (dx/dt)
+    </p>
+
+    <p>
+      Dividing d²y/dt² by d²x/dt² is a common error. It does not give this
+      quantity.
+    </p>
+
+    <h2>Arc Length</h2>
+
+    <p>
+      Over a small time dt, the point moves by dx and dy, so the distance
+      moved comes from Pythagoras:
+    </p>
+
+    <p class="muted">
+      ds = √( (dx/dt)² + (dy/dt)² ) dt
+    </p>
+
+    <p>
+      The speed of the point is the factor in front of dt, and the total
+      length is its integral:
+    </p>
+
+    <p class="muted">
+      L = ∫ √( x′(t)² + y′(t)² ) dt
+    </p>
+
+    <p>
+      For the circle of radius a, the speed is a, so the length around it is
+      2πa. As expected, the length does not depend on how the curve is
+      parametrised, even though the speed does.
+    </p>
+
+    <h2>Area</h2>
+
+    <p>
+      The usual integral ∫ y dx applies with both parts converted to t:
+    </p>
+
+    <p class="muted">
+      A = ∫ y(t) x′(t) dt
+    </p>
+
+    <h2>The Cycloid</h2>
+
+    <p>
+      A point on the rim of a rolling wheel traces a cycloid. A wheel of
+      radius a that has rotated through angle t has moved its centre by at,
+      while the point has rotated around the centre. Adding the two motions
+      gives the following:
+    </p>
+
+    <p class="muted">
+      x = a (t − sin t), y = a (1 − cos t)
+    </p>
+
+    <p>
+      This curve is hard to write as y = f(x), but easy to work with
+      parametrically. Over one arch, from t = 0 to 2π:
+    </p>
+
+    <p class="muted">
+      x′² + y′² = a² ( (1 − cos t)² + sin² t ) = 2a² (1 − cos t) = 4a²
+      sin²(t/2)
+    </p>
+
+    <p>
+      The speed is 2a |sin(t/2)|. It is zero when the point touches the
+      ground, which explains the cusps, and greatest at the top, where it
+      moves at twice the speed of the wheel's centre. Integrating gives two
+      neat results:
+    </p>
+
+    <p class="muted">
+      L = 8a and A = 3πa²
+    </p>
+
+    <p>
+      So an arch has length 8 times the radius, with an area of 3 times the
+      area of the wheel.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+t = np.linspace(0, 2 * np.pi, 1_000_001)
+x = t - np.sin(t)      # cycloid, a = 1
+y = 1 - np.cos(t)
+
+length = np.hypot(np.diff(x), np.diff(y)).sum()
+area = ((y[1:] + y[:-1]) / 2 * np.diff(x)).sum()
+
+print(round(length, 6))              # 8.0
+print(round(area, 6), round(3 * np.pi, 6))</code></pre>
+
+    <p>
+      The cycloid also has a famous dynamic property. It is the
+      brachistochrone, the curve down which a bead slides from one point to
+      another the fastest under gravity. It beats the straight line.
+    </p>
+
+    <h2>Polar Curves</h2>
+
+    <p>
+      Polar coordinates are a special case, with θ as the parameter: x = r(θ)
+      cos θ and y = r(θ) sin θ. The general formulas become ds = √(r² + r′²)
+      dθ for the arc length, and A = ½ ∫ r² dθ for the area swept from the
+      origin.
+    </p>
+
+    <h2>In Higher Dimensions</h2>
+
+    <p>
+      Adding a third coordinate z(t) gives a space curve, such as the helix
+      (cos t, sin t, t). Its velocity vector (x′, y′, z′) is tangent to the
+      curve. Bézier curves in graphic design and font outlines are also
+      parametric, and they are used for the same reason: a parametric curve
+      can loop, turn and double back without trouble.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      A parameter gives us a free variable to do the bookkeeping. It separates
+      the path from the speed along it, and lets curves that are not functions
+      be handled by ordinary calculus. Another case where direct evaluation
+      fails is a limit in which two competing quantities both vanish.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

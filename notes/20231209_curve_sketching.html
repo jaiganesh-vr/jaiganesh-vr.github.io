@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curve Sketching</title>
+  <meta name="description" content="Using the first and second derivatives to find where a function rises, falls and bends, with two fully worked examples and the traps in the standard tests." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Curve Sketching" />
+  <meta property="og:description" content="Using the first and second derivatives to find where a function rises, falls and bends, with two fully worked examples and the traps in the standard tests." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20231209_curve_sketching.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Curve Sketching</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Dec 09, 2023
+    </p>
+
+    <p>
+      Before there were plotting tools, drawing a graph required understanding
+      the function. It is still a good exercise, because it connects the
+      numbers from derivatives with a mental picture of what a function does.
+    </p>
+
+    <h2>What Each Derivative Tells You</h2>
+
+    <ul class="post-list">
+      <li><strong>f′ &gt; 0:</strong> the function is increasing.</li>
+      <li><strong>f′ &lt; 0:</strong> the function is decreasing.</li>
+      <li><strong>f″ &gt; 0:</strong> the function is concave up, shaped like a cup.</li>
+      <li><strong>f″ &lt; 0:</strong> the function is concave down, shaped like a cap.</li>
+    </ul>
+
+    <p>
+      Two kinds of special points follow. A critical point is where f′ = 0 or
+      f′ does not exist. An inflection point is where the concavity actually
+      changes.
+    </p>
+
+    <h2>A Recipe</h2>
+
+    <ul class="post-list">
+      <li><strong>Plot easy points:</strong> intercepts, and any points that are easy to calculate.</li>
+      <li><strong>Find the ends:</strong> behaviour as x goes to ±∞, and near any point where the function blows up.</li>
+      <li><strong>Find f′:</strong> locate critical points and plot them, then mark which way the function goes between them.</li>
+      <li><strong>Find f″:</strong> locate inflection points and mark concavity.</li>
+      <li><strong>Connect it all:</strong> combine this into a smooth curve, and check that it is all consistent.</li>
+    </ul>
+
+    <h2>Example: A Cubic</h2>
+
+    <p>
+      Take f(x) = x³ − 3x + 1. The ends go to ±∞ as x goes to ±∞. The first
+      derivative is:
+    </p>
+
+    <p class="muted">
+      f′(x) = 3x² − 3 = 3(x − 1)(x + 1)
+    </p>
+
+    <p>
+      So the critical points are x = −1 and x = 1, where f takes the values 3
+      and −1. Looking at the signs of f′:
+    </p>
+
+    <ul class="post-list">
+      <li>x &lt; −1: f′ &gt; 0, so rising.</li>
+      <li>−1 &lt; x &lt; 1: f′ &lt; 0, so falling.</li>
+      <li>x &gt; 1: f′ &gt; 0, so rising.</li>
+    </ul>
+
+    <p>
+      Rising then falling makes x = −1 a local maximum, and falling then
+      rising makes x = 1 a local minimum. The second derivative, f″(x) = 6x,
+      is zero at x = 0, which changes sign there, so (0, 1) is an inflection
+      point. It lies right between the two critical points, as it does for all
+      cubics of this kind.
+    </p>
+
+    <h2>Example: A Rational Function</h2>
+
+    <p>
+      Take f(x) = (x + 1) / (x + 2). The denominator vanishes at x = −2, so
+      there is a vertical asymptote there. As x goes to ±∞, the function
+      approaches y = 1, a horizontal asymptote. The intercepts are at x = −1
+      and y = 1/2. The derivatives are:
+    </p>
+
+    <p class="muted">
+      f′(x) = 1 / (x + 2)²
+    </p>
+
+    <p class="muted">
+      f″(x) = −2 / (x + 2)³
+    </p>
+
+    <p>
+      f′ is always positive, so the function rises on both sides of the
+      asymptote. There are no critical points. Concavity changes at x = −2,
+      but this is not an inflection point, because the function is not defined
+      there.
+    </p>
+
+    <p class="muted">
+      Check f′ where it is defined. A function can be increasing on each piece
+      while still falling from one piece to the next.
+    </p>
+
+    <p>
+      Indeed f(−3) = 2 but f(0) = 1/2. It is increasing on each interval
+      separately, though not across the asymptote.
+    </p>
+
+    <pre><code class="language-python">def describe(f, xs, h=1e-5):
+    """Numerical signs of f' and f'' at each sample point."""
+    for x in xs:
+        d1 = (f(x + h) - f(x - h)) / (2 * h)
+        d2 = (f(x + h) - 2 * f(x) + f(x - h)) / h**2
+        rise = "rising" if d1 &gt; 0 else "falling"
+        bend = "cup" if d2 &gt; 0 else "cap"
+        print(f"x = {x:5.1f}  f = {f(x):6.2f}  {rise:8}{bend}")
+
+describe(lambda x: x**3 - 3 * x + 1, [-2, -0.5, 0.5, 2])</code></pre>
+
+    <h2>Traps</h2>
+
+    <ul class="post-list">
+      <li><strong>f′(a) = 0 does not imply an extremum:</strong> x³ has a flat point at 0, but it keeps rising.</li>
+      <li><strong>f″(a) = 0 does not imply an inflection:</strong> x⁴ has f″(0) = 0, but it is a cup on both sides and 0 is a minimum.</li>
+      <li><strong>Corners count:</strong> |x| has a minimum at 0, where f′ does not exist.</li>
+      <li><strong>Second derivative test:</strong> when f′(a) = 0, f″(a) &gt; 0 means a minimum and f″(a) &lt; 0 means a maximum. If f″(a) = 0, the test says nothing.</li>
+    </ul>
+
+    <h2>Maxima and Minima</h2>
+
+    <p>
+      To find the absolute largest and smallest values on a closed interval,
+      compare the function at its critical points and its endpoints. The
+      endpoints are easily missed. On [0, 3], our cubic has its largest value
+      at the endpoint x = 3, where f = 19, and not at any critical point.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      A sketch is a compact summary of the function's behaviour. The critical
+      points it reveals can often be found exactly in textbook examples, while
+      real equations usually need a numerical way of finding where a function
+      crosses zero.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

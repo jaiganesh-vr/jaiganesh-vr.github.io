@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Improper Integrals</title>
+  <meta name="description" content="Integrating over infinite ranges and across infinite values: the p-test, comparison, famous results, and how they connect to probability." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Improper Integrals" />
+  <meta property="og:description" content="Integrating over infinite ranges and across infinite values: the p-test, comparison, famous results, and how they connect to probability." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20251206_improper_integrals.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Improper Integrals</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Dec 06, 2025
+    </p>
+
+    <p>
+      The definite integral was defined for bounded functions on finite
+      intervals. Yet many useful integrals go out to infinity or involve a
+      function that blows up. An infinitely long region can still have finite
+      area, and improper integrals make sense of this with a limit.
+    </p>
+
+    <h2>Infinite Limits</h2>
+
+    <p>
+      Replace the infinite endpoint with a finite one and take the limit:
+    </p>
+
+    <p class="muted">
+      ∫ₐ^∞ f(x) dx = lim (R → ∞) ∫ₐᴿ f(x) dx
+    </p>
+
+    <p>
+      If that limit exists and is finite, the integral converges. Otherwise it
+      diverges. For example:
+    </p>
+
+    <p class="muted">
+      ∫₀^∞ e⁻ˣ dx = lim (R → ∞) (1 − e⁻ᴿ) = 1
+    </p>
+
+    <p>
+      So an infinitely long region has an area of exactly 1.
+    </p>
+
+    <p>
+      For an integral over the whole real line, split it at a point and
+      require each side to converge separately. So ∫ x dx over the real line
+      diverges, even though symmetric limits would give zero.
+    </p>
+
+    <h2>Infinite Integrands</h2>
+
+    <p>
+      If f blows up at an endpoint, approach it with a limit in the same way:
+    </p>
+
+    <p class="muted">
+      ∫₀¹ dx / √x = lim (a → 0⁺) (2 − 2√a) = 2
+    </p>
+
+    <p>
+      If it blows up inside the interval, split the integral there. Ignoring
+      this is a classic trap:
+    </p>
+
+    <p class="muted">
+      ∫₋₁¹ dx / x² naively gives −2
+    </p>
+
+    <p>
+      A negative area from a positive integrand is impossible. Splitting at
+      zero shows that each side diverges, so the integral has no finite value.
+    </p>
+
+    <h2>The p-Test</h2>
+
+    <p>
+      Powers of x provide the standard scale for what converges:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>At infinity:</strong> ∫₁^∞ dx / xᵖ converges exactly when p &gt; 1, and equals 1 / (p − 1).</li>
+      <li><strong>Near zero:</strong> ∫₀¹ dx / xᵖ converges exactly when p &lt; 1, and equals 1 / (1 − p).</li>
+    </ul>
+
+    <p class="muted">
+      At infinity, the function must fall fast enough. Near zero, it must rise
+      slowly enough.
+    </p>
+
+    <p>
+      The borderline case p = 1 diverges in both, with ln x growing without
+      limit, if very slowly.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def tail(p, R):
+    """Exact integral of x^(-p) from 1 to R."""
+    return np.log(R) if p == 1 else (R**(1 - p) - 1) / (1 - p)
+
+for R in (1e2, 1e4, 1e8, 1e16):
+    print(f"{R:.0e}", round(tail(2, R), 4), round(tail(1, R), 2), round(tail(0.5, R), 1))</code></pre>
+
+    <p>
+      With p = 2, it settles at 1. With p = 1, it creeps up forever, and with
+      p = 1/2, it grows quickly.
+    </p>
+
+    <h2>Comparison</h2>
+
+    <p>
+      Most integrals cannot be computed exactly, but convergence can often
+      still be settled by comparison. If 0 ≤ f(x) ≤ g(x) for large x:
+    </p>
+
+    <ul class="post-list">
+      <li>If ∫ g converges, then ∫ f converges.</li>
+      <li>If ∫ f diverges, then ∫ g diverges.</li>
+    </ul>
+
+    <p>
+      For example, e^(−x²) ≤ e⁻ˣ for x ≥ 1, so ∫₁^∞ e^(−x²) dx converges
+      without needing an antiderivative. There is also a limit version: if f /
+      g tends to a positive constant, they converge or diverge together. So 1
+      / (x² + 5x + 1) converges at infinity, as it behaves like 1 / x².
+    </p>
+
+    <h2>Famous Results</h2>
+
+    <ul class="post-list">
+      <li><strong>The Gaussian integral:</strong> ∫₋∞^∞ e^(−x²) dx = √π. The usual proof squares the integral and switches to polar coordinates.</li>
+      <li><strong>The gamma function:</strong> Γ(n) = ∫₀^∞ xⁿ⁻¹ e⁻ˣ dx, which extends the factorial, since Γ(n) = (n − 1)! for positive integers.</li>
+      <li><strong>Gabriel's horn:</strong> revolving 1/x around the x-axis for x ≥ 1 gives a solid with volume π but infinite surface area. It could be filled with paint, but not painted.</li>
+    </ul>
+
+    <h2>Connection to Probability</h2>
+
+    <p>
+      Probability is full of improper integrals. A density must integrate to
+      one, and normalising constants come from these results, which is where
+      the √(2π) in the normal distribution comes from.
+    </p>
+
+    <p>
+      Moments are also improper integrals, and they may not converge. The
+      Cauchy density is 1 / (π(1 + x²)). Its total area is 1, but its expected
+      value involves x / (1 + x²), which behaves like 1/x at infinity. That
+      diverges by the p-test, so the Cauchy distribution has no mean, and the
+      law of large numbers does not apply to it.
+    </p>
+
+    <h2>Numerical Integration</h2>
+
+    <p>
+      Numerical methods cannot sample all the way to infinity, so they rely on
+      a change of variable, such as x = 1/t or x = t / (1 − t), to convert the
+      range to a finite interval. Singularities at endpoints need special
+      quadrature rules too. Libraries like scipy.integrate.quad handle these
+      cases, but it is still wise to check that an integral converges first,
+      as a program may return a plausible value for one that does not.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Improper integrals show that infinity alone does not make a quantity
+      infinite. What counts is how quickly the terms shrink. A similar
+      question arises for infinite sums, as with polynomial series, whose
+      convergence depends on how quickly their terms fall.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>
