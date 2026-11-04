@@ -46,4 +46,12 @@
       </button>
     </nav>`;
 
+  // 3. On phones the page tabs scroll sideways; bring the current one into view
+  document.addEventListener('DOMContentLoaded', () => {
+    const menu = document.querySelector('menu.menu-highlight');
+    const current = menu && menu.querySelector('[aria-current]');
+    if (!current) return;
+    menu.scrollLeft += current.getBoundingClientRect().right - menu.getBoundingClientRect().right;
+  });
+
 })();
