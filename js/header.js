@@ -3,11 +3,27 @@
   //   <header><script src="js/header.js"></script></header>
   // (with ../ on pages inside a folder). Edit the nav here, once.
 
+  // Pages with a French version under fr/. Add a post here once it's translated.
+  const FRENCH_PAGES = ['', 'index', 'learn', 'books', 'projects', 'research', 'timeline'];
+
   const script = document.currentScript;
   const root = new URL('..', script.src);   // site root, from this file's location
-  const page = location.href.startsWith(root.href)
+  const isFrench = document.documentElement.lang.startsWith('fr');
+  const fullPath = location.href.startsWith(root.href)
     ? location.pathname.slice(root.pathname.length)
     : '';
+  const page = isFrench ? fullPath.replace(/^fr\//, '') : fullPath;
+  const hasFrench = FRENCH_PAGES.includes(page.replace(/\.html$/, ''));
+
+  // Remember the language of pages that exist in both. A reader on an English-only
+  // post keeps that choice, so the nav can still bring them back to the French pages.
+  let savedLang = null;
+  try {
+    if (hasFrench) localStorage.setItem('lang', isFrench ? 'fr' : 'en');
+    savedLang = localStorage.getItem('lang');
+  } catch (e) {}
+  const useFrench = isFrench || (!hasFrench && savedLang === 'fr');
+  const navRoot = useFrench ? new URL('fr/', root) : root;
 
   // 1. Work out which section the current page belongs to
   let section = '';
@@ -20,20 +36,32 @@
   }
 
   const links = [
-    { id: 'blog', label: 'Blog', href: 'index.html' },
-    { id: 'learn', label: 'Learn', href: 'learn.html' },
+    { id: 'blog', label: useFrench ? 'Blogue' : 'Blog', href: new URL('index.html', navRoot).href },
+    { id: 'learn', label: useFrench ? 'Apprendre' : 'Learn', href: new URL('learn.html', navRoot).href },
   ];
   // Life is only listed while you're in that section
-  if (section === 'life') links.push({ id: 'life', label: 'Life', href: 'life.html' });
+  if (section === 'life') links.push({ id: 'life', label: 'Life', href: new URL('life.html', root).href });
 
   // 2. Build the nav
   const nav = links.map(link =>
-    `<a href="${new URL(link.href, root).href}"${link.id === section ? ' class="active"' : ''}>${link.label}</a>`
+    `<a href="${link.href}"${link.id === section ? ' class="active"' : ''}>${link.label}</a>`
   ).join('\n');
+
+  // EN | FR: the other language is a link only when that version exists
+  const target = page || 'index.html';
+  const en = isFrench
+    ? `<a href="${new URL(target, root).href}${location.hash}" lang="en">EN</a>`
+    : '<span class="lang-current" aria-current="true">EN</span>';
+  const fr = isFrench
+    ? '<span class="lang-current" aria-current="true">FR</span>'
+    : hasFrench
+      ? `<a href="${new URL(target, new URL('fr/', root)).href}${location.hash}" lang="fr-CA">FR</a>`
+      : '<span class="lang-off" lang="fr-CA" title="Version française à venir">FR</span>';
 
   script.parentElement.innerHTML = `
     <nav>
       ${nav}
+      <span class="lang-switch" role="group" aria-label="Language">${en}<span aria-hidden="true">|</span>${fr}</span>
       <button class="theme-toggle" aria-label="Toggle theme">
         <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <path

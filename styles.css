@@ -987,3 +987,53 @@ header {
     scroll-margin-top: 215px;
   }
 }
+
+/* ===== Language switch ===== */
+.lang-switch {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-date);
+}
+
+.lang-switch + .theme-toggle {
+  margin-left: -16px;
+}
+
+.lang-switch a {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.lang-current {
+  color: var(--link-hover);
+  text-shadow:
+    0 0 6px var(--shadow-glow-primary),
+    0 0 12px var(--shadow-glow-secondary);
+}
+
+.lang-off {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lang-note {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-date);
+}
+
+/* French dates are longer, so give them a wider column */
+@media (min-width: 561px) {
+  html[lang^="fr"] .date {
+    min-width: 128px;
+  }
+}
+
+@media (max-width: 360px) {
+  nav {
+    gap: 14px;
+  }
+}

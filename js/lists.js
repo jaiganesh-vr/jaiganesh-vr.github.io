@@ -5,13 +5,17 @@
 
   const NEW_DAYS = 15;
 
+  const french = document.documentElement.lang.startsWith('fr');
+
   function markNew(list) {
     const cutoff = Date.now() - NEW_DAYS * 24 * 60 * 60 * 1000;
     list.querySelectorAll('.post').forEach(post => {
-      const date = new Date(post.querySelector('.date')?.textContent.trim());
+      // French dates aren't parseable, so those rows carry data-date="YYYY-MM-DD"
+      const dateEl = post.querySelector('.date');
+      const date = new Date(dateEl?.dataset.date || dateEl?.textContent.trim());
       const link = post.querySelector('a');
       if (!link || isNaN(date) || date < cutoff || link.querySelector('.pill')) return;
-      link.insertAdjacentHTML('beforeend', ' <span class="pill pill-invert">New</span>');
+      link.insertAdjacentHTML('beforeend', ` <span class="pill pill-invert">${french ? 'Nouveau' : 'New'}</span>`);
     });
   }
 
@@ -30,8 +34,8 @@
       extra.forEach(post => { post.hidden = !expanded; });
       toggle.setAttribute('aria-expanded', String(expanded));
       toggle.textContent = expanded
-        ? '− Show less'
-        : '+ Show all ' + posts.length + ' posts';
+        ? (french ? '− Afficher moins' : '− Show less')
+        : (french ? '+ Afficher les ' + posts.length + ' articles' : '+ Show all ' + posts.length + ' posts');
     }
 
     toggle.addEventListener('click', () => {
