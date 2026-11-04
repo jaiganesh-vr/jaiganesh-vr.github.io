@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markov Chain Monte Carlo</title>
+  <meta name="description" content="Sampling from a posterior known only up to a constant: the Metropolis-Hastings rule, detailed balance, Gibbs sampling, and how to tell whether a chain can be trusted." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Markov Chain Monte Carlo" />
+  <meta property="og:description" content="Sampling from a posterior known only up to a constant: the Metropolis-Hastings rule, detailed balance, Gibbs sampling, and how to tell whether a chain can be trusted." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260221_mcmc.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Markov Chain Monte Carlo</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Approximate Inference</span>
+    </p>
+
+    <p class="muted">
+      Feb 21, 2026
+    </p>
+
+    <p>
+      Direct sampling from a complicated posterior is usually impossible. But
+      it turns out to be possible to construct a random walk that spends time
+      in each region in proportion to its probability. Markov chain Monte
+      Carlo builds such a walk and averages along its path.
+    </p>
+
+    <h2>The Key Idea</h2>
+
+    <p>
+      Design a Markov chain whose stationary distribution is the target p(x).
+      Run it long enough to forget the starting point, and the states it
+      visits become samples from p, although not independent ones. Averages
+      along the path converge to expectations under the target.
+    </p>
+
+    <p class="muted">
+      We trade independence for the ability to sample from nearly anything.
+    </p>
+
+    <h2>Metropolis-Hastings</h2>
+
+    <p>
+      We can only evaluate an unnormalised density p̃(x). From the current
+      state x, propose x′ from q(x′ | x) and accept with probability:
+    </p>
+
+    <p class="muted">
+      A = min( 1, [ p̃(x′) · q(x | x′) ] / [ p̃(x) · q(x′ | x) ] )
+    </p>
+
+    <p>
+      If rejected, the chain stays at x, and x counts again as a sample. The
+      normalising constant appears in both numerator and denominator and
+      cancels, which is why this works for posteriors whose evidence we could
+      never calculate. For a symmetric proposal, such as a Gaussian centred on
+      x, the q terms also cancel:
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def log_target(theta):            # unnormalised Beta(9, 5)
+    if not 0 &lt; theta &lt; 1:
+        return -np.inf
+    return 8 * np.log(theta) + 4 * np.log(1 - theta)
+
+def metropolis(n=50_000, step=0.2, seed=0):
+    rng = np.random.default_rng(seed)
+    theta, samples, accepted = 0.5, [], 0
+    for _ in range(n):
+        proposal = theta + rng.normal(0, step)
+        if np.log(rng.uniform()) &lt; log_target(proposal) - log_target(theta):
+            theta, accepted = proposal, accepted + 1
+        samples.append(theta)
+    return np.array(samples), accepted / n
+
+samples, rate = metropolis()
+print(samples[5000:].mean(), rate)  # about 0.643</code></pre>
+
+    <h2>Why It Works</h2>
+
+    <p>
+      The acceptance rule enforces detailed balance:
+    </p>
+
+    <p class="muted">
+      p(x) T(x′ | x) = p(x′) T(x | x′)
+    </p>
+
+    <p>
+      If this holds, the flow of probability between every pair of states is
+      equal in each direction, so the distribution does not change. Thus p is
+      stationary under the chain. Given that the chain can reach all states,
+      and is aperiodic, it converges to p from any start.
+    </p>
+
+    <h2>Gibbs Sampling</h2>
+
+    <p>
+      Gibbs sampling updates one variable at a time, drawing from its
+      distribution conditioned on all the others:
+    </p>
+
+    <p class="muted">
+      xⱼ ~ p(xⱼ | x₋ⱼ)
+    </p>
+
+    <p>
+      This is Metropolis-Hastings with an acceptance rate of exactly one. It
+      needs no tuning, and it is natural for models where conditionals are
+      simple, such as topic models and Bayesian networks. It mixes slowly when
+      variables are strongly correlated, since one-at-a-time moves can only
+      take tiny steps along a narrow ridge.
+    </p>
+
+    <h2>Tuning the Proposal</h2>
+
+    <p>
+      The step size is a tradeoff. Too small, and almost all moves are
+      accepted but the chain crawls. Too large, and almost all are rejected
+      and it sits still. Theory for simple high-dimensional targets suggests
+      an acceptance rate of around 23%.
+    </p>
+
+    <p>
+      Random walks explore slowly, and this gets worse in high dimensions.
+      Hamiltonian Monte Carlo uses the gradient of the log density to simulate
+      momentum, making long moves that are still likely to be accepted. Its
+      adaptive variant, NUTS, is the default in tools such as Stan and PyMC.
+    </p>
+
+    <h2>Can We Trust the Chain</h2>
+
+    <p>
+      There is no proof of convergence in practice, only evidence of failure.
+      Standard checks include:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Burn-in:</strong> discard early samples taken before the chain reached the target.</li>
+      <li><strong>Trace plots:</strong> the chain should look like a stable fuzzy band, with no trends.</li>
+      <li><strong>Effective sample size:</strong> samples are correlated, so 50,000 draws may hold only a few thousand draws' worth of information.</li>
+      <li><strong>R-hat:</strong> run several chains from dispersed starts and compare within-chain and between-chain variance. Values close to 1 are required, though not sufficient.</li>
+    </ul>
+
+    <p>
+      Multiple modes are a particular danger. A chain can sit in one mode,
+      look perfectly converged and miss the others entirely.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      MCMC gives asymptotically exact answers to almost any Bayesian model,
+      which is rare in machine learning. The price is compute and careful
+      diagnostics. When that price is too high, a faster approximate
+      alternative is to treat inference as optimisation.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

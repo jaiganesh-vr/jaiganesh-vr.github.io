@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logistic Regression</title>
+  <meta name="description" content="The standard discriminative classifier: the sigmoid, the cross-entropy loss and its gradient, why training needs iteration, and what happens on separable data." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Logistic Regression" />
+  <meta property="og:description" content="The standard discriminative classifier: the sigmoid, the cross-entropy loss and its gradient, why training needs iteration, and what happens on separable data." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230805_logistic_regression.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Logistic Regression</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Discriminative Models</span>
+    </p>
+
+    <p class="muted">
+      Aug 05, 2023
+    </p>
+
+    <p>
+      Where naive Bayes and discriminant analysis model how features are
+      generated within each class, logistic regression models the class
+      probability directly. It remains a reliable baseline and is the building
+      block of the final layer of most neural classifiers.
+    </p>
+
+    <h2>The Model</h2>
+
+    <p>
+      Take a linear score and squash it into a probability using the sigmoid:
+    </p>
+
+    <p class="muted">
+      P(y = 1 | x) = σ(wᵀx + b), where σ(z) = 1 / (1 + e⁻ᶻ)
+    </p>
+
+    <p>
+      Inverting this shows what the linear part represents:
+    </p>
+
+    <p class="muted">
+      log [ p / (1 − p) ] = wᵀx + b
+    </p>
+
+    <p>
+      The model is linear in the log-odds. Increasing feature j by one
+      multiplies the odds by e^wⱼ, which is why the weights can be
+      interpreted. The decision boundary, wᵀx + b = 0, is a hyperplane.
+    </p>
+
+    <h2>The Loss</h2>
+
+    <p>
+      Maximum likelihood with Bernoulli targets gives the cross-entropy loss:
+    </p>
+
+    <p class="muted">
+      L(w) = − Σ [ yᵢ log pᵢ + (1 − yᵢ) log(1 − pᵢ) ]
+    </p>
+
+    <p>
+      Its gradient has a clean form:
+    </p>
+
+    <p class="muted">
+      ∇L = Σ (pᵢ − yᵢ) xᵢ
+    </p>
+
+    <p>
+      Each example pushes the weights in proportion to its error. Setting this
+      to zero has no closed-form solution, because pᵢ depends on w through the
+      sigmoid, so we iterate. The loss is convex, though, so there are no bad
+      local minima to worry about.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+def fit(X, y, lr=0.1, lam=0.01, steps=2000):
+    X = np.hstack([X, np.ones((len(X), 1))])  # intercept column
+    w = np.zeros(X.shape[1])
+    for _ in range(steps):
+        grad = X.T @ (sigmoid(X @ w) - y) / len(y)
+        grad[:-1] += lam * w[:-1]             # L2, not on the intercept
+        w -= lr * grad
+    return w
+
+rng = np.random.default_rng(0)
+X = np.vstack([rng.normal(-1, 1, (200, 2)), rng.normal(1, 1, (200, 2))])
+y = np.repeat([0.0, 1.0], 200)
+w = fit(X, y)
+print(w.round(2))</code></pre>
+
+    <h2>Fitting It</h2>
+
+    <p>
+      Gradient descent and its stochastic variants scale well. For small and
+      medium problems, second-order methods converge faster. Newton's method
+      applied here is known as iteratively reweighted least squares, since
+      each step solves a weighted least squares problem. In practice, L-BFGS
+      is a common default.
+    </p>
+
+    <h2>Separable Data</h2>
+
+    <p>
+      If a hyperplane separates the classes perfectly, the maximum likelihood
+      solution does not exist. Scaling w up keeps making the probabilities
+      closer to 0 and 1, so the loss keeps falling and the weights grow
+      without limit. Regularisation, as a prior on the weights, fixes this by
+      giving a finite solution.
+    </p>
+
+    <h2>More Than Two Classes</h2>
+
+    <p>
+      Multinomial logistic regression uses one weight vector per class and the
+      softmax function:
+    </p>
+
+    <p class="muted">
+      P(y = c | x) = exp(w_cᵀx) / Σₖ exp(wₖᵀx)
+    </p>
+
+    <p>
+      This is what sits on top of most classification networks. The earlier
+      layers learn features, and the final layer is logistic regression on
+      them.
+    </p>
+
+    <h2>Why Not Linear Regression on the Labels</h2>
+
+    <p>
+      Fitting 0/1 labels by least squares gives scores outside the range of a
+      probability, and points far on the correct side of the boundary count as
+      large errors, which can drag the boundary toward them. Logistic loss
+      flattens out for confident correct predictions, so these points have
+      almost no influence.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Logistic regression gives calibrated probabilities from a convex
+      objective and weights you can read. Its limit is the linear boundary,
+      and much of the rest of machine learning consists of ways to get beyond
+      it while keeping those good properties.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Multivariate Gaussian</title>
+  <meta name="description" content="The most used distribution in machine learning: its density and geometry, how covariance shapes it, and the closed forms for marginals and conditionals." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Multivariate Gaussian" />
+  <meta property="og:description" content="The most used distribution in machine learning: its density and geometry, how covariance shapes it, and the closed forms for marginals and conditionals." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240622_multivariate_gaussian.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Multivariate Gaussian</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Jun 22, 2024
+    </p>
+
+    <p>
+      The Gaussian appears throughout machine learning, in noise models,
+      priors, latent spaces and mixture components. It is common partly
+      because it arises naturally and largely because everything you might
+      want to compute with it has an exact answer.
+    </p>
+
+    <h2>The Density</h2>
+
+    <p>
+      For a d-dimensional vector with mean μ and covariance Σ:
+    </p>
+
+    <p class="muted">
+      N(x; μ, Σ) = (2π)^(−d/2) · |Σ|^(−½) · exp( −½ (x − μ)ᵀ Σ⁻¹ (x − μ) )
+    </p>
+
+    <p>
+      The exponent is a quadratic form, and the term out front only
+      normalises. The inverse covariance Σ⁻¹ is known as the precision.
+    </p>
+
+    <h2>The Geometry</h2>
+
+    <p>
+      Contours of equal density are ellipsoids, and eigendecomposition of the
+      covariance describes their shape. With Σ = QΛQᵀ:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Directions of the axes:</strong> the eigenvectors in Q.</li>
+      <li><strong>Length along each axis:</strong> proportional to √λᵢ.</li>
+    </ul>
+
+    <p>
+      The exponent is the squared Mahalanobis distance, which is a Euclidean
+      distance after rotating to those axes and dividing each by √λᵢ. This
+      leads to a useful view of any Gaussian.
+    </p>
+
+    <p class="muted">
+      Every Gaussian is a standard Gaussian that has been rotated, stretched
+      and shifted.
+    </p>
+
+    <p>
+      So if z ~ N(0, I) and Σ = LLᵀ:
+    </p>
+
+    <p class="muted">
+      x = μ + L z gives x ~ N(μ, Σ)
+    </p>
+
+    <p>
+      This is the standard sampling method, and also the reparameterisation
+      trick used in VAEs.
+    </p>
+
+    <h2>Closure Properties</h2>
+
+    <p>
+      Gaussians remain Gaussian under several important operations:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Linear maps:</strong> if x ~ N(μ, Σ), then Ax + b ~ N(Aμ + b, AΣAᵀ).</li>
+      <li><strong>Sums:</strong> independent Gaussians add, with means and covariances adding.</li>
+      <li><strong>Marginals:</strong> to marginalise, just drop the relevant rows and columns from μ and Σ.</li>
+      <li><strong>Conditionals:</strong> conditioning on part of the vector gives a Gaussian, with a closed form.</li>
+    </ul>
+
+    <h2>Conditioning</h2>
+
+    <p>
+      Split x into two blocks, with the covariance split into Σ₁₁, Σ₁₂ and
+      Σ₂₂. Then:
+    </p>
+
+    <p class="muted">
+      μ₁|₂ = μ₁ + Σ₁₂ Σ₂₂⁻¹ (x₂ − μ₂)
+    </p>
+
+    <p class="muted">
+      Σ₁|₂ = Σ₁₁ − Σ₁₂ Σ₂₂⁻¹ Σ₂₁
+    </p>
+
+    <p>
+      The mean shifts linearly with what was observed. The covariance shrinks
+      by an amount that doesn't depend on the observed value. Gaussian
+      processes and Kalman filters are mostly repeated applications of these
+      two lines.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def condition(mu, S, x2):
+    """Distribution of the first variable given the second, for a 2D Gaussian."""
+    mean = mu[0] + S[0, 1] / S[1, 1] * (x2 - mu[1])
+    var = S[0, 0] - S[0, 1]**2 / S[1, 1]
+    return mean, var
+
+mu = np.array([0.0, 0.0])
+S = np.array([[1.0, 0.8], [0.8, 1.0]])
+print(condition(mu, S, 1.0))           # (0.8, 0.36)
+
+# Check by sampling, keeping draws where x2 is close to 1
+x = np.random.default_rng(0).multivariate_normal(mu, S, 2_000_000)
+near = x[np.abs(x[:, 1] - 1.0) &lt; 0.01, 0]
+print(near.mean().round(3), near.var().round(3))</code></pre>
+
+    <h2>Independence</h2>
+
+    <p>
+      For most distributions, zero correlation doesn't imply independence. For
+      jointly Gaussian variables it does, because a diagonal Σ makes the
+      density factor into a product. Similarly, a zero entry in the precision
+      matrix means two variables are independent given all the others, and
+      this gives Gaussian graphical models their structure.
+    </p>
+
+    <h2>Why It Is Everywhere</h2>
+
+    <ul class="post-list">
+      <li><strong>Central limit theorem:</strong> sums of many small independent effects tend toward it.</li>
+      <li><strong>Maximum entropy:</strong> among all distributions with a given mean and covariance, it makes the fewest additional assumptions.</li>
+      <li><strong>Least squares:</strong> Gaussian noise makes maximum likelihood equal to squared error.</li>
+      <li><strong>Tractability:</strong> a Gaussian prior with a Gaussian likelihood gives a Gaussian posterior.</li>
+    </ul>
+
+    <h2>Where It Misleads</h2>
+
+    <p>
+      The tails fall off extremely quickly, so a single outlier can distort a
+      fit, and heavier-tailed alternatives such as the Student t are more
+      robust. In high dimensions, its intuition also breaks down, since almost
+      all the probability mass is in a thin shell at radius about √d rather
+      than near the peak.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The Gaussian is popular because its algebra closes neatly on itself.
+      Understanding it as a transformed standard Gaussian explains most of its
+      formulas. Next, why sums of random variables end up looking like this.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

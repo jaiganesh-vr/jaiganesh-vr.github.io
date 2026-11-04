@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gaussian Discriminant Analysis</title>
+  <meta name="description" content="Modelling each class with a Gaussian leads to quadratic and linear boundaries. The geometry of QDA and LDA, their parameter counts, and their link to logistic regression." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Gaussian Discriminant Analysis" />
+  <meta property="og:description" content="Modelling each class with a Gaussian leads to quadratic and linear boundaries. The geometry of QDA and LDA, their parameter counts, and their link to logistic regression." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220618_gaussian_discriminant_analysis.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Gaussian Discriminant Analysis</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Generative Models</span>
+    </p>
+
+    <p class="muted">
+      Jun 18, 2022
+    </p>
+
+    <p>
+      Gaussian discriminant analysis models each class as a multivariate
+      Gaussian and classifies with Bayes' rule. Despite the name, it is a
+      generative classifier. How much the classes share determines the shape
+      of the boundary.
+    </p>
+
+    <h2>The Model</h2>
+
+    <p class="muted">
+      P(x | y = c) = N(x; μ_c, Σ_c)
+    </p>
+
+    <p>
+      Each class has a prior π_c, a mean and a covariance. Classification
+      picks the class with the highest posterior. In log form:
+    </p>
+
+    <p class="muted">
+      log P(y = c | x) = log π_c − ½ log |Σ_c| − ½ (x − μ_c)ᵀ Σ_c⁻¹ (x − μ_c)
+      + const
+    </p>
+
+    <p>
+      The term (x − μ_c)ᵀ Σ_c⁻¹ (x − μ_c) is the squared Mahalanobis distance.
+      It measures distance from the class centre after accounting for the
+      shape of the class, so a point can be close in Euclidean terms and still
+      be an unlikely member.
+    </p>
+
+    <h2>Quadratic Discriminant Analysis</h2>
+
+    <p>
+      If every class has its own covariance, the log-posterior is quadratic in
+      x. Boundaries between classes are curves such as ellipses, parabolas and
+      hyperbolas. This is QDA.
+    </p>
+
+    <h2>Linear Discriminant Analysis</h2>
+
+    <p>
+      If all classes share one covariance Σ, the xᵀΣ⁻¹x terms are the same for
+      every class and cancel when comparing two of them. What remains is
+      linear:
+    </p>
+
+    <p class="muted">
+      log P(y = 1 | x) / P(y = 0 | x) = wᵀx + b, with w = Σ⁻¹ (μ₁ − μ₀)
+    </p>
+
+    <p class="muted">
+      w points from one class mean to the other, tilted to account for the
+      correlations in the data.
+    </p>
+
+    <p>
+      Fitting is closed form, with no iteration: class frequencies, class
+      means and a pooled covariance.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def fit_lda(X, y):
+    X0, X1 = X[y == 0], X[y == 1]
+    mu0, mu1 = X0.mean(axis=0), X1.mean(axis=0)
+    S = (np.cov(X0.T) * (len(X0) - 1) + np.cov(X1.T) * (len(X1) - 1)) / (len(X) - 2)
+    w = np.linalg.solve(S, mu1 - mu0)
+    pi1 = y.mean()
+    b = -0.5 * w @ (mu0 + mu1) + np.log(pi1 / (1 - pi1))
+    return w, b
+
+rng = np.random.default_rng(0)
+cov = [[1, 0.8], [0.8, 1]]
+X = np.vstack([rng.multivariate_normal([0, 0], cov, 300),
+               rng.multivariate_normal([2, 0], cov, 300)])
+y = np.repeat([0, 1], 300)
+w, b = fit_lda(X, y)
+print(((X @ w + b &gt; 0) == y).mean())</code></pre>
+
+    <h2>Counting Parameters</h2>
+
+    <p>
+      With k classes and d features, the difference in flexibility is large:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>QDA:</strong> k covariances, each with d(d + 1)/2 parameters, so about k·d²/2.</li>
+      <li><strong>LDA:</strong> one shared covariance, so about d²/2.</li>
+      <li><strong>Diagonal covariances:</strong> only d variances per class, which is Gaussian naive Bayes.</li>
+    </ul>
+
+    <p>
+      With d = 100 and k = 5, QDA needs over 25,000 covariance parameters
+      where LDA needs about 5,000. With too little data, covariance estimates
+      become unstable or singular, so LDA or a regularised covariance often
+      does better even when its assumption is wrong. A common fix is to shrink
+      the estimate:
+    </p>
+
+    <p class="muted">
+      Σ̂ = (1 − λ) · S + λ · diag(S)
+    </p>
+
+    <h2>LDA and Logistic Regression</h2>
+
+    <p>
+      Under LDA, the posterior P(y = 1 | x) has exactly the sigmoid form of
+      logistic regression. The models share a functional form but fit
+      differently:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>LDA</strong> maximises the joint likelihood of x and y, and is more efficient when the Gaussian assumption holds.</li>
+      <li><strong>Logistic regression</strong> maximises only the conditional likelihood of y given x, and is more robust when it does not, including to outliers far from the boundary.</li>
+    </ul>
+
+    <h2>LDA for Dimensionality Reduction</h2>
+
+    <p>
+      Fisher's view of LDA looks for projections that keep classes apart:
+      large distance between class means relative to the variance within
+      classes. With k classes the means span at most k − 1 dimensions, so data
+      can be projected down to that many dimensions with no loss of
+      discriminative information, under the model.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      From naive Bayes to LDA to QDA, the structure is the same and only the
+      covariance assumption changes. Each step up adds flexibility and
+      estimation noise, which raises a broader question about how uncertain
+      estimates really are.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

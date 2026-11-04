@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Hessian, Taylor Series and Newton's Method</title>
+  <meta name="description" content="Second-order information: Taylor approximations, how the Hessian describes curvature, classifying stationary points, and why Newton's method is fast but expensive." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Hessian, Taylor Series and Newton's Method" />
+  <meta property="og:description" content="Second-order information: Taylor approximations, how the Hessian describes curvature, classifying stationary points, and why Newton's method is fast but expensive." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230722_hessian_taylor_newton.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Hessian, Taylor Series and Newton's Method</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Jul 22, 2023
+    </p>
+
+    <p>
+      A gradient tells us which way is downhill. It does not tell us how
+      quickly the slope changes, which determines how big a step is safe. For
+      that we need second derivatives.
+    </p>
+
+    <h2>Taylor Series</h2>
+
+    <p>
+      A smooth function can be approximated near a point by a polynomial that
+      matches its derivatives there. In one dimension:
+    </p>
+
+    <p class="muted">
+      f(x + h) ≈ f(x) + f′(x) h + ½ f″(x) h² + …
+    </p>
+
+    <p>
+      For several variables, the quadratic approximation is:
+    </p>
+
+    <p class="muted">
+      f(x + h) ≈ f(x) + ∇f(x)ᵀh + ½ hᵀ H h
+    </p>
+
+    <p>
+      Each extra term improves accuracy near x, while none of them promise
+      much far away.
+    </p>
+
+    <h2>The Hessian</h2>
+
+    <p>
+      H is the matrix of all second partial derivatives, Hᵢⱼ = ∂²f / ∂xᵢ∂xⱼ.
+      For smooth functions it is symmetric. Its eigenvectors are the principal
+      directions of curvature, and its eigenvalues give the curvature along
+      each.
+    </p>
+
+    <p>
+      The ratio between the largest and smallest eigenvalue is the condition
+      number. When this is large, the surface looks like a long narrow valley.
+      Gradient descent then zigzags across the steep walls and moves slowly
+      along the floor. To stay stable, its step size must satisfy η &lt;
+      2/λ_max, and that restriction slows the flat directions.
+    </p>
+
+    <h2>Classifying Stationary Points</h2>
+
+    <p>
+      At a point where the gradient is zero, the quadratic term decides what
+      happens:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>All eigenvalues positive:</strong> a local minimum.</li>
+      <li><strong>All eigenvalues negative:</strong> a local maximum.</li>
+      <li><strong>Mixed signs:</strong> a saddle point.</li>
+      <li><strong>Some eigenvalues zero:</strong> this test can't decide.</li>
+    </ul>
+
+    <p>
+      For f(x, y) = x² − y², the origin has gradient zero and eigenvalues 2
+      and −2, so it is a saddle. In high dimensions, random stationary points
+      are much more likely to be saddles than minima, since this requires only
+      one negative eigenvalue among millions.
+    </p>
+
+    <h2>Newton's Method</h2>
+
+    <p>
+      Rather than stepping along the gradient by an arbitrary amount, jump to
+      the minimum of the local quadratic model. Setting the gradient of the
+      quadratic to zero gives:
+    </p>
+
+    <p class="muted">
+      h = − H⁻¹ ∇f(x)
+    </p>
+
+    <p class="muted">
+      Newton's method rescales each direction by its curvature, turning a
+      narrow valley into a round bowl.
+    </p>
+
+    <p>
+      On an exactly quadratic function, it reaches the minimum in one step.
+      Near a solution, it converges quadratically, which means the number of
+      correct digits roughly doubles with every step.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+A = np.array([[100.0, 0.0], [0.0, 1.0]])   # condition number 100
+
+def grad(x):
+    return A @ x
+
+x_gd = np.array([1.0, 1.0])
+for step in range(100):
+    x_gd = x_gd - 0.019 * grad(x_gd)       # just under 2 / 100
+
+x_newton = np.array([1.0, 1.0])
+x_newton = x_newton - np.linalg.solve(A, grad(x_newton))
+
+print(x_gd.round(4))       # flat direction is still far from zero
+print(x_newton)            # exactly zero after one step</code></pre>
+
+    <h2>Why Deep Learning Rarely Uses It</h2>
+
+    <ul class="post-list">
+      <li><strong>Cost:</strong> storing H takes O(d²) memory, and solving with it takes O(d³) time. This is out of the question for a model with millions of parameters.</li>
+      <li><strong>Saddle points:</strong> on non-convex functions, the pure Newton step moves toward any stationary point, including saddles and maxima.</li>
+      <li><strong>Noise:</strong> Hessians estimated from mini-batches are unreliable.</li>
+    </ul>
+
+    <h2>Practical Middle Ground</h2>
+
+    <ul class="post-list">
+      <li><strong>Quasi-Newton:</strong> BFGS and L-BFGS build an approximation of the inverse Hessian from recent gradients.</li>
+      <li><strong>Hessian-vector products:</strong> Hv can be computed at about the cost of one or two gradients, without forming H.</li>
+      <li><strong>Damping:</strong> using (H + λI)⁻¹ keeps a Newton step safe by interpolating toward gradient descent.</li>
+      <li><strong>Diagonal scaling:</strong> Adam's per-parameter step sizes can be loosely thought of as a cheap curvature correction.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      First derivatives give direction, and second derivatives say how to
+      scale it. Much of practical optimisation is a search for ways of
+      capturing curvature's benefit without paying its full cost.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

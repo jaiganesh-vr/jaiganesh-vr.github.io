@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monte Carlo Inference</title>
+  <meta name="description" content="Replacing intractable integrals with averages over samples. Why the error is dimension-free, and how inverse CDF, rejection and importance sampling work and fail." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Monte Carlo Inference" />
+  <meta property="og:description" content="Replacing intractable integrals with averages over samples. Why the error is dimension-free, and how inverse CDF, rejection and importance sampling work and fail." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20251011_monte_carlo_inference.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Monte Carlo Inference</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Approximate Inference</span>
+    </p>
+
+    <p class="muted">
+      Oct 11, 2025
+    </p>
+
+    <p>
+      Bayesian inference is mostly about integrals: posterior means,
+      predictive distributions, evidence. For nearly all interesting models
+      these have no closed form, and grids become impossible beyond a few
+      dimensions. Monte Carlo methods swap the integral for an average over
+      random samples.
+    </p>
+
+    <h2>The Basic Idea</h2>
+
+    <p>
+      Any expectation can be approximated using samples from the distribution:
+    </p>
+
+    <p class="muted">
+      E[f(x)] ≈ (1/S) Σₛ f(xₛ), where xₛ ~ p(x)
+    </p>
+
+    <p>
+      The estimate is unbiased, and by the central limit theorem its standard
+      error is:
+    </p>
+
+    <p class="muted">
+      σ_f / √S
+    </p>
+
+    <p>
+      The remarkable feature is that this rate does not depend on the
+      dimension of x. A grid needs a number of points that is exponential in
+      dimension. Monte Carlo needs a number of samples set by the variance of
+      f and the accuracy required. The downside is slow convergence, since one
+      more decimal place costs a hundred times as many samples.
+    </p>
+
+    <p class="muted">
+      Monte Carlo is rarely very accurate, but it often works where nothing
+      else can.
+    </p>
+
+    <h2>Getting Samples</h2>
+
+    <p>
+      All of this requires a way to draw samples, which is the hard part.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Inverse CDF:</strong> if U is uniform, then F⁻¹(U) has distribution F. This gives exact samples whenever the inverse CDF is available, such as with the exponential.</li>
+      <li><strong>Rejection sampling:</strong> choose a proposal q and constant M with M·q(x) ≥ p̃(x) everywhere. Sample x from q and keep it with probability p̃(x) / (M q(x)).</li>
+    </ul>
+
+    <p>
+      Rejection sampling needs only an unnormalised density, but in high
+      dimensions its acceptance rate tends to collapse exponentially, because
+      M must grow to cover the target along every dimension.
+    </p>
+
+    <h2>Importance Sampling</h2>
+
+    <p>
+      Importance sampling keeps every sample and corrects with a weight:
+    </p>
+
+    <p class="muted">
+      E_p[f(x)] = E_q[ f(x) · p(x) / q(x) ]
+    </p>
+
+    <p>
+      With an unnormalised posterior p̃ we normalise the weights, which adds a
+      small bias that shrinks as S grows:
+    </p>
+
+    <p class="muted">
+      E_p[f] ≈ Σₛ wₛ f(xₛ) / Σₛ wₛ, where wₛ = p̃(xₛ) / q(xₛ)
+    </p>
+
+    <p>
+      Here it is estimating the mean of the Beta(9, 5) posterior for our coin,
+      whose true value is 9 / 14 ≈ 0.643, without using the normalising
+      constant:
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(0)
+
+def target(theta):                          # unnormalised posterior
+    return theta**8 * (1 - theta)**4
+
+theta = rng.uniform(0, 1, 100_000)          # proposal: uniform
+w = target(theta)                           # q(x) = 1 on [0, 1]
+
+print((w * theta).sum() / w.sum())          # about 0.643
+print(w.sum()**2 / (w**2).sum())            # effective sample size</code></pre>
+
+    <h2>Diagnosing Weights</h2>
+
+    <p>
+      If q poorly matches p, a few samples receive nearly all of the weight,
+      and the estimate effectively rests on those. A common diagnostic is the
+      effective sample size:
+    </p>
+
+    <p class="muted">
+      ESS = (Σ wₛ)² / Σ wₛ²
+    </p>
+
+    <p>
+      A sharp target in high dimensions has almost no overlap with a simple
+      proposal, so the ESS falls to near one. An estimate can look stable and
+      still be badly wrong if the proposal has missed a region of the target.
+      To be safe, q should have heavier tails than p.
+    </p>
+
+    <h2>Reducing Variance</h2>
+
+    <ul class="post-list">
+      <li><strong>Control variates:</strong> subtract a correlated quantity with known expectation.</li>
+      <li><strong>Antithetic sampling:</strong> use pairs of negatively correlated samples, so that their errors partly cancel.</li>
+      <li><strong>Rao-Blackwellisation:</strong> integrate out what can be done analytically, and sample only the rest.</li>
+    </ul>
+
+    <h2>Where It Fails, and What Comes Next</h2>
+
+    <p>
+      Independent sampling struggles in high dimensions, since a fixed
+      proposal cannot find where a complicated posterior puts its mass. That
+      mass tends to be concentrated in a tiny part of the space. The better
+      approach is to let samples explore locally, moving toward regions of
+      high probability and spending time there.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Monte Carlo reduces integration to sampling, for any dimension. When
+      independent samples become too hard to get, we accept dependent ones
+      instead, which is the idea behind Markov chain Monte Carlo.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

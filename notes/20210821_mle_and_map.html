@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maximum Likelihood and MAP Estimation</title>
+  <meta name="description" content="Two ways to reduce a posterior to a single best parameter value, how they relate, and why familiar loss functions are really likelihoods in disguise." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Maximum Likelihood and MAP Estimation" />
+  <meta property="og:description" content="Two ways to reduce a posterior to a single best parameter value, how they relate, and why familiar loss functions are really likelihoods in disguise." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210821_mle_and_map.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Maximum Likelihood and MAP Estimation</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Estimation</span>
+    </p>
+
+    <p class="muted">
+      Aug 21, 2021
+    </p>
+
+    <p>
+      A full posterior is often too expensive to compute or use. Point
+      estimation picks one value of θ instead. The two standard choices differ
+      only in whether they use a prior.
+    </p>
+
+    <h2>Maximum Likelihood</h2>
+
+    <p>
+      Maximum likelihood estimation chooses the parameters that make the
+      observed data most probable. Assuming independent examples, and taking
+      logs because sums are easier to work with than products:
+    </p>
+
+    <p class="muted">
+      θ_MLE = argmax Σ log P(xᵢ | θ)
+    </p>
+
+    <p>
+      For a Gaussian, setting the gradient to zero gives two familiar answers:
+    </p>
+
+    <p class="muted">
+      μ = (1/n) Σ xᵢ and σ² = (1/n) Σ (xᵢ − μ)²
+    </p>
+
+    <p>
+      For 7 heads in 10 coin flips it gives θ = 0.7.
+    </p>
+
+    <h2>MAP Estimation</h2>
+
+    <p>
+      Maximum a posteriori estimation chooses the peak of the posterior. The
+      evidence does not depend on θ, so it can be dropped:
+    </p>
+
+    <p class="muted">
+      θ_MAP = argmax [ Σ log P(xᵢ | θ) + log P(θ) ]
+    </p>
+
+    <p>
+      With a Beta(a, b) prior on a coin with k heads in n flips:
+    </p>
+
+    <p class="muted">
+      θ_MAP = (k + a − 1) / (n + a + b − 2)
+    </p>
+
+    <p>
+      A Beta(2, 2) prior on our coin gives 8 / 12 ≈ 0.667. With a uniform
+      prior, Beta(1, 1), MAP and maximum likelihood coincide.
+    </p>
+
+    <p class="muted">
+      MAP is maximum likelihood plus a penalty, and the penalty is the log
+      prior.
+    </p>
+
+    <h2>Losses Are Likelihoods</h2>
+
+    <p>
+      Many everyday loss functions are negative log-likelihoods under some
+      noise model:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Squared error:</strong> targets with Gaussian noise around the prediction.</li>
+      <li><strong>Absolute error:</strong> targets with Laplace noise, which is why it is more tolerant of outliers.</li>
+      <li><strong>Cross-entropy:</strong> targets drawn from a Bernoulli or categorical distribution given by the model.</li>
+    </ul>
+
+    <p>
+      Priors become regularisers in the same way. A Gaussian prior on weights
+      gives an L2 penalty, and a Laplace prior gives an L1 penalty.
+    </p>
+
+    <h2>A Failure of Maximum Likelihood</h2>
+
+    <p>
+      With little data, maximum likelihood overfits. If a coin lands heads
+      three times out of three, the estimate is θ = 1, which declares tails
+      impossible. A word never seen in a class gets probability zero in the
+      same way. Priors fix this by keeping some probability on everything,
+      which is why smoothing is really MAP or posterior mean estimation.
+    </p>
+
+    <h2>What Point Estimates Lose</h2>
+
+    <ul class="post-list">
+      <li><strong>No uncertainty:</strong> 7 heads in 10 flips and 7,000 heads in 10,000 flips give the same estimate, even though we should trust them very differently.</li>
+      <li><strong>The peak can be unrepresentative:</strong> the mode of a skewed posterior may sit far from where most of its probability lies.</li>
+      <li><strong>MAP depends on parameterisation:</strong> rewriting θ as a different variable, such as its logarithm, can move the peak. Maximum likelihood does not have this problem.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Maximum likelihood trusts the data alone, and MAP adds a modest amount
+      of prior belief. Both throw away the rest of the distribution, and
+      sometimes what is thrown away is what we need, as with comparing models
+      of different complexity.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

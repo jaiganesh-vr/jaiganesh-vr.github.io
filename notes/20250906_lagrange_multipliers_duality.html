@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lagrange Multipliers and Duality</title>
+  <meta name="description" content="Solving constrained problems: the geometry of Lagrange multipliers, inequality constraints and the KKT conditions, and how duality gives kernel SVMs their form." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Lagrange Multipliers and Duality" />
+  <meta property="og:description" content="Solving constrained problems: the geometry of Lagrange multipliers, inequality constraints and the KKT conditions, and how duality gives kernel SVMs their form." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250906_lagrange_multipliers_duality.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Lagrange Multipliers and Duality</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Optimization</span>
+    </p>
+
+    <p class="muted">
+      Sep 06, 2025
+    </p>
+
+    <p>
+      Many optimisation problems come with conditions: unit length directions
+      in PCA, probabilities that sum to one, margin constraints in an SVM.
+      Lagrange multipliers absorb these constraints into the objective.
+    </p>
+
+    <h2>Equality Constraints</h2>
+
+    <p>
+      Suppose we minimise f(x) subject to g(x) = 0. Walk along the constraint
+      surface, and f can only keep falling while the walk has a component
+      along −∇f. At a constrained optimum, no such component remains, so ∇f
+      must be perpendicular to the surface. ∇g is also perpendicular to it, so
+      the two gradients are parallel:
+    </p>
+
+    <p class="muted">
+      ∇f(x) = λ ∇g(x)
+    </p>
+
+    <p class="muted">
+      At the optimum, the contours of the objective just touch the constraint.
+    </p>
+
+    <p>
+      Packaging this up as the Lagrangian gives a function whose stationary
+      points are the solutions:
+    </p>
+
+    <p class="muted">
+      L(x, λ) = f(x) − λ g(x)
+    </p>
+
+    <p>
+      The derivative with respect to x gives the parallel gradient condition,
+      and the derivative with respect to λ recovers the constraint.
+    </p>
+
+    <h2>An Example</h2>
+
+    <p>
+      Find the highest entropy distribution over k outcomes. Maximise −Σ pᵢ
+      log pᵢ subject to Σ pᵢ = 1. With L = −Σ pᵢ log pᵢ − λ(Σ pᵢ − 1), setting
+      the derivative to zero gives:
+    </p>
+
+    <p class="muted">
+      −log pᵢ − 1 − λ = 0
+    </p>
+
+    <p>
+      Thus each pᵢ has the same value, and the constraint makes it 1/k. So the
+      uniform distribution has maximum entropy.
+    </p>
+
+    <h2>What the Multiplier Means</h2>
+
+    <p>
+      λ is not just algebra. It measures sensitivity: how quickly the optimal
+      objective changes as the constraint is relaxed. In economics this is
+      called a shadow price.
+    </p>
+
+    <h2>Inequality Constraints and KKT</h2>
+
+    <p>
+      For a constraint h(x) ≤ 0, there are two cases. Either the optimum lies
+      in the interior and the constraint plays no role, or it lies on the
+      boundary and behaves like an equality. The Karush-Kuhn-Tucker conditions
+      capture both cases, using L = f(x) + Σ αᵢ hᵢ(x):
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Stationarity:</strong> ∇f(x) + Σ αᵢ ∇hᵢ(x) = 0</li>
+      <li><strong>Primal feasibility:</strong> hᵢ(x) ≤ 0</li>
+      <li><strong>Dual feasibility:</strong> αᵢ ≥ 0</li>
+      <li><strong>Complementary slackness:</strong> αᵢ hᵢ(x) = 0</li>
+    </ul>
+
+    <p>
+      The last one says that for each constraint, either the multiplier is
+      zero or the constraint is tight. In the case of SVMs, this is why only
+      support vectors carry weight.
+    </p>
+
+    <h2>Duality</h2>
+
+    <p>
+      Define the dual function by minimising the Lagrangian over x for fixed
+      multipliers:
+    </p>
+
+    <p class="muted">
+      d(α) = min over x of L(x, α)
+    </p>
+
+    <p>
+      For any feasible x and α ≥ 0, we have d(α) ≤ f(x), which is weak
+      duality. So the dual gives a lower bound, and it is always concave, even
+      if the original problem isn't convex. For convex problems with a mild
+      condition such as Slater's, the bound is tight. This is strong duality.
+    </p>
+
+    <p>
+      Duality is useful when the dual is easier, or when it exposes some
+      structure. For SVMs, it replaces a problem in d variables with one in n
+      variables that depends on the data only through dot products. This makes
+      the kernel trick possible.
+    </p>
+
+    <h2>A Worked Dual</h2>
+
+    <p>
+      Take the problem of minimising ½x² subject to x ≥ 1, where h(x) = 1 − x.
+      The Lagrangian is ½x² + α(1 − x). Minimising over x gives x = α, so d(α)
+      = α − ½α². Maximising over α ≥ 0 gives α = 1, with value ½. The primal
+      solution x = 1 also has value ½, so the gap is zero.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+# Maximise the dual by gradient ascent, keeping alpha nonnegative
+alpha = 0.0
+for _ in range(200):
+    alpha = max(0.0, alpha + 0.1 * (1 - alpha))
+
+x = alpha                                # from minimising the Lagrangian
+print(round(alpha, 4), round(x, 4))      # 1.0 1.0
+print(round(alpha - 0.5 * alpha**2, 4))  # dual value 0.5
+print(round(0.5 * x**2, 4))              # primal value 0.5</code></pre>
+
+    <h2>Where It Shows Up</h2>
+
+    <ul class="post-list">
+      <li><strong>PCA:</strong> a unit-norm constraint on the direction turns the variance problem into an eigenvalue problem.</li>
+      <li><strong>SVMs:</strong> the dual, support vectors and kernels all follow from this.</li>
+      <li><strong>Maximum entropy models:</strong> the constraints on moments give an exponential family, with multipliers as the natural parameters.</li>
+      <li><strong>Regularisation:</strong> minimising a loss under a constraint ‖w‖ ≤ c is equivalent to adding a penalty λ‖w‖, with λ as the multiplier.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Lagrange multipliers change a constraint into a term that can be traded
+      off against the objective. Duality takes this further by giving every
+      constrained problem a second form, and the two views together often
+      reveal what a single view hides.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

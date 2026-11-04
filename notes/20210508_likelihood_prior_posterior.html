@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Likelihood, Prior and Posterior</title>
+  <meta name="description" content="The three quantities at the centre of Bayesian thinking, what each one means, and how a coin-flip example turns data into updated beliefs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Likelihood, Prior and Posterior" />
+  <meta property="og:description" content="The three quantities at the centre of Bayesian thinking, what each one means, and how a coin-flip example turns data into updated beliefs." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20210508_likelihood_prior_posterior.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Likelihood, Prior and Posterior</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Bayesian Inference</span>
+    </p>
+
+    <p class="muted">
+      May 08, 2021
+    </p>
+
+    <p>
+      Bayesian machine learning treats unknown parameters the way we treat any
+      uncertain quantity: with probability. Three terms do almost all of the
+      work, and most confusion in the subject comes from mixing them up.
+    </p>
+
+    <h2>The Setup</h2>
+
+    <p>
+      We have data D and a model with parameters θ. Bayes' rule connects what
+      we believed before seeing the data to what we should believe afterwards:
+    </p>
+
+    <p class="muted">
+      P(θ | D) = P(D | θ) · P(θ) / P(D)
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Prior, P(θ):</strong> what we believe about θ before seeing any data.</li>
+      <li><strong>Likelihood, P(D | θ):</strong> how probable the observed data would be if θ were the true value.</li>
+      <li><strong>Posterior, P(θ | D):</strong> what we believe about θ after seeing the data.</li>
+      <li><strong>Evidence, P(D):</strong> the probability of the data averaged over all θ. It rescales the posterior so it sums to one.</li>
+    </ul>
+
+    <h2>Likelihood Is Not a Probability of θ</h2>
+
+    <p>
+      This is the most common mistake. Viewed as a function of D with θ fixed,
+      P(D | θ) is a probability distribution. Viewed as a function of θ with D
+      fixed, it is not. It need not integrate to one over θ, and it says
+      nothing about which θ is probable until a prior is brought in.
+    </p>
+
+    <p class="muted">
+      The likelihood scores parameters by how well they explain the data. It
+      takes a prior to turn those scores into beliefs.
+    </p>
+
+    <h2>A Worked Example</h2>
+
+    <p>
+      Suppose a coin lands heads 7 times in 10 flips, and θ is its probability
+      of heads. The likelihood is:
+    </p>
+
+    <p class="muted">
+      L(θ) = θ⁷ · (1 − θ)³
+    </p>
+
+    <p>
+      It peaks at θ = 0.7, which is what the data alone suggests. Now add a
+      mild belief that the coin is roughly fair, using a Beta(2, 2) prior:
+    </p>
+
+    <p class="muted">
+      P(θ) ∝ θ · (1 − θ)
+    </p>
+
+    <p>
+      Multiplying prior and likelihood gives the posterior, which is another
+      Beta distribution:
+    </p>
+
+    <p class="muted">
+      P(θ | D) ∝ θ⁸ · (1 − θ)⁴, which is Beta(9, 5)
+    </p>
+
+    <p>
+      The posterior mean is 9 / 14 ≈ 0.643, pulled from 0.7 toward the prior's
+      0.5. With 700 heads in 1,000 flips the pull almost disappears, because
+      the data outweighs the prior.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+theta = np.linspace(0, 1, 1001)
+prior = theta * (1 - theta)
+likelihood = theta**7 * (1 - theta)**3
+
+posterior = prior * likelihood
+posterior /= posterior.sum()   # the evidence, up to the grid spacing
+
+print((theta * posterior).sum())   # 0.643</code></pre>
+
+    <h2>Conjugate Priors</h2>
+
+    <p>
+      The posterior above stayed in the Beta family because the Beta prior is
+      conjugate to the coin-flip likelihood. A Beta(a, b) prior behaves like a
+      heads and b tails seen in advance, and updating is just adding counts.
+      Conjugacy is convenient but limited to simple models. Most real
+      posteriors need approximation.
+    </p>
+
+    <h2>Using the Posterior</h2>
+
+    <p>
+      Keeping a full distribution instead of a single estimate pays off in
+      several ways:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Uncertainty:</strong> the spread of the posterior says how much the data has actually pinned θ down.</li>
+      <li><strong>Prediction:</strong> the posterior predictive averages over θ, P(x | D) = ∫ P(x | θ) P(θ | D) dθ, instead of trusting one value.</li>
+      <li><strong>Sequential updating:</strong> today's posterior is tomorrow's prior, so learning from data in batches gives the same answer as learning from it all at once.</li>
+    </ul>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Prior, likelihood and posterior separate what we assumed, what the data
+      says and what we conclude. The next question is what to do when a single
+      best value is all we can afford, which leads to maximum likelihood and
+      MAP estimation.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

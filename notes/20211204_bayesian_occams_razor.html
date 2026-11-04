@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bayesian Occam's Razor</title>
+  <meta name="description" content="Why Bayesian model comparison automatically prefers simpler models, how the marginal likelihood penalises flexibility, and a worked coin example." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Bayesian Occam's Razor" />
+  <meta property="og:description" content="Why Bayesian model comparison automatically prefers simpler models, how the marginal likelihood penalises flexibility, and a worked coin example." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20211204_bayesian_occams_razor.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Bayesian Occam's Razor</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Bayesian Inference</span>
+    </p>
+
+    <p class="muted">
+      Dec 04, 2021
+    </p>
+
+    <p>
+      A more flexible model always fits the training data at least as well as
+      a simpler one, so training fit cannot be how we choose between them.
+      Bayesian inference has a built-in answer: the simplest model that
+      explains the data tends to win, with no separate complexity penalty
+      added by hand.
+    </p>
+
+    <h2>The Marginal Likelihood</h2>
+
+    <p>
+      To compare models, apply Bayes' rule one level up. Given equal prior
+      belief in each model, we prefer the one with the higher evidence, or
+      marginal likelihood:
+    </p>
+
+    <p class="muted">
+      P(D | M) = ∫ P(D | θ, M) · P(θ | M) dθ
+    </p>
+
+    <p>
+      This is the average fit over all parameter values the model considers
+      plausible. It is different from maximum likelihood, which scores a model
+      by its single best parameter setting.
+    </p>
+
+    <h2>Why Simplicity Wins</h2>
+
+    <p>
+      P(D | M) is a probability distribution over possible datasets, so it
+      must sum to one. This is the key point.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>A simple model</strong> can only generate a small set of datasets, so it gives each of them high probability.</li>
+      <li><strong>A flexible model</strong> can generate many datasets, so it must spread its probability thinly across them.</li>
+    </ul>
+
+    <p>
+      If the data could be explained by either, the simple model gives it
+      higher probability simply because it made a sharper prediction.
+    </p>
+
+    <p class="muted">
+      Flexibility is paid for out of a fixed budget of probability.
+    </p>
+
+    <h2>A Worked Example</h2>
+
+    <p>
+      We flip a coin 10 times and see one particular sequence with 7 heads.
+      Compare two models:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>M₀:</strong> the coin is fair.</li>
+      <li><strong>M₁:</strong> the coin has unknown bias θ, with a uniform prior.</li>
+    </ul>
+
+    <p>
+      The evidence for each is:
+    </p>
+
+    <p class="muted">
+      P(D | M₀) = (1/2)¹⁰ = 1/1024
+    </p>
+
+    <p class="muted">
+      P(D | M₁) = ∫ θ⁷ (1 − θ)³ dθ = 7! · 3! / 11! = 1/1320
+    </p>
+
+    <p>
+      M₁ at its best setting, θ = 0.7, gives likelihood 0.00222, more than
+      double M₀'s 0.00098. Yet its evidence is lower, because most values of θ
+      fit the data poorly and they count too. The Bayes factor of M₁ against
+      M₀ is about 0.78, which leans slightly toward the fair coin.
+    </p>
+
+    <pre><code class="language-python">from math import exp, lgamma, log
+
+def log_beta(a, b):
+    return lgamma(a) + lgamma(b) - lgamma(a + b)
+
+def bayes_factor(heads, flips):
+    """Evidence for an unknown bias against a fair coin."""
+    tails = flips - heads
+    return exp(log_beta(heads + 1, tails + 1) - flips * log(0.5))
+
+print(bayes_factor(7, 10))    # 0.78: favours the fair coin
+print(bayes_factor(70, 100))  # 427:  strongly favours a biased coin</code></pre>
+
+    <p>
+      More data changes the verdict. With 70 heads in 100 flips, the same
+      proportion, the fair coin can no longer account for the result, and the
+      Bayes factor swings to around 427 in favour of a biased coin.
+    </p>
+
+    <h2>The BIC Approximation</h2>
+
+    <p>
+      The integral is often intractable. For large n it can be approximated by
+      the Bayesian information criterion, where k is the number of parameters:
+    </p>
+
+    <p class="muted">
+      log P(D | M) ≈ log P(D | θ̂) − (k/2) · log n
+    </p>
+
+    <p>
+      This makes the idea explicit: best fit, minus a penalty that grows with
+      both parameters and data.
+    </p>
+
+    <h2>A Caution About Priors</h2>
+
+    <p>
+      Parameter inference is often robust to the prior, because enough data
+      overwhelms it. The marginal likelihood is not. Making a prior vaguer
+      spreads probability more thinly and lowers the evidence, even if the
+      predictions hardly change. Improper priors leave it undefined
+      altogether. Priors need real thought when comparing models.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Occam's razor is usually stated as a preference added from outside. In
+      Bayesian model comparison it follows from probabilities summing to one.
+      A model is rewarded for what it predicted, and it pays for everything
+      else it could have predicted.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

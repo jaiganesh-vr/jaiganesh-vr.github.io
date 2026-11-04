@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Exponential Family</title>
+  <meta name="description" content="One form that covers the Bernoulli, Gaussian, Poisson and many more: natural parameters, sufficient statistics, moments from a single function, and why it matters for GLMs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Exponential Family" />
+  <meta property="og:description" content="One form that covers the Bernoulli, Gaussian, Poisson and many more: natural parameters, sufficient statistics, moments from a single function, and why it matters for GLMs." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260411_exponential_family.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Exponential Family</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Apr 11, 2026
+    </p>
+
+    <p>
+      The Bernoulli, Gaussian, Poisson, categorical, gamma and Beta
+      distributions appear to be unrelated. They are all members of one
+      family, and the properties that make them convenient, such as simple
+      maximum likelihood and conjugate priors, come from this shared form.
+    </p>
+
+    <h2>The Form</h2>
+
+    <p>
+      A distribution belongs to the exponential family if it can be written
+      as:
+    </p>
+
+    <p class="muted">
+      p(x | η) = h(x) · exp( ηᵀ T(x) − A(η) )
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Natural parameters, η:</strong> a reparameterised version of the usual parameters.</li>
+      <li><strong>Sufficient statistics, T(x):</strong> the only functions of the data that the likelihood uses.</li>
+      <li><strong>Log-partition function, A(η):</strong> the normaliser, which makes the distribution integrate to one.</li>
+      <li><strong>Base measure, h(x):</strong> a term that does not depend on the parameters.</li>
+    </ul>
+
+    <h2>Example: The Bernoulli</h2>
+
+    <p>
+      Take p(x | μ) = μˣ (1 − μ)¹⁻ˣ and rewrite it as an exponential of a
+      logarithm:
+    </p>
+
+    <p class="muted">
+      p(x) = exp( x · log(μ / (1 − μ)) + log(1 − μ) )
+    </p>
+
+    <p>
+      This gives T(x) = x and a natural parameter that is the familiar
+      log-odds:
+    </p>
+
+    <p class="muted">
+      η = log( μ / (1 − μ) )
+    </p>
+
+    <p>
+      Inverting it gives μ = 1 / (1 + e^(−η)), the sigmoid. The sigmoid of
+      logistic regression is simply the map from a natural parameter back to a
+      mean. Similarly, softmax is the map for the categorical distribution.
+    </p>
+
+    <h2>Moments From A</h2>
+
+    <p>
+      A remarkable fact is that derivatives of A give the moments of the
+      sufficient statistics:
+    </p>
+
+    <p class="muted">
+      ∇A(η) = E[T(x)] and ∇²A(η) = Cov[T(x)]
+    </p>
+
+    <p>
+      Since a covariance matrix is positive semi-definite, A must be convex.
+      For the Bernoulli, A(η) = log(1 + e^η). Its derivative is the sigmoid,
+      which is the mean. Its second derivative is μ(1 − μ), which is the
+      variance.
+    </p>
+
+    <p class="muted">
+      Normally, computing moments means integrating. In this family it means
+      differentiating.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def A(eta):
+    return np.log(1 + np.exp(eta))     # Bernoulli log-partition
+
+eta, h = 0.8, 1e-4
+mean = (A(eta + h) - A(eta - h)) / (2 * h)
+variance = (A(eta + h) - 2 * A(eta) + A(eta - h)) / h**2
+
+mu = 1 / (1 + np.exp(-eta))
+print(round(mean, 6), round(mu, 6))               # match
+print(round(variance, 6), round(mu * (1 - mu), 6))  # match</code></pre>
+
+    <h2>Maximum Likelihood</h2>
+
+    <p>
+      The log-likelihood is linear in T, minus A, and hence concave in η. The
+      gradient gives a clean result:
+    </p>
+
+    <p class="muted">
+      ∇A(η) = (1/n) Σ T(xᵢ)
+    </p>
+
+    <p>
+      The maximum likelihood estimate matches the expected sufficient
+      statistics to their empirical averages. Fitting a Gaussian comes down to
+      matching the mean and second moment. It also means the dataset can be
+      reduced to a fixed-size summary, regardless of n, which is why streaming
+      updates are so easy for these models. These distributions are also the
+      exact ones in which a fixed-size sufficient statistic exists, under mild
+      conditions.
+    </p>
+
+    <h2>Conjugate Priors</h2>
+
+    <p>
+      Every member has a conjugate prior. Its form mirrors the likelihood:
+    </p>
+
+    <p class="muted">
+      p(η | τ, ν) ∝ exp( ηᵀτ − ν A(η) )
+    </p>
+
+    <p>
+      Updating involves adding sufficient statistics to τ and the count n to
+      ν. This is the general pattern behind Beta-Bernoulli,
+      Dirichlet-categorical and Gaussian-Gaussian updates. Priors behave like
+      pseudo-observations.
+    </p>
+
+    <h2>Generalised Linear Models</h2>
+
+    <p>
+      A GLM makes the natural parameter a linear function of the input, η =
+      wᵀx, and picks the distribution that fits the target's type:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Gaussian:</strong> real-valued targets, giving linear regression.</li>
+      <li><strong>Bernoulli:</strong> binary targets, giving logistic regression.</li>
+      <li><strong>Categorical:</strong> multi-class targets, giving softmax regression.</li>
+      <li><strong>Poisson:</strong> count targets, giving Poisson regression.</li>
+    </ul>
+
+    <p>
+      The gradient has the same form for all of them, Σ (E[y | xᵢ] − yᵢ) xᵢ,
+      and the negative log-likelihood is always convex in w. Their shared
+      properties come straight from this family. A neural network with one of
+      these output layers is a GLM on learned features.
+    </p>
+
+    <h2>The Maximum Entropy View</h2>
+
+    <p>
+      Among all distributions that satisfy given constraints on E[T(x)], the
+      one with maximum entropy lies in the exponential family with those
+      sufficient statistics. Fix mean and variance on the real line and you
+      get the Gaussian. This explains in what sense these distributions make
+      the fewest assumptions beyond what was specified.
+    </p>
+
+    <h2>Limits</h2>
+
+    <p>
+      Not everything fits. Mixtures, the Student t and any distribution whose
+      support depends on its parameters, such as the uniform on [0, θ], are
+      not members. And models built with latent variables lose the nice
+      properties, which is what EM and variational methods are for.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      A long list of distributions becomes one idea with a few variations.
+      Once you can see the common form, loss functions, link functions and
+      conjugate updates stop being separate facts to memorise.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

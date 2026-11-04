@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Sampling Distribution of an Estimator</title>
+  <meta name="description" content="An estimate is a random quantity. What the sampling distribution says about bias, variance and standard error, and how the bootstrap approximates it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Sampling Distribution of an Estimator" />
+  <meta property="og:description" content="An estimate is a random quantity. What the sampling distribution says about bias, variance and standard error, and how the bootstrap approximates it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20221008_sampling_distribution.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Sampling Distribution of an Estimator</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Statistics</span>
+    </p>
+
+    <p class="muted">
+      Oct 08, 2022
+    </p>
+
+    <p>
+      Fit a model to a dataset and you get one set of numbers. Had a slightly
+      different dataset come along, you would have got different numbers. The
+      sampling distribution describes that variation, and it is the
+      frequentist foundation for talking about uncertainty.
+    </p>
+
+    <h2>The Idea</h2>
+
+    <p>
+      An estimator is a function of the data, θ̂ = t(D). Data is random, so θ̂
+      is random too. Imagine drawing many datasets of the same size from the
+      true distribution and computing θ̂ on each. The distribution of the
+      results is the sampling distribution.
+    </p>
+
+    <p class="muted">
+      It is a distribution over answers to a question we asked just once.
+    </p>
+
+    <h2>Bias and Variance</h2>
+
+    <p>
+      Two numbers summarise it:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Bias:</strong> E[θ̂] − θ, how far the estimator is from the truth on average.</li>
+      <li><strong>Variance:</strong> E[(θ̂ − E[θ̂])²], how much it moves from one dataset to the next.</li>
+    </ul>
+
+    <p>
+      Their combination gives the mean squared error:
+    </p>
+
+    <p class="muted">
+      MSE = bias² + variance
+    </p>
+
+    <p>
+      The sample variance shows why bias matters. Dividing by n underestimates
+      σ² on average, because deviations are measured from the sample mean,
+      which sits closer to the data than the true mean does. The expectation
+      works out to (n − 1)/n · σ², so dividing by n − 1 removes the bias.
+    </p>
+
+    <p>
+      An unbiased estimator is not automatically the best one. Accepting a
+      small bias for a large reduction in variance can lower the MSE, which is
+      what regularisation does.
+    </p>
+
+    <h2>The Sample Mean</h2>
+
+    <p>
+      The sample mean is the case with a clean result:
+    </p>
+
+    <p class="muted">
+      Var(x̄) = σ² / n, so the standard error is σ / √n
+    </p>
+
+    <p>
+      To halve the standard error, you need four times as much data. By the
+      central limit theorem, its sampling distribution is approximately
+      Gaussian for large n, whatever the distribution of the data.
+    </p>
+
+    <h2>Confidence Intervals</h2>
+
+    <p>
+      An approximate 95% interval is θ̂ ± 1.96 · SE. The interpretation is
+      subtle: if we repeated the whole procedure many times, about 95% of the
+      intervals would contain θ. It does not say there is a 95% probability
+      that θ lies in this particular interval, which is the statement a
+      Bayesian credible interval makes.
+    </p>
+
+    <h2>The Bootstrap</h2>
+
+    <p>
+      For most estimators, such as a median, a correlation or a test accuracy,
+      no formula exists. We also cannot draw new datasets from the true
+      distribution. The bootstrap uses the data we have as a stand-in for it:
+    </p>
+
+    <ul class="post-list">
+      <li>Draw n points from the data, with replacement.</li>
+      <li>Compute the estimate on this resampled dataset.</li>
+      <li>Repeat a few thousand times, and treat the results as an approximate sampling distribution.</li>
+    </ul>
+
+    <pre><code class="language-python">import numpy as np
+
+def bootstrap_se(data, estimator, n_boot=2000, seed=0):
+    rng = np.random.default_rng(seed)
+    n = len(data)
+    stats = [estimator(rng.choice(data, n, replace=True)) for _ in range(n_boot)]
+    return np.std(stats, ddof=1)
+
+rng = np.random.default_rng(1)
+data = rng.exponential(scale=2.0, size=200)
+
+print(bootstrap_se(data, np.mean))    # close to the formula below
+print(data.std(ddof=1) / np.sqrt(200))
+print(bootstrap_se(data, np.median))  # no simple formula needed</code></pre>
+
+    <p>
+      Each resample contains about 63% of the distinct original points, since
+      each point is missed with probability (1 − 1/n)ⁿ ≈ 1/e. Bagging in
+      random forests relies on this same resampling.
+    </p>
+
+    <p>
+      The bootstrap has limits. It does poorly for statistics driven by
+      extremes, such as the maximum, and it cannot fix a dataset that is
+      unrepresentative to begin with.
+    </p>
+
+    <h2>Frequentist and Bayesian Uncertainty</h2>
+
+    <p>
+      The two views ask different questions. The frequentist holds θ fixed and
+      asks how the estimate would vary across datasets. The Bayesian holds the
+      data fixed and asks how θ is distributed given it. With plenty of data
+      and a weak prior, the answers often agree numerically, although their
+      meanings differ.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Every metric on a dashboard and every fitted weight comes from a
+      sampling distribution we usually see only one draw of. Keeping this in
+      mind makes it easier to tell a real improvement from noise.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

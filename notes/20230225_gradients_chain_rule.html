@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Derivatives, Gradients and the Chain Rule</title>
+  <meta name="description" content="The calculus that drives learning: derivatives as local linear approximation, gradients as steepest ascent, Jacobians, and the chain rule behind backpropagation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Derivatives, Gradients and the Chain Rule" />
+  <meta property="og:description" content="The calculus that drives learning: derivatives as local linear approximation, gradients as steepest ascent, Jacobians, and the chain rule behind backpropagation." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230225_gradients_chain_rule.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Derivatives, Gradients and the Chain Rule</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Calculus</span>
+    </p>
+
+    <p class="muted">
+      Feb 25, 2023
+    </p>
+
+    <p>
+      Training a model means adjusting many numbers to reduce a loss. Calculus
+      tells us which way to adjust them. Only a small set of ideas is needed,
+      and they all share one theme: locally, every smooth function looks
+      linear.
+    </p>
+
+    <h2>The Derivative</h2>
+
+    <p>
+      The derivative measures how the output of a function responds to a small
+      change in the input:
+    </p>
+
+    <p class="muted">
+      f′(x) = lim (h → 0) [ f(x + h) − f(x) ] / h
+    </p>
+
+    <p>
+      It is better thought of as the best linear approximation near a point:
+    </p>
+
+    <p class="muted">
+      f(x + h) ≈ f(x) + f′(x) · h
+    </p>
+
+    <h2>Partial Derivatives and the Gradient</h2>
+
+    <p>
+      With many inputs, a partial derivative varies one input while holding
+      the others fixed. The gradient collects them all into a vector:
+    </p>
+
+    <p class="muted">
+      ∇f(x) = ( ∂f/∂x₁, …, ∂f/∂xₙ )
+    </p>
+
+    <p>
+      For f(x, y) = x² + 3xy, the gradient is (2x + 3y, 3x). The linear
+      approximation becomes a dot product:
+    </p>
+
+    <p class="muted">
+      f(x + h) ≈ f(x) + ∇f(x)ᵀh
+    </p>
+
+    <p>
+      The right-hand term is largest when h points along the gradient, by
+      Cauchy-Schwarz. So the gradient points in the direction of steepest
+      ascent, and it is perpendicular to the function's level sets.
+    </p>
+
+    <p class="muted">
+      Gradient descent is this fact, used repeatedly: step in the direction
+      opposite to the gradient.
+    </p>
+
+    <h2>Useful Vector Results</h2>
+
+    <p>
+      A few identities cover most of the derivations in machine learning:
+    </p>
+
+    <ul class="post-list">
+      <li>∇ₓ (aᵀx) = a</li>
+      <li>∇ₓ (xᵀAx) = (A + Aᵀ) x, or 2Ax for symmetric A</li>
+      <li>∇_w ‖Xw − y‖² = 2Xᵀ(Xw − y)</li>
+    </ul>
+
+    <p>
+      Setting the last one to zero gives the normal equations of least
+      squares.
+    </p>
+
+    <h2>The Jacobian</h2>
+
+    <p>
+      For a function from ℝⁿ to ℝᵐ, the derivatives form an m × n matrix, with
+      Jᵢⱼ = ∂fᵢ/∂xⱼ. It is the matrix of the best linear approximation at a
+      point, and a gradient is the special case of a function with a single
+      output.
+    </p>
+
+    <h2>The Chain Rule</h2>
+
+    <p>
+      Derivatives of compositions multiply. In one variable:
+    </p>
+
+    <p class="muted">
+      d/dx f(g(x)) = f′(g(x)) · g′(x)
+    </p>
+
+    <p>
+      In many variables, the Jacobians multiply:
+    </p>
+
+    <p class="muted">
+      J_(f∘g)(x) = J_f(g(x)) · J_g(x)
+    </p>
+
+    <p>
+      The local linear approximation of a composition is the composition of
+      the linear approximations. A neural network is one long composition, so
+      its gradient is a long product of Jacobians.
+    </p>
+
+    <h2>Forward and Reverse Mode</h2>
+
+    <p>
+      Matrix multiplication is associative, so this product can be evaluated
+      in either order.
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Forward mode:</strong> multiply from the input side. It costs about one pass per input.</li>
+      <li><strong>Reverse mode:</strong> multiply from the output side. It costs about one pass per output.</li>
+    </ul>
+
+    <p>
+      A loss has millions of inputs and a single output, so reverse mode gives
+      the entire gradient at around the cost of one extra evaluation. This is
+      backpropagation.
+    </p>
+
+    <h2>Checking Gradients</h2>
+
+    <p>
+      A numerical derivative makes a simple test for a hand-written gradient.
+      The centred difference has much smaller error than the one-sided form:
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def f(w, X, y):
+    return ((X @ w - y)**2).sum()
+
+def grad_f(w, X, y):
+    return 2 * X.T @ (X @ w - y)
+
+def numerical_grad(fn, w, eps=1e-6):
+    grad = np.zeros_like(w)
+    for i in range(len(w)):
+        step = np.zeros_like(w)
+        step[i] = eps
+        grad[i] = (fn(w + step) - fn(w - step)) / (2 * eps)
+    return grad
+
+rng = np.random.default_rng(0)
+X, y, w = rng.normal(size=(20, 3)), rng.normal(size=20), rng.normal(size=3)
+
+analytic = grad_f(w, X, y)
+numeric = numerical_grad(lambda w: f(w, X, y), w)
+print(np.abs(analytic - numeric).max())  # very small</code></pre>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The gradient gives a linear view of a function, and it is the cheapest
+      useful piece of information we can get about one. Curvature comes next,
+      since this tells us how far that linear view can be trusted.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

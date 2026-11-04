@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Variational Inference</title>
+  <meta name="description" content="Turning Bayesian inference into optimisation: the evidence lower bound, mean field approximations, stochastic gradients, and what the speed costs in accuracy." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Variational Inference" />
+  <meta property="og:description" content="Turning Bayesian inference into optimisation: the evidence lower bound, mean field approximations, stochastic gradients, and what the speed costs in accuracy." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20260613_variational_inference.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Variational Inference</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Approximate Inference</span>
+    </p>
+
+    <p class="muted">
+      Jun 13, 2026
+    </p>
+
+    <p>
+      MCMC approximates a posterior with samples, and it can take a long time.
+      Variational inference changes the question. Rather than sampling from
+      the posterior, find the member of a simple family of distributions that
+      is closest to it. Inference becomes optimisation, with all of
+      optimisation's speed and tooling.
+    </p>
+
+    <h2>The Objective</h2>
+
+    <p>
+      Choose a family q(z; φ), such as Gaussians with diagonal covariance, and
+      minimise the KL divergence to the posterior:
+    </p>
+
+    <p class="muted">
+      φ* = argmin KL( q(z; φ) ‖ p(z | x) )
+    </p>
+
+    <p>
+      This can't be computed directly since it contains the very evidence we
+      cannot calculate. But it can be rearranged:
+    </p>
+
+    <p class="muted">
+      log p(x) = ELBO(φ) + KL( q(z; φ) ‖ p(z | x) )
+    </p>
+
+    <p class="muted">
+      ELBO(φ) = E_q[ log p(x, z) − log q(z) ]
+    </p>
+
+    <p>
+      The ELBO needs only the joint, which we can evaluate. And since log p(x)
+      does not depend on φ, maximising the ELBO minimises the KL. Since the KL
+      is never negative, the ELBO is also a lower bound on the evidence, hence
+      its name.
+    </p>
+
+    <h2>Reading the ELBO</h2>
+
+    <p>
+      Rewriting it shows the two forces at work:
+    </p>
+
+    <p class="muted">
+      ELBO = E_q[ log p(x | z) ] − KL( q(z) ‖ p(z) )
+    </p>
+
+    <p>
+      The first term rewards explaining the data. The second keeps q close to
+      the prior. This is the same fit-against-complexity balance seen across
+      Bayesian methods.
+    </p>
+
+    <p class="muted">
+      EM performs this same maximisation, with q set to the exact posterior.
+      Variational inference is what happens when that exact posterior is out
+      of reach.
+    </p>
+
+    <h2>Mean Field</h2>
+
+    <p>
+      The classic family assumes that q factorises over the latent variables:
+    </p>
+
+    <p class="muted">
+      q(z) = Π qⱼ(zⱼ)
+    </p>
+
+    <p>
+      Holding the other factors fixed, the best update for one has a closed
+      form:
+    </p>
+
+    <p class="muted">
+      log qⱼ*(zⱼ) = E₋ⱼ[ log p(x, z) ] + const
+    </p>
+
+    <p>
+      Coordinate ascent cycles through these updates and the ELBO rises at
+      each one. For conditionally conjugate models, the updates are
+      straightforward to write down. Latent Dirichlet allocation was a famous
+      early application.
+    </p>
+
+    <h2>Stochastic Gradients</h2>
+
+    <p>
+      Modern variational inference works for far more general models by
+      estimating gradients of the ELBO with samples. With data subsampling, it
+      can scale to very large datasets. Two estimators dominate:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Reparameterisation:</strong> write z = μ + σ·ε with ε ~ N(0, I), so gradients flow through the sample. This has low variance, but z must be continuous.</li>
+      <li><strong>Score function (REINFORCE):</strong> uses ∇ log q and works for discrete z, but has high variance and usually needs control variates.</li>
+    </ul>
+
+    <h2>Amortised Inference and VAEs</h2>
+
+    <p>
+      Fitting separate variational parameters for every data point is
+      expensive. Amortised inference trains a neural network, the encoder,
+      that maps x directly to q(z | x). Combined with a neural decoder p(x |
+      z), and trained on the ELBO with reparameterisation, this is the
+      variational autoencoder.
+    </p>
+
+    <h2>What the Speed Costs</h2>
+
+    <p>
+      Minimising KL(q ‖ p) heavily penalises q for placing mass where p has
+      little, but it doesn't mind q missing parts of p. This has predictable
+      consequences:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Underestimated variance:</strong> q tends to be too narrow, so uncertainty looks smaller than it is.</li>
+      <li><strong>Missed modes:</strong> a unimodal q settles on one mode and ignores the others.</li>
+      <li><strong>Mean field blind spots:</strong> factorising removes posterior correlations by construction.</li>
+      <li><strong>No guarantee of convergence to the truth:</strong> unlike MCMC, more compute does not fix a bad family. The gap in the bound remains.</li>
+    </ul>
+
+    <p>
+      Richer families, such as normalising flows, can narrow this gap at some
+      additional cost.
+    </p>
+
+    <h2>Variational Inference or MCMC</h2>
+
+    <ul class="post-list">
+      <li><strong>Variational inference:</strong> when you have large data or models, need many repeated fits, and can accept approximation.</li>
+      <li><strong>MCMC:</strong> when accurate uncertainty matters more than speed, and the model is small enough.</li>
+    </ul>
+
+    <p>
+      A useful check is to compare both on a subset of the data. This shows
+      how far the approximation drifts.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Variational inference changes the question from "what is the posterior?"
+      to "what is the closest thing I can afford?". It is honest about being
+      an approximation, and it is the reason Bayesian ideas now reach into
+      deep learning.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

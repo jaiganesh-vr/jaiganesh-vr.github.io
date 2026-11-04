@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Principal Component Analysis and the SVD</title>
+  <meta name="description" content="PCA as maximum variance and as minimum reconstruction error, how to compute it with the singular value decomposition, and when it misleads." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Principal Component Analysis and the SVD" />
+  <meta property="og:description" content="PCA as maximum variance and as minimum reconstruction error, how to compute it with the singular value decomposition, and when it misleads." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240302_pca_and_svd.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Principal Component Analysis and the SVD</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Dimensionality Reduction</span>
+    </p>
+
+    <p class="muted">
+      Mar 02, 2024
+    </p>
+
+    <p>
+      High-dimensional data often has few real degrees of freedom. Principal
+      component analysis finds the directions along which the data actually
+      varies, and it is computed reliably with one of the most useful tools in
+      numerical linear algebra.
+    </p>
+
+    <h2>Two Views, One Answer</h2>
+
+    <p>
+      Assume the data has been centred. PCA looks for an orthonormal set of k
+      directions, and can be motivated in two ways:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Maximum variance:</strong> choose directions along which the projected data has the greatest spread.</li>
+      <li><strong>Minimum reconstruction error:</strong> choose the k-dimensional subspace that loses the least when data is projected on it and mapped back.</li>
+    </ul>
+
+    <p>
+      These agree because of Pythagoras. For each point, the squared length is
+      fixed and equals its projected part plus its residual part, so
+      maximising one minimises the other.
+    </p>
+
+    <h2>Deriving the First Component</h2>
+
+    <p>
+      The variance of data projected onto a unit vector w is:
+    </p>
+
+    <p class="muted">
+      Var = wᵀ S w, with S = (1/(n − 1)) XᵀX
+    </p>
+
+    <p>
+      Maximising subject to ‖w‖ = 1, using a Lagrange multiplier, gives:
+    </p>
+
+    <p class="muted">
+      S w = λ w
+    </p>
+
+    <p>
+      So the best direction is an eigenvector of the covariance matrix, and
+      the variance captured equals its eigenvalue. The first principal
+      component is the eigenvector with the largest eigenvalue, and the next
+      ones follow in order, each orthogonal to those before.
+    </p>
+
+    <h2>Computing It With the SVD</h2>
+
+    <p>
+      Forming S can lose precision, since squaring the data squares its
+      condition number. The better route factors the centred data directly:
+    </p>
+
+    <p class="muted">
+      X = U Σ Vᵀ
+    </p>
+
+    <p>
+      Substituting this into S shows that everything PCA needs is here:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Components:</strong> the columns of V.</li>
+      <li><strong>Variance along each:</strong> σᵢ² / (n − 1).</li>
+      <li><strong>Projected coordinates:</strong> U Σ, or equivalently X V.</li>
+    </ul>
+
+    <p>
+      The rank-k reconstruction, U_k Σ_k V_kᵀ, is the best rank-k
+      approximation to X in squared error, by the Eckart-Young theorem. This
+      is why the two views of PCA agree with the SVD.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def pca(X, k):
+    mean = X.mean(axis=0)
+    U, s, Vt = np.linalg.svd(X - mean, full_matrices=False)
+    explained = s**2 / (s**2).sum()
+    return Vt[:k], (U * s)[:, :k], mean, explained[:k]
+
+rng = np.random.default_rng(0)
+latent = rng.normal(size=(500, 2))
+X = latent @ rng.normal(size=(2, 10)) + rng.normal(0, 0.05, (500, 10))
+
+components, Z, mean, explained = pca(X, 3)
+print(explained.round(4))  # two directions hold nearly all the variance</code></pre>
+
+    <h2>How Many Components</h2>
+
+    <ul class="post-list">
+      <li><strong>Variance explained:</strong> keep enough to reach, say, 95% of the total variance.</li>
+      <li><strong>Scree plot:</strong> plot the eigenvalues in order and look for an elbow.</li>
+      <li><strong>Downstream performance:</strong> treat k as a hyperparameter and pick it by validation.</li>
+    </ul>
+
+    <h2>Where PCA Misleads</h2>
+
+    <ul class="post-list">
+      <li><strong>Scale:</strong> PCA follows variance, so a feature in millimetres dominates the same feature in metres. Standardise features when units differ.</li>
+      <li><strong>Variance is not relevance:</strong> the direction of greatest variance need not be the one that matters for a label. It could just be noise or a batch effect.</li>
+      <li><strong>Linearity:</strong> data on a curved surface needs more components than its true dimension. Kernel PCA, t-SNE, UMAP and autoencoders are alternatives.</li>
+      <li><strong>Outliers:</strong> because the variance is squared, a few extreme points can tilt the components.</li>
+      <li><strong>Leakage:</strong> fit the mean and components on training data only.</li>
+    </ul>
+
+    <h2>Probabilistic PCA</h2>
+
+    <p>
+      PCA can be derived as a latent variable model, x = Wz + μ + ε, with
+      Gaussian z and isotropic Gaussian noise. The maximum likelihood W spans
+      the same subspace as PCA. This connects it to factor analysis, provides
+      a likelihood for model comparison, and allows EM to be used for missing
+      data or very large matrices.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      PCA asks a simple question, which directions matter most, and linear
+      algebra answers it exactly. Its reliance on dot products also sets up a
+      useful trick: replace those dot products with something else, and linear
+      methods become nonlinear.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

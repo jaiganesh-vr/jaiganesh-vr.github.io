@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Kernel Trick</title>
+  <meta name="description" content="How linear algorithms can work in huge or infinite feature spaces without ever computing them, what makes a valid kernel, and what kernel methods cost." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Kernel Trick" />
+  <meta property="og:description" content="How linear algorithms can work in huge or infinite feature spaces without ever computing them, what makes a valid kernel, and what kernel methods cost." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20240525_kernel_trick.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Kernel Trick</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Kernel Methods</span>
+    </p>
+
+    <p class="muted">
+      May 25, 2024
+    </p>
+
+    <p>
+      Linear models are well understood and easy to fit, but limited to linear
+      boundaries. The kernel trick gives them nonlinear power by working in a
+      richer feature space without ever explicitly going there.
+    </p>
+
+    <h2>Feature Maps and Their Cost</h2>
+
+    <p>
+      Data that is not linearly separable often becomes separable after a
+      mapping φ(x). For example, points inside and outside a circle can be
+      split by a plane once x₁² and x₂² are added as features. The trouble is
+      that the number of features can explode. All degree-3 monomials of 1,000
+      inputs number over 160 million.
+    </p>
+
+    <h2>The Observation</h2>
+
+    <p>
+      Many algorithms touch the data only through dot products between pairs
+      of points. Suppose we could compute φ(x)ᵀφ(z) directly and cheaply,
+      without building φ. Then we would not need φ at all:
+    </p>
+
+    <p class="muted">
+      k(x, z) = φ(x)ᵀφ(z)
+    </p>
+
+    <p>
+      Take two-dimensional inputs and k(x, z) = (xᵀz)². Expanding it:
+    </p>
+
+    <p class="muted">
+      (x₁z₁ + x₂z₂)² = x₁²z₁² + 2x₁x₂z₁z₂ + x₂²z₂²
+    </p>
+
+    <p>
+      This is a dot product of the feature vectors φ(x) = (x₁², √2·x₁x₂, x₂²).
+      We got the result in that three-dimensional space while computing only a
+      two-dimensional dot product and a square.
+    </p>
+
+    <p class="muted">
+      The kernel gives the answer in feature space at the cost of a
+      calculation in input space.
+    </p>
+
+    <h2>Common Kernels</h2>
+
+    <ul class="post-list">
+      <li><strong>Linear:</strong> k(x, z) = xᵀz.</li>
+      <li><strong>Polynomial:</strong> k(x, z) = (xᵀz + c)ᵈ, which includes all monomials up to degree d.</li>
+      <li><strong>Gaussian (RBF):</strong> k(x, z) = exp(−‖x − z‖² / 2ℓ²), whose feature space is infinite-dimensional.</li>
+    </ul>
+
+    <p>
+      The RBF kernel works as a similarity measure. It is 1 for identical
+      points and decays with distance, at a rate controlled by the length
+      scale ℓ. If ℓ is too small the model memorises the data, and if it is
+      too large the model is too smooth.
+    </p>
+
+    <h2>What Makes a Kernel Valid</h2>
+
+    <p>
+      A function is a valid kernel if and only if, for any set of points, the
+      Gram matrix K with Kᵢⱼ = k(xᵢ, xⱼ) is symmetric and positive
+      semi-definite. This is Mercer's condition, and it guarantees that some
+      feature space exists. Valid kernels can be combined: sums, products and
+      positive multiples of kernels are again kernels. Kernels can also be
+      defined on strings, graphs and other non-vector objects, as long as this
+      condition holds.
+    </p>
+
+    <h2>Kernelising an Algorithm</h2>
+
+    <p>
+      The representer theorem says that for many regularised objectives the
+      optimal solution is a weighted sum over training points:
+    </p>
+
+    <p class="muted">
+      f(x) = Σᵢ αᵢ k(xᵢ, x)
+    </p>
+
+    <p>
+      So we can learn α, one number per example, instead of a weight per
+      feature. Applying this to ridge regression gives a closed form:
+    </p>
+
+    <p class="muted">
+      α = (K + λI)⁻¹ y
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def rbf(A, B, length=0.2):
+    d2 = ((A[:, None] - B[None, :])**2).sum(axis=2)
+    return np.exp(-d2 / (2 * length**2))
+
+def kernel_ridge(X, y, lam=0.01):
+    alpha = np.linalg.solve(rbf(X, X) + lam * np.eye(len(X)), y)
+    return lambda X_new: rbf(X_new, X) @ alpha
+
+rng = np.random.default_rng(0)
+X = rng.uniform(0, 1, (80, 1))
+y = np.sin(6 * X[:, 0]) + rng.normal(0, 0.1, 80)
+
+predict = kernel_ridge(X, y)
+grid = np.linspace(0, 1, 5)[:, None]
+print(predict(grid).round(2), np.sin(6 * grid[:, 0]).round(2))</code></pre>
+
+    <p>
+      A linear method, with one line changed, has fitted a sine wave.
+    </p>
+
+    <h2>The Cost</h2>
+
+    <p>
+      The trick moves the cost from the number of features to the number of
+      examples. The Gram matrix has n² entries, and solving with it is O(n³),
+      so exact kernel methods get hard past perhaps tens of thousands of
+      points. Prediction also requires going through stored training points.
+      Random Fourier features and the Nyström method offer approximations, and
+      they are the usual way of scaling up.
+    </p>
+
+    <h2>Kernels and Neural Networks</h2>
+
+    <p>
+      A kernel fixes the features in advance, while a neural network learns
+      them from data. On images and text, learned features have proved much
+      stronger. Still, there are deep connections: certain infinitely wide
+      networks behave like kernel machines, through the neural tangent kernel.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The kernel trick is an algebraic observation that greatly extends linear
+      methods. Its most famous beneficiary is the support vector machine,
+      where the dual form of the problem depends on the data only through dot
+      products.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

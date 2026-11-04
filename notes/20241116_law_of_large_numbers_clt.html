@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Law of Large Numbers and the Central Limit Theorem</title>
+  <meta name="description" content="Two theorems about averages: why sample means settle down to the truth, how quickly they do it, and why their fluctuations look Gaussian." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Law of Large Numbers and the Central Limit Theorem" />
+  <meta property="og:description" content="Two theorems about averages: why sample means settle down to the truth, how quickly they do it, and why their fluctuations look Gaussian." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20241116_law_of_large_numbers_clt.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Law of Large Numbers and the Central Limit Theorem</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Probability</span>
+    </p>
+
+    <p class="muted">
+      Nov 16, 2024
+    </p>
+
+    <p>
+      Machine learning trusts averages. We report average losses, use
+      mini-batch gradients and estimate integrals with samples. Two theorems
+      explain why this is justified, and also what could go wrong.
+    </p>
+
+    <h2>The Law of Large Numbers</h2>
+
+    <p>
+      Take independent draws from a distribution with mean μ. The sample mean
+      converges to the true mean:
+    </p>
+
+    <p class="muted">
+      x̄ₙ = (1/n) Σ xᵢ → μ as n → ∞
+    </p>
+
+    <p>
+      This is why training error can estimate an expected loss, and why more
+      data gives better estimates. It is a statement about the limit only. It
+      doesn't say how fast convergence happens.
+    </p>
+
+    <h2>Concentration</h2>
+
+    <p>
+      Bounds address the question of speed. Chebyshev's inequality needs only
+      a finite variance:
+    </p>
+
+    <p class="muted">
+      P( |x̄ₙ − μ| ≥ ε ) ≤ σ² / (n ε²)
+    </p>
+
+    <p>
+      For bounded variables, Hoeffding's inequality gives an exponential rate:
+    </p>
+
+    <p class="muted">
+      P( |x̄ₙ − μ| ≥ ε ) ≤ 2 exp( −2nε² / (b − a)² )
+    </p>
+
+    <p>
+      This bound is the basis for many generalisation results, since it
+      controls how far a measured accuracy may be from the true one.
+    </p>
+
+    <h2>The Central Limit Theorem</h2>
+
+    <p>
+      The law of large numbers says the mean settles. The central limit
+      theorem describes the fluctuations around it. For independent,
+      identically distributed draws with finite variance σ²:
+    </p>
+
+    <p class="muted">
+      √n (x̄ₙ − μ) / σ → N(0, 1)
+    </p>
+
+    <p>
+      Whatever the original distribution looks like, its sample means are
+      approximately Gaussian, with standard deviation σ / √n.
+    </p>
+
+    <p class="muted">
+      The shape of the data is washed away. Only its mean and variance
+      survive.
+    </p>
+
+    <p>
+      The Gaussian is the fixed point of this process: adding independent
+      Gaussians gives another Gaussian, while every other finite-variance
+      distribution is pulled toward it.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(0)
+# Exponential draws are heavily skewed, with mean 1 and variance 1
+for n in (1, 5, 30, 500):
+    means = rng.exponential(1.0, (20_000, n)).mean(axis=1)
+    z = (means - 1.0) * np.sqrt(n)
+    skew = (z**3).mean() / z.std()**3
+    print(n, round(means.std(), 3), round(skew, 2))</code></pre>
+
+    <p>
+      The skewness falls roughly as 2 / √n, and the spread of the means falls
+      as 1 / √n.
+    </p>
+
+    <h2>Rates and the Square Root</h2>
+
+    <p>
+      The factor √n has a practical consequence: halving the error takes four
+      times the data. A hundred times more data gives one more digit of
+      accuracy. This applies to Monte Carlo estimates, A/B tests and
+      stochastic gradients alike.
+    </p>
+
+    <p>
+      It also gives a simple rule of thumb. An accuracy measured on 1,000 test
+      examples, near 90%, has a standard error of √(0.9 · 0.1 / 1000), or
+      about 0.95%. A 1% difference between two models on that test set may
+      well be noise.
+    </p>
+
+    <h2>When It Breaks</h2>
+
+    <ul class="post-list">
+      <li><strong>Heavy tails:</strong> the Cauchy distribution has no mean, and the average of n Cauchy draws has the same distribution as a single draw. Averaging gains nothing.</li>
+      <li><strong>Dependence:</strong> correlated samples, such as those from an MCMC chain, hold less information than their count suggests, so the effective sample size is smaller.</li>
+      <li><strong>Non-stationary data:</strong> if the distribution drifts, an average converges to nothing in particular.</li>
+      <li><strong>Small samples with rare events:</strong> with very skewed distributions, the Gaussian approximation may need far more data than the common advice of n = 30.</li>
+    </ul>
+
+    <h2>Why This Matters for Training</h2>
+
+    <p>
+      A mini-batch gradient is a sample mean of per-example gradients, so it
+      is approximately Gaussian around the full gradient with a noise scale of
+      σ / √B. Doubling batch size therefore reduces noise by only about 30%.
+      This explains the appeal of small batches: many noisy steps tend to beat
+      a few precise ones.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      The law of large numbers says averages can be trusted, and the central
+      limit theorem says how much. Together they connect one measurement to
+      its uncertainty, and they underlie almost every error bar in machine
+      learning.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

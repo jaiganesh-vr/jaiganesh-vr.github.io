@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Bias-Variance Tradeoff</title>
+  <meta name="description" content="How expected test error splits into bias, variance and irreducible noise, why model complexity trades one for the other, and how cross-validation navigates it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Bias-Variance Tradeoff" />
+  <meta property="og:description" content="How expected test error splits into bias, variance and irreducible noise, why model complexity trades one for the other, and how cross-validation navigates it." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20230128_bias_variance_tradeoff.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>The Bias-Variance Tradeoff</h1>
+
+    <p class="muted">
+      <span class="pill">Machine Learning</span>
+      <span class="pill">Model Selection</span>
+    </p>
+
+    <p class="muted">
+      Jan 28, 2023
+    </p>
+
+    <p>
+      Why does a more powerful model sometimes predict worse? The
+      bias-variance decomposition answers this by splitting test error into
+      parts that have different causes and different cures.
+    </p>
+
+    <h2>The Decomposition</h2>
+
+    <p>
+      Assume y = f(x) + ε, where ε is noise with variance σ². Train a model f̂
+      on a random training set. Averaging over training sets, the expected
+      squared error at a point x is:
+    </p>
+
+    <p class="muted">
+      E[(y − f̂(x))²] = (E[f̂(x)] − f(x))² + Var(f̂(x)) + σ²
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Bias²:</strong> error from the model's average prediction being wrong, usually because it is too simple.</li>
+      <li><strong>Variance:</strong> error from the model being sensitive to the particular training set.</li>
+      <li><strong>Noise:</strong> error that no model can remove.</li>
+    </ul>
+
+    <p class="muted">
+      Bias is being consistently wrong. Variance is being inconsistently
+      right.
+    </p>
+
+    <h2>Polynomials Make It Visible</h2>
+
+    <p>
+      Fit polynomials to noisy samples of a sine wave on many different
+      training sets. A straight line barely changes between training sets but
+      misses the curve everywhere. A degree 9 polynomial chases the training
+      points and swings widely from one set to the next.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(0)
+x = np.linspace(0, 1, 25)
+truth = np.sin(2 * np.pi * x)
+
+for degree in (1, 3, 9):
+    preds = []
+    for _ in range(300):
+        y = truth + rng.normal(0, 0.3, 25)
+        preds.append(np.polyval(np.polyfit(x, y, degree), x))
+    preds = np.array(preds)
+    bias2 = ((preds.mean(axis=0) - truth)**2).mean()
+    variance = preds.var(axis=0).mean()
+    print(degree, round(bias2, 3), round(variance, 3))</code></pre>
+
+    <p>
+      Bias falls and variance rises as the degree goes up. Test error, the sum
+      of the two plus noise, typically traces a U shape with its minimum
+      somewhere in the middle.
+    </p>
+
+    <h2>Reading the Symptoms</h2>
+
+    <p>
+      Comparing training and validation error tells you which side you are on:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Both errors high and close together:</strong> high bias. Use a more flexible model or better features. More data will not help much.</li>
+      <li><strong>Low training error, much higher validation error:</strong> high variance. Get more data, regularise, reduce the model, or average several models.</li>
+    </ul>
+
+    <h2>Cross-Validation</h2>
+
+    <p>
+      Since we cannot measure bias and variance directly on real problems, we
+      estimate test error instead. k-fold cross-validation splits the data
+      into k folds, trains on k − 1 of them, validates on the remaining one,
+      and averages across all k rotations. Values such as k = 5 or k = 10 are
+      typical.
+    </p>
+
+    <p>
+      Two rules keep the estimate honest. All preprocessing must be fitted
+      inside each fold, or validation data leaks into training. And after
+      selecting hyperparameters using cross-validation, the winning score is
+      optimistic, so a final held-out test set is needed for an unbiased
+      estimate.
+    </p>
+
+    <h2>Levers on the Tradeoff</h2>
+
+    <ul class="post-list">
+      <li><strong>Regularisation:</strong> adds a little bias to remove more variance.</li>
+      <li><strong>Bagging:</strong> averages models trained on resampled data, which mainly reduces variance.</li>
+      <li><strong>Boosting:</strong> builds up a sequence of weak models, which mainly reduces bias.</li>
+      <li><strong>More data:</strong> reduces variance without adding bias, which is why it is so often the best option.</li>
+    </ul>
+
+    <h2>When the U Curve Breaks</h2>
+
+    <p>
+      Very large neural networks can fit training data perfectly and still
+      generalise well. Test error can even drop again as parameters grow past
+      the point of exact interpolation, a pattern called double descent. The
+      decomposition itself still holds as an identity. What changes is the
+      idea that parameter count alone measures complexity, since training
+      procedures such as stochastic gradient descent favour particular
+      solutions among the many that fit.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Treating error as one number hides what to do about it. Splitting it
+      shows whether the fix is more capacity, more data or more constraint,
+      and the most widely used form of constraint is the L2 penalty.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

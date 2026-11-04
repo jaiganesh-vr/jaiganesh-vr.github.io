@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matrices as Linear Transformations</title>
+  <meta name="description" content="Seeing a matrix as a function that moves space: what columns tell you, why multiplication is composition, and what rank, determinants and inverses mean." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Matrices as Linear Transformations" />
+  <meta property="og:description" content="Seeing a matrix as a function that moves space: what columns tell you, why multiplication is composition, and what rank, determinants and inverses mean." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20211106_matrices_linear_transformations.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Matrices as Linear Transformations</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Linear Algebra</span>
+    </p>
+
+    <p class="muted">
+      Nov 06, 2021
+    </p>
+
+    <p>
+      A matrix is usually presented as a grid of numbers with a strange
+      multiplication rule. That rule makes sense once you see a matrix as a
+      function that takes in a vector and transforms space.
+    </p>
+
+    <h2>Columns Are the Whole Story</h2>
+
+    <p>
+      Multiplying a vector by a matrix produces a linear combination of the
+      matrix's columns:
+    </p>
+
+    <p class="muted">
+      Ax = x₁a₁ + x₂a₂ + … + xₙaₙ
+    </p>
+
+    <p>
+      The columns show where the basis vectors land. The vector (1, 0) goes to
+      the first column and (0, 1) goes to the second. Every other vector
+      follows by linearity. For example:
+    </p>
+
+    <p class="muted">
+      A = [[0, −1], [1, 0]]
+    </p>
+
+    <p>
+      sends (1, 0) to (0, 1) and (0, 1) to (−1, 0). This is a 90-degree
+      rotation.
+    </p>
+
+    <p class="muted">
+      To read a matrix, ask where it sends the basis vectors.
+    </p>
+
+    <h2>Linear Maps</h2>
+
+    <p>
+      A map is linear when it preserves addition and scaling: f(ax + by) =
+      a·f(x) + b·f(y). Grid lines stay straight and evenly spaced, and the
+      origin stays put. Rotations, reflections, scalings and shears all
+      qualify, and every such map corresponds to some matrix.
+    </p>
+
+    <h2>Multiplication Is Composition</h2>
+
+    <p>
+      AB means applying B and then A. Applying the map to each column of B
+      explains the rule for matrix multiplication, and also why the following
+      hold:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Order matters:</strong> AB is generally not BA. Rotating and then scaling is not the same as scaling and then rotating.</li>
+      <li><strong>Sizes must fit:</strong> the output of B must be the input of A.</li>
+      <li><strong>Associativity:</strong> (AB)C = A(BC), because composition of functions does not care about grouping.</li>
+    </ul>
+
+    <p>
+      A neural network without activation functions is just a composition of
+      linear maps, so it collapses to one single matrix. That is why
+      nonlinearities are essential.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+rotate = np.array([[0, -1], [1, 0]])    # 90 degrees anticlockwise
+scale = np.array([[2, 0], [0, 1]])      # stretch x by 2
+
+v = np.array([1, 1])
+print(rotate @ (scale @ v))             # [-1  2]
+print((rotate @ scale) @ v)             # same: composition
+print((scale @ rotate) @ v)             # [-2  1]: order matters</code></pre>
+
+    <h2>Rank</h2>
+
+    <p>
+      The set of all outputs Ax is the column space, and its dimension is the
+      rank. It says how many dimensions survive. A 3 × 3 matrix of rank 2
+      flattens space onto a plane. The vectors sent to zero form the null
+      space, and the two dimensions always add up to the size of the input:
+    </p>
+
+    <p class="muted">
+      rank(A) + nullity(A) = n
+    </p>
+
+    <h2>Determinants</h2>
+
+    <p>
+      The determinant is the factor by which a square matrix scales volume. A
+      determinant of 2 doubles areas, and a negative one also flips
+      orientation. A determinant of 0 means that space has been flattened into
+      a lower dimension, so the matrix has lost information.
+    </p>
+
+    <h2>Inverses</h2>
+
+    <p>
+      If nothing has been flattened, the map can be undone by the inverse,
+      with A⁻¹A = I. A square matrix is invertible exactly when it has full
+      rank, which is the same as having a determinant other than zero and a
+      null space containing only zero.
+    </p>
+
+    <p>
+      In practice, computing an explicit inverse is rarely a good idea. To
+      solve Ax = b, use a factorisation, as in numpy.linalg.solve, which is
+      both faster and more numerically stable.
+    </p>
+
+    <h2>A Note on the Transpose</h2>
+
+    <p>
+      Swapping rows and columns gives Aᵀ. It lets a matrix change sides in a
+      dot product:
+    </p>
+
+    <p class="muted">
+      (Ax)ᵀy = xᵀ(Aᵀy)
+    </p>
+
+    <p>
+      This identity comes up constantly in derivations. It is what produces
+      the XᵀX in least squares.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Seen as transformations, the rules of matrix algebra stop being
+      arbitrary. Most vectors change direction under a matrix, but a few
+      special ones do not, and they reveal its deeper structure.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

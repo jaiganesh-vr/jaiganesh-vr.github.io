@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Positive Definite Matrices and Quadratic Forms</title>
+  <meta name="description" content="What positive definiteness means geometrically, equivalent tests, how the Cholesky factorisation uses it, and why it appears in covariance, optimisation and kernels." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Positive Definite Matrices and Quadratic Forms" />
+  <meta property="og:description" content="What positive definiteness means geometrically, equivalent tests, how the Cholesky factorisation uses it, and why it appears in covariance, optimisation and kernels." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20220910_positive_definite_matrices.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Positive Definite Matrices and Quadratic Forms</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Linear Algebra</span>
+    </p>
+
+    <p class="muted">
+      Sep 10, 2022
+    </p>
+
+    <p>
+      Positive definite matrices sit at the junction of optimisation,
+      statistics and kernel methods. They are the matrix version of a positive
+      number, and they guarantee that many calculations behave well.
+    </p>
+
+    <h2>Quadratic Forms</h2>
+
+    <p>
+      For a symmetric matrix A and a vector x, the quadratic form is a single
+      number:
+    </p>
+
+    <p class="muted">
+      f(x) = xᵀ A x
+    </p>
+
+    <p>
+      With A = [[2, 1], [1, 2]], this gives f(x) = 2x₁² + 2x₁x₂ + 2x₂². The
+      cross term is what makes the surface tilted relative to the axes.
+    </p>
+
+    <h2>The Definition</h2>
+
+    <ul class="post-list">
+      <li><strong>Positive definite:</strong> xᵀAx &gt; 0 for every nonzero x.</li>
+      <li><strong>Positive semi-definite:</strong> xᵀAx ≥ 0 for every x.</li>
+      <li><strong>Indefinite:</strong> positive for some x and negative for others.</li>
+    </ul>
+
+    <p>
+      Geometrically, a positive definite form is a bowl with a unique lowest
+      point at the origin. Its level sets are ellipses. A semi-definite one is
+      a bowl with a flat valley, and an indefinite one is a saddle.
+    </p>
+
+    <p class="muted">
+      A positive definite matrix describes a bowl, and its eigenvectors give
+      the axes of that bowl.
+    </p>
+
+    <h2>Equivalent Tests</h2>
+
+    <p>
+      For a symmetric matrix, these are the same statement:
+    </p>
+
+    <ul class="post-list">
+      <li>All eigenvalues are positive.</li>
+      <li>It can be written as A = BᵀB for some B with independent columns.</li>
+      <li>All leading principal minors are positive.</li>
+      <li>It has a Cholesky factorisation.</li>
+    </ul>
+
+    <p>
+      To see the eigenvalue connection, write A = QΛQᵀ. Then with y = Qᵀx, the
+      form becomes Σ λᵢ yᵢ², which is positive for all y exactly when every λᵢ
+      is positive.
+    </p>
+
+    <p>
+      Our example has eigenvalues 3 and 1, so it is positive definite. Change
+      the off-diagonal entries from 1 to 3 and the eigenvalues become 5 and
+      −1, giving a saddle.
+    </p>
+
+    <h2>The Cholesky Factorisation</h2>
+
+    <p>
+      A positive definite matrix factors into a lower triangular matrix times
+      its transpose:
+    </p>
+
+    <p class="muted">
+      A = L Lᵀ
+    </p>
+
+    <p>
+      This is about twice as fast as a general LU factorisation and it is
+      numerically stable. It also doubles as the cheapest practical test for
+      positive definiteness, since it fails if the matrix isn't.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def is_positive_definite(A):
+    try:
+        np.linalg.cholesky(A)
+        return True
+    except np.linalg.LinAlgError:
+        return False
+
+print(is_positive_definite(np.array([[2.0, 1.0], [1.0, 2.0]])))  # True
+print(is_positive_definite(np.array([[2.0, 3.0], [3.0, 2.0]])))  # False
+
+# Sampling from a Gaussian with covariance S: x = mu + L z
+S = np.array([[2.0, 1.0], [1.0, 2.0]])
+L = np.linalg.cholesky(S)
+z = np.random.default_rng(0).normal(size=(100_000, 2))
+print(np.cov((z @ L.T).T).round(2))</code></pre>
+
+    <h2>Where It Shows Up</h2>
+
+    <ul class="post-list">
+      <li><strong>Covariance matrices:</strong> always semi-definite, since the variance of any linear combination is xᵀΣx, which cannot be negative.</li>
+      <li><strong>Second-order conditions:</strong> a positive definite Hessian at a stationary point means a local minimum. An indefinite one means a saddle.</li>
+      <li><strong>Convexity:</strong> a twice-differentiable function is convex exactly when its Hessian is semi-definite everywhere.</li>
+      <li><strong>Least squares:</strong> XᵀX is semi-definite, and adding λI in ridge regression makes it positive definite.</li>
+      <li><strong>Kernels:</strong> Mercer's condition requires every Gram matrix to be semi-definite.</li>
+      <li><strong>Gaussians:</strong> the exponent of a multivariate Gaussian is a quadratic form in the inverse covariance.</li>
+    </ul>
+
+    <h2>Numerical Trouble</h2>
+
+    <p>
+      Empirical covariance matrices are often only barely semi-definite,
+      particularly with fewer examples than features, and rounding errors can
+      then make Cholesky fail. The standard fix is to add a small jitter to
+      the diagonal, A + εI. This shifts every eigenvalue up by ε and is common
+      in Gaussian process code.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Positive definiteness guarantees a single minimum, valid variances and
+      stable computation. Now we turn to how to find directions of descent on
+      surfaces that are not perfectly quadratic, which is the job of calculus.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>

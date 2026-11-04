@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convex Functions and Convex Optimization</title>
+  <meta name="description" content="What makes a function convex, why convex problems have no bad local minima, how to recognise them, and what changes for non-convex deep learning." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Convex Functions and Convex Optimization" />
+  <meta property="og:description" content="What makes a function convex, why convex problems have no bad local minima, how to recognise them, and what changes for non-convex deep learning." />
+  <meta property="og:url" content="https://jaiganesh-vr.github.io/notes/20250329_convex_optimization.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="../js/header.js"></script></header>
+
+  <main>
+
+    <h1>Convex Functions and Convex Optimization</h1>
+
+    <p class="muted">
+      <span class="pill">Mathematics</span>
+      <span class="pill">Optimization</span>
+    </p>
+
+    <p class="muted">
+      Mar 29, 2025
+    </p>
+
+    <p>
+      Some optimisation problems are tractable and others are nearly
+      impossible. The important dividing line turned out to be not linear
+      versus nonlinear, but convex versus non-convex.
+    </p>
+
+    <h2>Convex Sets and Functions</h2>
+
+    <p>
+      A set is convex if the line segment between any two of its points stays
+      inside it. A function is convex if the segment between any two points on
+      its graph lies on or above the graph:
+    </p>
+
+    <p class="muted">
+      f(t x + (1 − t) y) ≤ t f(x) + (1 − t) f(y), for t in [0, 1]
+    </p>
+
+    <h2>Equivalent Tests</h2>
+
+    <p>
+      For differentiable functions, these are the same condition:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>First order:</strong> f(y) ≥ f(x) + ∇f(x)ᵀ(y − x). The tangent always lies below the function.</li>
+      <li><strong>Second order:</strong> the Hessian is positive semi-definite everywhere.</li>
+    </ul>
+
+    <p>
+      The first order condition has a striking consequence. If ∇f(x) = 0, the
+      right side reduces to f(x), so f(y) ≥ f(x) for every y.
+    </p>
+
+    <p class="muted">
+      In a convex function, every local minimum is a global minimum, and a
+      zero gradient is a certificate of optimality.
+    </p>
+
+    <h2>Recognising Convexity</h2>
+
+    <p>
+      Rather than checking from scratch, build complicated functions from
+      simple ones, using rules that preserve convexity:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Basic examples:</strong> linear functions, norms, x², eˣ, and −log x for x &gt; 0.</li>
+      <li><strong>Nonnegative sums:</strong> adding convex functions, or multiplying by a positive constant.</li>
+      <li><strong>Affine composition:</strong> f(Ax + b) is convex if f is convex.</li>
+      <li><strong>Pointwise maximum:</strong> the maximum of several convex functions, as in the hinge loss.</li>
+    </ul>
+
+    <p>
+      These show that least squares, logistic regression, ridge, lasso and
+      SVMs are all convex.
+    </p>
+
+    <h2>Strong Convexity and Convergence Rates</h2>
+
+    <p>
+      A function is μ-strongly convex if its curvature is at least μ
+      everywhere. It then has a single unique minimum. If the gradient is also
+      L-Lipschitz, gradient descent with a step size of 1/L has known rates:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Convex and smooth:</strong> error falls as O(1/k).</li>
+      <li><strong>Strongly convex and smooth:</strong> error falls geometrically, as (1 − μ/L)ᵏ.</li>
+    </ul>
+
+    <p>
+      The ratio L/μ is the condition number. Adding an L2 penalty λ‖w‖² adds
+      2λ to all the Hessian's eigenvalues, so it makes a convex problem
+      strongly convex and also better conditioned.
+    </p>
+
+    <pre><code class="language-python">import numpy as np
+
+def gd(H, steps):
+    """Gradient descent on 0.5 x'Hx with step size 1/L."""
+    L = np.linalg.eigvalsh(H).max()
+    x = np.ones(len(H))
+    for _ in range(steps):
+        x = x - (1 / L) * (H @ x)
+    return 0.5 * x @ H @ x
+
+well_conditioned = np.diag([1.0, 2.0])
+badly_conditioned = np.diag([0.01, 2.0])
+
+print(gd(well_conditioned, 50))     # effectively zero
+print(gd(badly_conditioned, 50))    # far larger
+print(gd(badly_conditioned + 0.5 * np.eye(2), 50))  # regularised: much better</code></pre>
+
+    <h2>Constraints</h2>
+
+    <p>
+      Convex optimisation also handles constraints well. Minimising a convex
+      function over a convex set still has no spurious local minima. Projected
+      gradient descent takes a step and maps the result back to the set. Other
+      approaches include interior point methods, which handle inequality
+      constraints using barrier functions.
+    </p>
+
+    <h2>Non-Convex Reality</h2>
+
+    <p>
+      The loss of a neural network is highly non-convex, with symmetries alone
+      creating many equivalent minima. None of these guarantees apply, and yet
+      gradient descent works very well in practice. Some partial explanations
+      are:
+    </p>
+
+    <ul class="post-list">
+      <li><strong>Few bad minima:</strong> in very large networks, most local minima seem to have similar loss.</li>
+      <li><strong>Saddles rather than minima:</strong> the main obstacles tend to be saddle points, which noise helps gradient methods escape.</li>
+      <li><strong>Overparameterisation:</strong> with far more parameters than data, the landscape appears to become easier to navigate.</li>
+    </ul>
+
+    <p>
+      A full theory is still an open question. Convex analysis remains useful
+      there, since it provides the concepts, such as smoothness and
+      conditioning, used to reason about training.
+    </p>
+
+    <h2>Closing Thought</h2>
+
+    <p>
+      Convexity is what separates problems we can solve from problems we can
+      only attempt. Recognising it means we can stop worrying about the
+      optimiser and focus on the model. Constraints deserve further attention,
+      as they have a beautiful theory of their own.
+    </p>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      Thanks for reading. If this was useful, you'll probably like the other posts too.
+    </p>
+
+  </main>
+  <script src="../js/post.js"></script>
+</body>
+
+</html>
