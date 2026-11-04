@@ -197,6 +197,18 @@ menu {
   font-size: 13px;
 }
 
+/* Which section a post belongs to: outlined, so it reads quieter than a pill */
+.pill-section {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 1px 7px;
+  margin-left: auto;
+  align-self: flex-start;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .highlight {
   color: var(--highlight-color);
   font-weight: 600;
@@ -473,6 +485,10 @@ menu {
   .date {
     min-width: 0;
     font-size: 12px;
+  }
+
+  .pill-section {
+    margin: 4px 0 0;
   }
 
   .menu-highlight {
