@@ -6,7 +6,7 @@
 
   // Listing page for each post folder; links there are ordered newest first
   const LISTINGS = {
-    blog: 'index.html',
+    blog: 'learn.html',
     books: 'books.html',
     projects: 'projects.html',
     research: 'research.html',
