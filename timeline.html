@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timeline · Jai</title>
+  <meta name="description" content="How we got here, from the first idea of a computing machine to the AI systems being built today." />
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/theme.js"></script>
+</head>
+
+<body>
+
+  <header><script src="js/header.js"></script></header>
+
+  <main>
+    <h1>Thoughts on building AI things </h1>
+    <p class="muted"> Notes that sparked ideas, books that taught me new technologies, projects that turned theory into
+      practice,
+      and research that added depth - all in one place, documenting how I learn, experiment, and apply ideas in real
+      systems.
+    </p>
+
+
+    <menu class="menu-highlight">
+      <a href="learn.html">Notes</a>
+      <a href="books.html">Books</a>
+      <a href="projects.html">Projects</a>
+      <a href="research.html">Research</a>
+      <a href="timeline.html" aria-current="page">Timeline</a>
+    </menu>
+
+    <div class="divider"></div>
+
+    <p>How we got here, from the first idea of a computing machine to the systems being built today.</p>
+
+    <div class="divider"></div>
+
+    <p class="muted tl-lede">The map follows you as you scroll, and clicking a dot jumps to that year. Its curve sketches
+      the mood of the field rather than measured data, and winter dates vary by source.</p>
+
+    <!-- Each dot links to the row with the matching id. A dot's x = 572 - (year - 1936) * 6.267, placed on the curve.
+         A new event in a year that already has a dot only needs a new row below. -->
+    <div class="sticky-map">
+      <p class="map-title">AI Timeline</p>
+        <svg class="wave" id="wave" viewBox="0 0 580 150" role="img" aria-label="Illustrative curve of enthusiasm for AI from 2026 back to 1936, with two troughs marked as AI winters.">
+        <rect class="winter" x="296.3" y="10" width="37.6" height="118" rx="3"/>
+        <rect class="winter" x="214.8" y="10" width="37.6" height="118" rx="3"/>
+        <line class="axis" x1="8" x2="572" y1="128" y2="128"/>
+        <text class="tick" x="546.9" y="144" text-anchor="middle">1940</text>
+        <text class="tick" x="296.3" y="144" text-anchor="middle">1980</text>
+        <text class="tick" x="8" y="144" text-anchor="start">2026</text>
+        <path class="curve" d="M572.0,123.3 L568.9,123.3 L565.7,123.2 L562.6,123.0 L559.5,122.7 L556.3,122.6 L553.2,122.1 L550.1,121.8 L546.9,121.3 L543.8,121.0 L540.7,120.6 L537.5,120.0 L534.4,119.5 L531.3,119.1 L528.1,118.6 L525.0,118.0 L521.9,117.6 L518.7,117.1 L515.6,116.7 L512.5,116.2 L509.3,115.7 L506.2,115.3 L503.1,115.0 L499.9,114.7 L496.8,114.4 L493.7,114.1 L490.5,113.9 L487.4,113.9 L484.3,113.8 L481.1,113.2 L478.0,111.2 L474.9,108.3 L471.7,104.7 L468.6,100.5 L465.5,96.1 L462.3,91.7 L459.2,87.6 L456.1,84.0 L452.9,81.1 L449.8,79.1 L446.7,78.4 L443.5,78.1 L440.4,77.2 L437.3,75.8 L434.1,74.0 L431.0,71.7 L427.9,69.3 L424.7,66.6 L421.6,63.7 L418.5,60.7 L415.3,57.8 L412.2,54.9 L409.1,52.2 L405.9,49.8 L402.8,47.5 L399.7,45.7 L396.5,44.2 L393.4,43.3 L390.3,43.0 L387.1,43.3 L384.0,44.2 L380.9,45.2 L377.7,46.6 L374.6,47.8 L371.5,49.0 L368.3,49.8 L365.2,50.1 L362.1,51.6 L358.9,55.5 L355.8,61.3 L352.7,68.4 L349.5,76.1 L346.4,83.8 L343.3,90.8 L340.1,96.7 L337.0,100.6 L333.9,102.0 L330.7,102.0 L327.6,101.7 L324.5,101.4 L321.3,100.8 L318.2,100.3 L315.1,99.7 L311.9,99.1 L308.8,98.5 L305.7,98.0 L302.5,97.7 L299.4,97.4 L296.3,97.3 L293.1,96.1 L290.0,92.9 L286.9,88.2 L283.7,82.3 L280.6,76.1 L277.5,69.8 L274.3,64.0 L271.2,59.3 L268.1,56.0 L264.9,54.8 L261.8,56.0 L258.7,58.4 L255.5,60.8 L252.4,61.9 L249.3,62.8 L246.1,65.4 L243.0,69.3 L239.9,74.1 L236.7,79.7 L233.6,85.5 L230.5,91.4 L227.3,96.8 L224.2,101.7 L221.1,105.6 L217.9,108.2 L214.8,109.1 L211.7,108.8 L208.5,107.9 L205.4,106.5 L202.3,105.0 L199.1,103.2 L196.0,101.5 L192.9,99.9 L189.7,98.5 L186.6,97.6 L183.5,97.3 L180.3,97.3 L177.2,97.3 L174.1,97.3 L170.9,97.3 L167.8,97.3 L164.7,97.3 L161.5,97.3 L158.4,97.3 L155.3,97.3 L152.1,97.3 L149.0,97.3 L145.9,97.3 L142.7,97.3 L139.6,97.3 L136.5,97.3 L133.3,97.3 L130.2,96.8 L127.1,95.6 L123.9,93.7 L120.8,91.2 L117.7,88.5 L114.5,85.5 L111.4,82.6 L108.3,79.9 L105.1,77.5 L102.0,75.5 L98.9,74.1 L95.7,73.7 L92.6,73.2 L89.5,71.7 L86.3,69.6 L83.2,67.0 L80.1,64.3 L76.9,61.4 L73.8,58.9 L70.7,56.7 L67.5,55.4 L64.4,54.8 L61.3,54.0 L58.1,51.8 L55.0,48.9 L51.9,46.2 L48.7,43.9 L45.6,43.0 L42.5,39.2 L39.3,30.7 L36.2,22.1 L33.1,18.3 L29.9,17.9 L26.8,17.0 L23.7,15.6 L20.5,14.1 L17.4,12.6 L14.3,11.4 L11.1,10.3 L8.0,10.0"/>
+        <line class="marker" id="marker" x1="20.5" x2="20.5" y1="10" y2="128"/>
+        <a href="#y1936"><g class="pt" data-y="1936" data-x="572.0"><title>1936: Turing&#x27;s computable numbers</title><circle class="hit" cx="572.0" cy="123.3" r="11"/><circle class="dot" cx="572.0" cy="123.3" r="3.5"/></g></a>
+        <a href="#y1943"><g class="pt" data-y="1943" data-x="528.1"><title>1943: McCulloch-Pitts neuron</title><circle class="hit" cx="528.1" cy="118.6" r="11"/><circle class="dot" cx="528.1" cy="118.6" r="3.5"/></g></a>
+        <a href="#y1945"><g class="pt" data-y="1945" data-x="515.6"><title>1945: ENIAC and the stored-program idea</title><circle class="hit" cx="515.6" cy="116.7" r="11"/><circle class="dot" cx="515.6" cy="116.7" r="3.5"/></g></a>
+        <a href="#y1947"><g class="pt" data-y="1947" data-x="503.1"><title>1947: The transistor</title><circle class="hit" cx="503.1" cy="115.0" r="11"/><circle class="dot" cx="503.1" cy="115.0" r="3.5"/></g></a>
+        <a href="#y1948"><g class="pt" data-y="1948" data-x="496.8"><title>1948: Information theory</title><circle class="hit" cx="496.8" cy="114.4" r="11"/><circle class="dot" cx="496.8" cy="114.4" r="3.5"/></g></a>
+        <a href="#y1950"><g class="pt" data-y="1950" data-x="484.3"><title>1950: &quot;Can machines think?&quot;</title><circle class="hit" cx="484.3" cy="113.8" r="11"/><circle class="dot" cx="484.3" cy="113.8" r="3.5"/></g></a>
+        <a href="#y1956"><g class="pt" data-y="1956" data-x="446.7"><title>1956: The Dartmouth workshop</title><circle class="hit" cx="446.7" cy="78.4" r="11"/><circle class="dot major" cx="446.7" cy="78.4" r="5"/></g></a>
+        <a href="#y1958"><g class="pt" data-y="1958" data-x="434.1"><title>1958: The perceptron, LISP</title><circle class="hit" cx="434.1" cy="74.0" r="11"/><circle class="dot" cx="434.1" cy="74.0" r="3.5"/></g></a>
+        <a href="#y1965"><g class="pt" data-y="1965" data-x="390.3"><title>1965: Moore&#x27;s law</title><circle class="hit" cx="390.3" cy="43.0" r="11"/><circle class="dot" cx="390.3" cy="43.0" r="3.5"/></g></a>
+        <a href="#y1966"><g class="pt" data-y="1966" data-x="384.0"><title>1966: ELIZA</title><circle class="hit" cx="384.0" cy="44.2" r="11"/><circle class="dot" cx="384.0" cy="44.2" r="3.5"/></g></a>
+        <a href="#y1969"><g class="pt" data-y="1969" data-x="365.2"><title>1969: Perceptrons, the book, ARPANET</title><circle class="hit" cx="365.2" cy="50.1" r="11"/><circle class="dot major" cx="365.2" cy="50.1" r="5"/></g></a>
+        <a href="#y1971"><g class="pt" data-y="1971" data-x="352.7"><title>1971: The microprocessor</title><circle class="hit" cx="352.7" cy="68.4" r="11"/><circle class="dot" cx="352.7" cy="68.4" r="3.5"/></g></a>
+        <a href="#y1973"><g class="pt" data-y="1973" data-x="340.1"><title>1973: The Lighthill report</title><circle class="hit" cx="340.1" cy="96.7" r="11"/><circle class="dot" cx="340.1" cy="96.7" r="3.5"/></g></a>
+        <a href="#y1974"><g class="pt" data-y="1974" data-x="333.9"><title>1974: Backpropagation in a thesis</title><circle class="hit" cx="333.9" cy="102.0" r="11"/><circle class="dot" cx="333.9" cy="102.0" r="3.5"/></g></a>
+        <a href="#y1975"><g class="pt" data-y="1975" data-x="327.6"><title>1975: MYCIN</title><circle class="hit" cx="327.6" cy="101.7" r="11"/><circle class="dot" cx="327.6" cy="101.7" r="3.5"/></g></a>
+        <a href="#y1980"><g class="pt" data-y="1980" data-x="296.3"><title>1980: XCON at DEC</title><circle class="hit" cx="296.3" cy="97.3" r="11"/><circle class="dot" cx="296.3" cy="97.3" r="3.5"/></g></a>
+        <a href="#y1982"><g class="pt" data-y="1982" data-x="283.7"><title>1982: Japan&#x27;s Fifth Generation project, Hopfield networks</title><circle class="hit" cx="283.7" cy="82.3" r="11"/><circle class="dot" cx="283.7" cy="82.3" r="3.5"/></g></a>
+        <a href="#y1986"><g class="pt" data-y="1986" data-x="258.7"><title>1986: Backpropagation popularised</title><circle class="hit" cx="258.7" cy="58.4" r="11"/><circle class="dot major" cx="258.7" cy="58.4" r="5"/></g></a>
+        <a href="#y1987"><g class="pt" data-y="1987" data-x="252.4"><title>1987: The expert-systems market collapses</title><circle class="hit" cx="252.4" cy="61.9" r="11"/><circle class="dot" cx="252.4" cy="61.9" r="3.5"/></g></a>
+        <a href="#y1988"><g class="pt" data-y="1988" data-x="246.1"><title>1988: Probabilistic reasoning</title><circle class="hit" cx="246.1" cy="65.4" r="11"/><circle class="dot" cx="246.1" cy="65.4" r="3.5"/></g></a>
+        <a href="#y1989"><g class="pt" data-y="1989" data-x="239.9"><title>1989: Q-learning, Convolutional networks read digits, The World Wide Web proposed</title><circle class="hit" cx="239.9" cy="74.1" r="11"/><circle class="dot" cx="239.9" cy="74.1" r="3.5"/></g></a>
+        <a href="#y1992"><g class="pt" data-y="1992" data-x="221.1"><title>1992: TD-Gammon</title><circle class="hit" cx="221.1" cy="105.6" r="11"/><circle class="dot" cx="221.1" cy="105.6" r="3.5"/></g></a>
+        <a href="#y1995"><g class="pt" data-y="1995" data-x="202.3"><title>1995: Support vector machines</title><circle class="hit" cx="202.3" cy="105.0" r="11"/><circle class="dot" cx="202.3" cy="105.0" r="3.5"/></g></a>
+        <a href="#y1997"><g class="pt" data-y="1997" data-x="189.7"><title>1997: LSTM, Deep Blue beats Kasparov</title><circle class="hit" cx="189.7" cy="98.5" r="11"/><circle class="dot major" cx="189.7" cy="98.5" r="5"/></g></a>
+        <a href="#y1998"><g class="pt" data-y="1998" data-x="183.5"><title>1998: LeNet-5</title><circle class="hit" cx="183.5" cy="97.3" r="11"/><circle class="dot" cx="183.5" cy="97.3" r="3.5"/></g></a>
+        <a href="#y2006"><g class="pt" data-y="2006" data-x="133.3"><title>2006: Deep belief networks</title><circle class="hit" cx="133.3" cy="97.3" r="11"/><circle class="dot" cx="133.3" cy="97.3" r="3.5"/></g></a>
+        <a href="#y2007"><g class="pt" data-y="2007" data-x="127.1"><title>2007: CUDA</title><circle class="hit" cx="127.1" cy="95.6" r="11"/><circle class="dot" cx="127.1" cy="95.6" r="3.5"/></g></a>
+        <a href="#y2009"><g class="pt" data-y="2009" data-x="114.5"><title>2009: ImageNet</title><circle class="hit" cx="114.5" cy="85.5" r="11"/><circle class="dot" cx="114.5" cy="85.5" r="3.5"/></g></a>
+        <a href="#y2011"><g class="pt" data-y="2011" data-x="102.0"><title>2011: Watson wins Jeopardy!</title><circle class="hit" cx="102.0" cy="75.5" r="11"/><circle class="dot" cx="102.0" cy="75.5" r="3.5"/></g></a>
+        <a href="#y2012"><g class="pt" data-y="2012" data-x="95.7"><title>2012: AlexNet</title><circle class="hit" cx="95.7" cy="73.7" r="11"/><circle class="dot major" cx="95.7" cy="73.7" r="5"/></g></a>
+        <a href="#y2013"><g class="pt" data-y="2013" data-x="89.5"><title>2013: word2vec, Deep Q-Networks</title><circle class="hit" cx="89.5" cy="71.7" r="11"/><circle class="dot" cx="89.5" cy="71.7" r="3.5"/></g></a>
+        <a href="#y2014"><g class="pt" data-y="2014" data-x="83.2"><title>2014: GANs and attention</title><circle class="hit" cx="83.2" cy="67.0" r="11"/><circle class="dot" cx="83.2" cy="67.0" r="3.5"/></g></a>
+        <a href="#y2015"><g class="pt" data-y="2015" data-x="76.9"><title>2015: ResNet</title><circle class="hit" cx="76.9" cy="61.4" r="11"/><circle class="dot" cx="76.9" cy="61.4" r="3.5"/></g></a>
+        <a href="#y2016"><g class="pt" data-y="2016" data-x="70.7"><title>2016: AlphaGo beats Lee Sedol</title><circle class="hit" cx="70.7" cy="56.7" r="11"/><circle class="dot" cx="70.7" cy="56.7" r="3.5"/></g></a>
+        <a href="#y2017"><g class="pt" data-y="2017" data-x="64.4"><title>2017: Attention Is All You Need</title><circle class="hit" cx="64.4" cy="54.8" r="11"/><circle class="dot major" cx="64.4" cy="54.8" r="5"/></g></a>
+        <a href="#y2018"><g class="pt" data-y="2018" data-x="58.1"><title>2018: BERT and GPT-1</title><circle class="hit" cx="58.1" cy="51.8" r="11"/><circle class="dot" cx="58.1" cy="51.8" r="3.5"/></g></a>
+        <a href="#y2020"><g class="pt" data-y="2020" data-x="45.6"><title>2020: GPT-3, Retrieval-Augmented Generation</title><circle class="hit" cx="45.6" cy="43.0" r="11"/><circle class="dot" cx="45.6" cy="43.0" r="3.5"/></g></a>
+        <a href="#y2022"><g class="pt" data-y="2022" data-x="33.1"><title>2022: ChatGPT</title><circle class="hit" cx="33.1" cy="18.3" r="11"/><circle class="dot major" cx="33.1" cy="18.3" r="5"/></g></a>
+        <a href="#y2023"><g class="pt" data-y="2023" data-x="26.8"><title>2023: GPT-4 and Llama</title><circle class="hit" cx="26.8" cy="17.0" r="11"/><circle class="dot" cx="26.8" cy="17.0" r="3.5"/></g></a>
+        <a href="#y2024"><g class="pt" data-y="2024" data-x="20.5"><title>2024: Reasoning models, The Nobel Prizes go to AI, Model Context Protocol</title><circle class="hit" cx="20.5" cy="14.1" r="11"/><circle class="dot" cx="20.5" cy="14.1" r="3.5"/></g></a>
+        </svg>
+    </div>
+
+    <div class="tl">
+      <div class="tl-era">
+        <span>Language models and agents</span>
+        <span class="tl-range">2017 to today</span>
+      </div>
+      <p class="tl-story">The Transformer turns language into the field's centre of gravity. Scale keeps paying off, a chat interface reaches hundreds of millions of people, and attention shifts from what models know to what they can do.</p>
+
+      <div class="tl-row" id="y2024" data-y="2024">
+        <span class="tl-year">2024</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Model Context Protocol</div>
+          <p>An open standard for connecting models to tools, as agents go mainstream.</p>
+          <a class="tl-note" href="blog/20260222_model_context_protocol.html">→ The Model Context Protocol, Explained</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2024-2" data-y="2024">
+        <span class="tl-year">2024</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The Nobel Prizes go to AI</div>
+          <p>Hopfield and Hinton in physics, and Hassabis and Jumper in chemistry for AlphaFold.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2024-3" data-y="2024">
+        <span class="tl-year">2024</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Reasoning models</div>
+          <p>Models start spending more compute at test time to think before answering.</p>
+          <a class="tl-note" href="blog/20260808_test_time_compute.html">→ Reasoning Models and Test-Time Compute</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2023" data-y="2023">
+        <span class="tl-year">2023</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">GPT-4 and Llama</div>
+          <p>Multimodal frontier models, and capable open-weight models, arrive in the same year.</p>
+          <a class="tl-note" href="research/20260127_llama.html">→ The Llama 3 Herd of Models</a>
+        </div>
+      </div>
+
+      <div class="tl-row is-major" id="y2022" data-y="2022">
+        <span class="tl-year">2022</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">ChatGPT</div>
+          <p>A chat interface and RLHF put language models in front of everyone.</p>
+          <a class="tl-note" href="blog/20260317_rlhf_to_dpo.html">→ From RLHF to DPO</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2020" data-y="2020">
+        <span class="tl-year">2020</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Retrieval-Augmented Generation</div>
+          <p>The RAG paper connects language models to outside knowledge.</p>
+          <a class="tl-note" href="blog/20260127_rag.html">→ Retrieval-Augmented Generation</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2020-2" data-y="2020">
+        <span class="tl-year">2020</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">GPT-3</div>
+          <p>Scale alone produces surprisingly general ability.</p>
+          <a class="tl-note" href="blog/20260621_scaling_laws.html">→ Scaling Laws, Briefly</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2018" data-y="2018">
+        <span class="tl-year">2018</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">BERT and GPT-1</div>
+          <p>Pretraining on huge amounts of text becomes the standard recipe.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-major" id="y2017" data-y="2017">
+        <span class="tl-year">2017</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Attention Is All You Need</div>
+          <p>The Transformer: the architecture behind today's language models.</p>
+          <a class="tl-note" href="blog/20260227_attention_math.html">→ The Math Inside Attention</a>
+        </div>
+      </div>
+
+      <div class="tl-era">
+        <span>The deep learning boom</span>
+        <span class="tl-range">2012 to 2016</span>
+      </div>
+      <p class="tl-story">In 2012 a neural network wins ImageNet by a wide margin, and the threads finally meet: old ideas, GPUs and big data. Within a few years, deep learning dominates vision, speech, games and language.</p>
+
+      <div class="tl-row" id="y2016" data-y="2016">
+        <span class="tl-year">2016</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">AlphaGo beats Lee Sedol</div>
+          <p>Deep networks plus tree search crack a game long thought out of reach.</p>
+          <a class="tl-note" href="notes/20211002_monte_carlo_tree_search.html">→ Monte Carlo Tree Search</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2015" data-y="2015">
+        <span class="tl-year">2015</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">ResNet</div>
+          <p>Residual connections make very deep networks trainable.</p>
+          <a class="tl-note" href="blog/20260814_layer_norm_residuals.html">→ Layer Normalization and Residual Connections</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2014" data-y="2014">
+        <span class="tl-year">2014</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">GANs and attention</div>
+          <p>Goodfellow's adversarial networks, and Bahdanau's attention for translation, both appear.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2013" data-y="2013">
+        <span class="tl-year">2013</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Deep Q-Networks</div>
+          <p>A single network learns to play Atari games from raw pixels.</p>
+          <a class="tl-note" href="notes/20261003_deep_q_networks.html">→ Deep Q-Networks</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2013-2" data-y="2013">
+        <span class="tl-year">2013</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">word2vec</div>
+          <p>Words become vectors whose geometry captures meaning.</p>
+          <a class="tl-note" href="blog/20260127_embedding.html">→ Embedding Models</a>
+        </div>
+      </div>
+
+      <div class="tl-row is-major" id="y2012" data-y="2012">
+        <span class="tl-year">2012</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">AlexNet</div>
+          <p>GPU training, big data and old ideas finally meet. Deep learning takes over.</p>
+        </div>
+      </div>
+
+      <div class="tl-era">
+        <span>The quiet build-up</span>
+        <span class="tl-range">1993 to 2011</span>
+      </div>
+      <p class="tl-story">"AI" is out of fashion and most researchers call their work machine learning. Practical methods spread, the web produces data at a new scale, and graphics chips become programmable. Nobody yet knows these pieces belong together.</p>
+
+      <div class="tl-row" id="y2011" data-y="2011">
+        <span class="tl-year">2011</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Watson wins Jeopardy!</div>
+          <p>IBM's system beats the champions in a public demonstration of language processing.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2009" data-y="2009">
+        <span class="tl-year">2009</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">ImageNet</div>
+          <p>A labelled dataset large enough to show what big models could do.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2007" data-y="2007">
+        <span class="tl-year">2007</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">CUDA</div>
+          <p>Nvidia makes graphics chips programmable for general computing.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y2006" data-y="2006">
+        <span class="tl-year">2006</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Deep belief networks</div>
+          <p>Hinton shows deep networks can be trained layer by layer, and the term deep learning catches on.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1998" data-y="1998">
+        <span class="tl-year">1998</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">LeNet-5</div>
+          <p>LeCun's convolutional network reads bank cheques in real deployments.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-major" id="y1997" data-y="1997">
+        <span class="tl-year">1997</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Deep Blue beats Kasparov</div>
+          <p>Search and special hardware win at chess, without any learning from scratch.</p>
+          <a class="tl-note" href="notes/20210417_alpha_beta_pruning.html">→ Alpha-Beta Pruning</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1997-2" data-y="1997">
+        <span class="tl-year">1997</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">LSTM</div>
+          <p>Hochreiter and Schmidhuber give networks a longer memory, laying groundwork for language models.</p>
+          <a class="tl-note" href="blog/20260127_lstm.html">→ Long Short Term Memory Networks</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1995" data-y="1995">
+        <span class="tl-year">1995</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Support vector machines</div>
+          <p>Cortes and Vapnik publish the soft-margin SVM, which leads machine learning for over a decade.</p>
+          <a class="tl-note" href="notes/20240907_support_vector_machines.html">→ Support Vector Machines</a>
+        </div>
+      </div>
+
+      <div class="tl-era">
+        <span>The second AI winter</span>
+        <span class="tl-range">1987 to 1993</span>
+      </div>
+      <p class="tl-story">Expert systems prove brittle and expensive, and specialised AI hardware loses out to cheaper desktops. Under the gloom, the methods that will replace hand-written rules are maturing: probability, reinforcement learning and convolutional networks.</p>
+
+      <div class="tl-row is-winter" id="y1992" data-y="1992">
+        <span class="tl-year">1992</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">TD-Gammon</div>
+          <p>A network teaches itself backgammon to near-expert level through self-play.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-winter" id="y1989" data-y="1989">
+        <span class="tl-year">1989</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The World Wide Web proposed</div>
+          <p>Berners-Lee's proposal starts what becomes the largest dataset ever assembled.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-winter" id="y1989-2" data-y="1989">
+        <span class="tl-year">1989</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Convolutional networks read digits</div>
+          <p>LeCun trains a network with backpropagation to read handwritten zip codes.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-winter" id="y1989-3" data-y="1989">
+        <span class="tl-year">1989</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Q-learning</div>
+          <p>Watkins shows an agent can learn good behaviour from rewards alone.</p>
+          <a class="tl-note" href="notes/20260606_q_learning.html">→ Q-Learning</a>
+        </div>
+      </div>
+
+      <div class="tl-row is-winter" id="y1988" data-y="1988">
+        <span class="tl-year">1988</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Probabilistic reasoning</div>
+          <p>Judea Pearl's book makes Bayesian networks a foundation for reasoning under uncertainty.</p>
+          <a class="tl-note" href="notes/20240921_bayesian_networks.html">→ Bayesian Networks</a>
+        </div>
+      </div>
+
+      <div class="tl-row is-winter" id="y1987" data-y="1987">
+        <span class="tl-year">1987</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The expert-systems market collapses</div>
+          <p>The Lisp machine market falls apart and funding dries up.</p>
+        </div>
+      </div>
+
+      <div class="tl-era">
+        <span>Expert systems and new networks</span>
+        <span class="tl-range">1980 to 1986</span>
+      </div>
+      <p class="tl-story">AI returns as a business. Companies pay to capture human expertise as rules, and national programmes compete. At the same time, neural networks come back through Hopfield's work and backpropagation.</p>
+
+      <div class="tl-row is-major" id="y1986" data-y="1986">
+        <span class="tl-year">1986</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Backpropagation popularised</div>
+          <p>Rumelhart, Hinton and Williams show multi-layer networks can learn useful representations.</p>
+          <a class="tl-note" href="blog/20260907_backpropagation.html">→ Backpropagation Is Just the Chain Rule</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1982" data-y="1982">
+        <span class="tl-year">1982</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Hopfield networks</div>
+          <p>A physicist makes neural networks respectable again.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1982-2" data-y="1982">
+        <span class="tl-year">1982</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Japan's Fifth Generation project</div>
+          <p>A national AI programme prompts investment around the world.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1980" data-y="1980">
+        <span class="tl-year">1980</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">XCON at DEC</div>
+          <p>An expert system configures computer orders and saves real money, starting a commercial wave.</p>
+        </div>
+      </div>
+
+      <div class="tl-era">
+        <span>The first AI winter</span>
+        <span class="tl-range">1973 to 1980</span>
+      </div>
+      <p class="tl-story">Programs that shone on toy problems collapse on real ones. Computers are too slow, knowledge is too hard to write down, and funders lose patience. The work continues quietly, including a backpropagation idea that few people read.</p>
+
+      <div class="tl-row is-winter" id="y1975" data-y="1975">
+        <span class="tl-year">1975</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">MYCIN</div>
+          <p>A rule-based system at Stanford diagnoses blood infections, pointing the way to expert systems.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-winter" id="y1974" data-y="1974">
+        <span class="tl-year">1974</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Backpropagation in a thesis</div>
+          <p>Paul Werbos describes training multi-layer networks. It goes largely unnoticed.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-winter" id="y1973" data-y="1973">
+        <span class="tl-year">1973</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The Lighthill report</div>
+          <p>A critical UK review helps bring on the first AI winter.</p>
+        </div>
+      </div>
+
+      <div class="tl-era">
+        <span>The golden years</span>
+        <span class="tl-range">1956 to 1972</span>
+      </div>
+      <p class="tl-story">A small group at Dartmouth names the field and believes its core problems will fall within a generation. Early programs look astonishing, funding pours in, and the hard limits stay out of sight.</p>
+
+      <div class="tl-row" id="y1971" data-y="1971">
+        <span class="tl-year">1971</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The microprocessor</div>
+          <p>The Intel 4004 puts a computer's processor on one chip.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1969" data-y="1969">
+        <span class="tl-year">1969</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">ARPANET</div>
+          <p>The first link of the network that becomes the internet.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-major" id="y1969-2" data-y="1969">
+        <span class="tl-year">1969</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Perceptrons, the book</div>
+          <p>Minsky and Papert show what single-layer networks cannot do. Interest drifts away.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1966" data-y="1966">
+        <span class="tl-year">1966</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">ELIZA</div>
+          <p>A simple pattern matcher convinces people it understands them.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1965" data-y="1965">
+        <span class="tl-year">1965</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Moore's law</div>
+          <p>Gordon Moore predicts the steady growth in transistors per chip that compute still leans on.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1958" data-y="1958">
+        <span class="tl-year">1958</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">LISP</div>
+          <p>McCarthy creates the language that shapes AI programming for decades.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1958-2" data-y="1958">
+        <span class="tl-year">1958</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The perceptron</div>
+          <p>Rosenblatt builds a machine that learns from examples.</p>
+        </div>
+      </div>
+
+      <div class="tl-row is-major" id="y1956" data-y="1956">
+        <span class="tl-year">1956</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The Dartmouth workshop</div>
+          <p>McCarthy, Minsky, Rochester and Shannon's summer project gives the field its name.</p>
+          <a class="tl-note" href="notes/20181208_what_is_ai.html">→ What Is Artificial Intelligence?</a>
+        </div>
+      </div>
+
+      <div class="tl-era">
+        <span>Foundations</span>
+        <span class="tl-range">1936 to 1955</span>
+      </div>
+      <p class="tl-story">Before anyone said "artificial intelligence", a few people were working out what computing even is. Turing defined what a machine could do in principle, Shannon turned information into mathematics, and electronics made the ideas physical.</p>
+
+      <div class="tl-row" id="y1950" data-y="1950">
+        <span class="tl-year">1950</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">"Can machines think?"</div>
+          <p>Turing proposes the imitation game.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1948" data-y="1948">
+        <span class="tl-year">1948</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Information theory</div>
+          <p>Shannon gives information a precise mathematical measure, the entropy behind today's loss functions.</p>
+          <a class="tl-note" href="blog/20260204_cross_entropy.html">→ Cross-Entropy</a>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1947" data-y="1947">
+        <span class="tl-year">1947</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">The transistor</div>
+          <p>Bell Labs makes computing small, cheap and eventually everywhere.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1945" data-y="1945">
+        <span class="tl-year">1945</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">ENIAC and the stored-program idea</div>
+          <p>Electronic computing arrives, and von Neumann describes the architecture still in use.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1943" data-y="1943">
+        <span class="tl-year">1943</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">McCulloch-Pitts neuron</div>
+          <p>The first mathematical model of a neural network.</p>
+        </div>
+      </div>
+
+      <div class="tl-row" id="y1936" data-y="1936">
+        <span class="tl-year">1936</span>
+        <span class="tl-rail"><i></i></span>
+        <div class="tl-body">
+          <div class="tl-title">Turing's computable numbers</div>
+          <p>A mathematical model of a machine that can carry out any procedure.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <footer class="site-footer">
+      <a href="https://github.com/jaiganesh-vr" target="_blank">↗ Github</a>
+      <a href="https://www.upwork.com/" target="_blank">↗ Upwork</a>
+      <a href="https://www.linkedin.com/in/jaiganesh-vr/" target="_blank">↗ LinkedIn</a>
+    </footer>
+
+  </main>
+  <script src="js/timeline.js"></script>
+</body>
+
+</html>
